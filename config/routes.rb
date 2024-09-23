@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
+  get 'users/new'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  root "home#base"
+  get "/base", to: "home#base"
+  get "/signup", to: "users#new"
+  resources :users
 end
