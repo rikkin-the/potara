@@ -10,8 +10,31 @@
     <%= javascript_importmap_tags %>
   </head>
 
+
+  <header>
+    <div>
+      <%= link_to "Muber", root_path %>
+      <ul>
+        <% if logged_in? %>
+          <li><%= link_to "プロフィール", current_user %></li>
+          <li>
+            <%= link_to "ログアウト", logout_path,
+                                     data: { "turbo-method": :delete } %>
+          </li>
+        <% else %>
+          <li><%= link_to "ログイン", login_path %></li>
+        <% end %>
+      </ul>
+    </div>
+  </header>
+
   <body>
-    <%= yield %>
-    <%= debug(params) if Rails.env.development? %>
+    <div>
+      <% flash.each do |message_type, message| %>
+        <div><%= message %></div>
+      <% end %>
+      <%= yield %>
+      <%= debug(params) if Rails.env.development? %>
+    </div>
   </body>
 </html>
