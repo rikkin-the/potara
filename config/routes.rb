@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  mount ActionCable.server => '/cable'
   root "home#base"
   get "/base", to: "home#base"
   get "/signup", to: "users#new"
