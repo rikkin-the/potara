@@ -38,3 +38,9 @@
     </div>
   </body>
 </html>
+
+<script>
+  <% if logged_in? %>
+    currentUserId = <%= current_user.id %>;
+  <% end %>
+</script>

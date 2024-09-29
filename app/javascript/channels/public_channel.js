@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
    }
   });
-
+    
   disconnectLink.addEventListener('click', (event) => {
     event.preventDefault();
 
