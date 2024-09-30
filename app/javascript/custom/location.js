@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let data = position.coords ;
             let latitude = data.latitude;
             let longitude = data.longitude;
-            let patch_data = {
+            let patch_data = { user: {
               id: currentUserId, 
               latitude: latitude,
               longitude: longitude
-            };
+            } };
       
             document.getElementById('location-result').innerHTML = `<p>緯度: ${latitude} 経度: ${longitude}</p>`;
             fetch('/update_location', {

@@ -1,11 +1,14 @@
 <h1>エントリー</h1>
 <h3>位置情報を許可してください</h3>
-<button type="button" id="get-position-btn">許可する</button>
 
+<button type="button" id="get-position-btn">許可する</button>
 <div id="location-result"></div>
 
+<%= form_with model: current_user, url: "/entry/#{current_user.id}", method: :post do |f| %>
+  <%= f.file_field :image, capture: 'camera' %>
 
+  <%= f.label :comment, "つぶやき" %>
+  <%= f.text_area :comment %>
 
-<%= link_to "マッチを探す", '#', id: "connect-link" %>
-
-
+  <%= f.submit "マッチを探す", id: "connect-link" %>
+<% end %>

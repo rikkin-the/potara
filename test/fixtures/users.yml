@@ -1,4 +1,6 @@
 michael:
   name: Michael Example
+  girl: 0
+  date_of_birth: 2002-10-5
   email: michael@example.com
   password_digest: <%= User.digest('password') %>

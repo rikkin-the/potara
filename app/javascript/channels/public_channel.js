@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const disconnectLink = document.getElementById('disconnect-link');
 
   connectLink.addEventListener('click', (event) => {
-    event.preventDefault();
-
     if (!subscription) {
       subscription = consumer.subscriptions.create("PublicChannel",  {
         connected() {
