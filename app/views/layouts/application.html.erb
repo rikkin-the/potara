@@ -1,4 +1,11 @@
+<script>
+  <% if logged_in? %>
+    currentUserId = <%= current_user.id %>;
+  <% end %>
+</script>
+
 <!DOCTYPE html>
+
 <html>
   <head>
     <title>Muber</title>
@@ -38,9 +45,3 @@
     </div>
   </body>
 </html>
-
-<script>
-  <% if logged_in? %>
-    currentUserId = <%= current_user.id %>;
-  <% end %>
-</script>

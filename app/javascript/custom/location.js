@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function locationWatching() {
   const allowlink = document.getElementById('get-position-btn');
 
   allowlink.addEventListener('click', (event) => { 
@@ -27,8 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
               body: JSON.stringify(patch_data)
             })
             .then(response => response.json())
-            .then(data => console.log(data));
-      
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+ 
           },
       
           (error) => {
@@ -63,5 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
   })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('ページがリロードされました')
+  locationWatching();
 })
 
+document.addEventListener('turbo:load', () => {
+  console.log('ページが遷移されました')
+  locationWatching();
+})

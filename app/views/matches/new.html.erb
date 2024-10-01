@@ -4,7 +4,8 @@
 <button type="button" id="get-position-btn">許可する</button>
 <div id="location-result"></div>
 
-<%= form_with model: current_user, url: "/entry/#{current_user.id}", method: :post do |f| %>
+<%= form_with model: current_user, url: "/entry/#{current_user.id}",
+              method: :post, id: "whole-form" do |f| %>
   <%= f.file_field :image, capture: 'camera' %>
 
   <%= f.label :comment, "つぶやき" %>

@@ -12,18 +12,19 @@ class MatchesController < ApplicationController
   end
 
   def await
-    #await for an establishment of websocket
-    #if sucessed, go to waiting-page
-    #otherwise flash an error because of websocket
     user = User.find(params[:id])
     user.comment = user_params[:comment]
     user.image.attach(user_params[:image])
     if user.save
-      redirect_to root_url
+      render json: { redirect_url: be_waiting_path }
     else
-      flash[:danger] = "エントリーに失敗しました"
+      flash[:danger] = "ユーザー情報の更新に失敗しました。"
       render 'new', status: :unprocessable_entity
     end
+
+  end
+
+  def be_waiting
 
   end
 

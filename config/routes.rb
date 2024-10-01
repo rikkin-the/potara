@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  get '/online', to: "matches#be_waiting"
   patch '/update_location', to: "matches#update_location"
-  post '/entry/:id', to: "matches#await"
+  patch '/entry/:id', to: "matches#await"
   get '/entry', to: "matches#new"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   mount ActionCable.server => '/cable'
