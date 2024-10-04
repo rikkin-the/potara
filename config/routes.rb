@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get '/test', to: "home#map_test"
   get '/online', to: "matches#be_waiting"
   patch '/update_location', to: "matches#update_location"
   patch '/entry/:id', to: "matches#await"

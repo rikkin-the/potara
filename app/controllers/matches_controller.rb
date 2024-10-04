@@ -16,7 +16,7 @@ class MatchesController < ApplicationController
     user.comment = user_params[:comment]
     user.image.attach(user_params[:image])
     if user.save
-      render json: { redirect_url: be_waiting_path }
+      render json: { redirect_url: online_path }
     else
       flash[:danger] = "ユーザー情報の更新に失敗しました。"
       render 'new', status: :unprocessable_entity
@@ -25,7 +25,6 @@ class MatchesController < ApplicationController
   end
 
   def be_waiting
-
   end
 
   private

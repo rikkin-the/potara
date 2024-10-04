@@ -66,12 +66,17 @@ function locationWatching() {
   })
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('ページがリロードされました')
-  locationWatching();
+  if (document.getElementById('get-position-btn')) {
+    locationWatching();
+  }
+  
+  document.addEventListener('turbo:load', () => {
+  if (document.getElementById('get-position-btn')) {
+    locationWatching();
+  }
+})
 })
 
-document.addEventListener('turbo:load', () => {
-  console.log('ページが遷移されました')
-  locationWatching();
-})
+

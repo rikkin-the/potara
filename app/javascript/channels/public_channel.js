@@ -5,7 +5,7 @@ let subscription = null;
 
 function realtimeConnection() {
   const connectLink = document.getElementById('connect-link')
-  const disconnectLink = document.getElementById('disconnect-link')
+  // const disconnectLink = document.getElementById('disconnect-link')
   const form = document.getElementById('whole-form');
 
   connectLink.addEventListener('click', (event) => {
@@ -35,7 +35,7 @@ function realtimeConnection() {
 
         disconnected() {
           // Called when the subscription has been terminated by the server
-          console.log('リアルタイム通信への接続に失敗しました')
+          console.log('リアルタイム通信への接続がきれました')
         },
 
         received(data) {
@@ -46,25 +46,32 @@ function realtimeConnection() {
    } 
   });
     
-  disconnectLink.addEventListener('click', (event) => {
+  /* disconnectLink.addEventListener('click', (event) => {
     event.preventDefault();
 
     if (subscription) {
       subscription.unsubscribe();
       subscription = null;
     }
-  });
-}
+  }); */
+} 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('ページがリロードされました')
-  realtimeConnection();
+  
+  if (document.getElementById('connect-link')) {
+    realtimeConnection();
+    console.log('リロードによりWebSocket接続が可能になりました')
+  }
+
+  document.addEventListener('turbo:load', () => {
+  
+    if (document.getElementById('connect-link')) {
+      realtimeConnection();
+      console.log('ページ遷移によりWebSocket通信が可能になりました')
+    }
+  })
 })
 
-document.addEventListener('turbo:load', () => {
-  console.log('ページが遷移されました')
-  realtimeConnection();
-})
 
 
 
