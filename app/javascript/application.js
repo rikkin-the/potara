@@ -2,5 +2,3 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "channels"
-import "custom/location"
-import "custom/google_map"

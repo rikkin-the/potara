@@ -16,7 +16,8 @@ class MatchesController < ApplicationController
     user.comment = user_params[:comment]
     user.image.attach(user_params[:image])
     if user.save
-      render json: { redirect_url: online_path }
+      user.update_attribute(:online, true)
+      render 'map'
     else
       flash[:danger] = "ユーザー情報の更新に失敗しました。"
       render 'new', status: :unprocessable_entity
@@ -24,7 +25,15 @@ class MatchesController < ApplicationController
 
   end
 
-  def be_waiting
+  def disconnect
+    user = User.find(params[:id])
+    offline_status = {comment: nil, image: nil, online: false}
+    if user.update(offline_status)
+      render json: { redirect_url: entry_path }
+    else
+      flash[:danger] = "ユーザー情報の更新に失敗しました。"
+      render 'map', status: :unprocessable_entity
+    end
   end
 
   private
