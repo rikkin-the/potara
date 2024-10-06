@@ -40,8 +40,10 @@ function connection() {
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          new Notification(data['title'], { body: data['body'] })
-        } 
+          console.log(data)
+          console.log(data.name)
+          displayMatchInfo(data);
+        }
       });
    } 
   });
@@ -101,6 +103,12 @@ function showGoogleMap() {
   initMap();
 }
 
+function displayMatchInfo(data) {
+  let matchElement = document.createElement('div');
+  matchElement.innerHTML = `<h3>マッチしました!</h3><p>${data.user.name},${data.age}</p><button>今すぐ会う</input>`
+  document.body.appendChild(matchElement)
+}
+
 function locationWatching() {
   const allowlink = document.getElementById('get-position-btn');
 
@@ -155,7 +163,7 @@ function locationWatching() {
           },
       
           {
-            "enableHighAccuracy": true
+            "enableHighAccuracy": false
           }
        );
       }

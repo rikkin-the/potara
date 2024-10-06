@@ -1,6 +1,8 @@
-<div>
-  <%= link_to "オフライン", '#', id: "disconnect-link" %>
-</div>
-<div id="map">
-  <%= image_tag current_user.image, id: "my_image" %>
+<div id="map-page">
+  <div>
+    <%= link_to "オフライン", '#', id: "disconnect-link" %>
+  </div>
+  <div id="map">
+    <%= image_tag current_user.image.variant(:display), id: "my_image" %>
+  </div>
 </div>

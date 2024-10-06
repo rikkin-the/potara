@@ -17,6 +17,9 @@ class MatchesController < ApplicationController
     user.image.attach(user_params[:image])
     if user.save
       user.update_attribute(:online, true)
+      if user.girl
+        AutoMatchJob.perform_later user
+      end
       render 'map'
     else
       flash[:danger] = "ユーザー情報の更新に失敗しました。"
