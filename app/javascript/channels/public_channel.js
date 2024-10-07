@@ -4,6 +4,7 @@ let latitude;
 let longitude;
 let subscription;
 let watchId;
+let lastupdateTime = new Date();
 
 function connection() {
   const connectLink = document.getElementById('connect-link')
@@ -41,7 +42,6 @@ function connection() {
         received(data) {
           // Called when there's incoming data on the websocket for this channel
           console.log(data)
-          console.log(data.name)
           displayMatchInfo(data);
         }
       });
@@ -119,33 +119,35 @@ function locationWatching() {
       {
         watchId = navigator.geolocation.watchPosition(
           (position) => {
-            let data = position.coords ;
-            latitude = data.latitude;
-            longitude = data.longitude;
-            let patch_data = { user: {
-              id: currentUserId, 
-              latitude: latitude,
-              longitude: longitude
-            } };
+            let currentTime = Date.now();
+            if(currentTime - lastupdateTime > 15) {
+              let data = position.coords ;
+              latitude = data.latitude;
+              longitude = data.longitude;
+              let patch_data = { user: {
+                id: currentUserId, 
+                latitude: latitude,
+                longitude: longitude
+              } };
 
-            fetch('/update_location', {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-              },
-              body: JSON.stringify(patch_data)
-            })
-            .then(() => {
-              console.log('位置情報の更新に成功')
-              if(document.getElementById('location-result')) {
-                document.getElementById('location-result').textContent = '位置情報が許可されています'
-              }
-            })
-            .catch(error => console.log(error));
- 
+              fetch('/update_location', {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(patch_data)
+              })
+              .then(() => {
+                console.log('位置情報の更新に成功')
+                if(document.getElementById('location-result')) {
+                  document.getElementById('location-result').textContent = '位置情報が許可されています'
+                }
+              })
+              .catch(error => console.log(error));
+              lastupdateTime = currentTime
+            }
           },
-      
           (error) => {
             const errorInfo = [
               "原因不明のエラーが発生しました…。" ,
@@ -161,8 +163,7 @@ function locationWatching() {
       
             document.getElementById("location-result").textContent = errorMessage;
           },
-      
-          {
+          { 
             "enableHighAccuracy": false
           }
        );

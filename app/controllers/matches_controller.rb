@@ -4,11 +4,13 @@ class MatchesController < ApplicationController
 
   def update_location
     user = User.find(params[:user][:id])
-    if user.update(user_params)
-      render json: { statusText: "位置情報が更新されました" }, status: :ok
+    array_for_save = ["lat", params[:user][:latitude], "lng", params[:user][:longitude]]
+    if user.girl
+      $redis.hmset("girl_#{user.id}", array_for_save)
     else
-      render json: { statusText: "位置情報が更新できませんでした" }, status: :unprocessable_entity
+      $redis.hmset("boy_#{user.id}", array_for_save)
     end
+    render json: { statusText: "位置情報が更新されました" }, status: :ok
   end
 
   def await
@@ -16,10 +18,6 @@ class MatchesController < ApplicationController
     user.comment = user_params[:comment]
     user.image.attach(user_params[:image])
     if user.save
-      user.update_attribute(:online, true)
-      if user.girl
-        AutoMatchJob.perform_later user
-      end
       render 'map'
     else
       flash[:danger] = "ユーザー情報の更新に失敗しました。"
@@ -29,19 +27,12 @@ class MatchesController < ApplicationController
   end
 
   def disconnect
-    user = User.find(params[:id])
-    offline_status = {comment: nil, image: nil, online: false}
-    if user.update(offline_status)
-      render json: { redirect_url: entry_path }
-    else
-      flash[:danger] = "ユーザー情報の更新に失敗しました。"
-      render 'map', status: :unprocessable_entity
-    end
+    render json: { redirect_url: entry_path }
   end
 
   private
 
     def user_params
-      params.require(:user).permit(:comment, :image, :latitude, :longitude)
+      params.require(:user).permit(:comment, :image)
     end
 end

@@ -44,7 +44,10 @@ gem "bootsnap", require: false
 gem "bcrypt", "3.1.18"
 gem "rails-controller-testing"
 gem "sidekiq"
+gem "sidekiq-scheduler"
 gem "image_processing", "1.12.2"
+gem "redis", '~> 4.0'
+gem "redis-rails"
 
 # Use Sass to process CSS
 # gem "sassc-rails"

@@ -5,7 +5,6 @@ class PublicChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    current_user.update_attribute(:online, false)
     puts "サーバー：接続切断"
   end
 end
