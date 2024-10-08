@@ -1,9 +1,5 @@
 <h1>エントリー</h1>
 
-<div id="location-result"></div>
-<button type="button" id="get-position-btn">許可する</button>
-
-
 <%= form_with model: current_user, id: "whole-form" do |f| %>
   <%= f.file_field :image, capture: 'camera' %>
 

@@ -5,8 +5,8 @@ class AutoMatchJob < ApplicationJob
       Math.sqrt((lat1 - lat2)*(lat1 - lat2) + (lng1 - lng2)*(lng1 - lng2))
   end
 
-  def distance_to_km(hypotenuse_in_angle)
-    100*hypotenuse_in_angle
+  def distance_to_m(hypotenuse_in_angle)
+    (100000*hypotenuse_in_angle).floor
   end
 
   def perform
@@ -32,8 +32,10 @@ class AutoMatchJob < ApplicationJob
           boy_instance = User.find_by(id: boy.delete('^0-9'))
           girl_instance.get_age
           boy_instance.get_age
-          PublicChannel.broadcast_to(girl_instance, {user: boy_instance, age: boy_instance.age, distance: distance_to_km(shortest_distance)})
-          PublicChannel.broadcast_to(boy_instance, {user: girl_instance, age: girl_instance.age, distance: distance_to_km(shortest_distance)})
+          girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image, host: "localhost:3000")
+          boy_url = Rails.application.routes.url_helpers.rails_blob_url(boy_instance.image, host: "localhost:3000")
+          PublicChannel.broadcast_to(girl_instance, {user: boy_instance, age: boy_instance.age, distance: distance_to_m(shortest_distance), image: boy_url})
+          PublicChannel.broadcast_to(boy_instance, {user: girl_instance, age: girl_instance.age, distance: distance_to_m(shortest_distance), image: girl_url})
         end
       end
     end
