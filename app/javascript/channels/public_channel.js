@@ -76,7 +76,7 @@ async function showGoogleMap() {
 
   async function initMap() {
     let pos = { lat: latitude, lng: longitude};
-    const myImage = document.getElementById("my_image")
+    const myImage = document.getElementById("my-image")
     const { Map } = await google.maps.importLibrary('maps')
     const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
     let map = new Map(document.getElementById('map'), {
@@ -120,13 +120,48 @@ function prepareDisconnection() {
 }
 
 async function executeInTurn(f){
-  const sql = await fetchForSql(f);
+  await fetchForSql(f);
   console.log('リアルタイム通信成功');
-  const redis = await locationWatching();
+  await locationWatching();
   console.log('位置情報の取得開始')
   showGoogleMap();
   prepareDisconnection();
 } 
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function removeMatchInfo() {
+  await delay(45000)
+  console.log('timeover')
+  let matchInfoElement = document.getElementById('match-info')
+  let lists = ['name' , 'age',  'distance']
+  for ( let i = 0; i < lists.length; i++ ){
+    document.getElementById(lists[i]).textContent = null;
+  }
+  document.getElementById('her-his-image').removeAttribute('src')
+  matchInfoElement.style.display = 'none'
+}
+
+function displayMatchInfo(data) {
+  let matchInfoElement = document.getElementById('match-info')
+  let nameElement = document.getElementById('name') 
+  let ageElement = document.getElementById('age')
+  let distanceElement = document.getElementById('distance')
+  let imageElement = document.getElementById('her-his-image')
+  let agreementElement = document.getElementById('agreement')
+  nameElement.textContent = data.user.name
+  ageElement.textContent = data.age
+  distanceElement.textContent = `${data.distance}m先`
+  imageElement.src = data.image
+  matchInfoElement.style.display = 'block'
+  agreementElement.addEventListener('click',() => {
+    subscription.send({ like: currentUserId, liked: data.user.id })
+  })
+  setTimeout(removeMatchInfo(), 450000)
+}
+
 
 async function connection() {
   const connectLink = document.getElementById('connect-link')
@@ -156,14 +191,7 @@ async function connection() {
   });
 } 
 
-function displayMatchInfo(data) {
-  let matchElement = document.createElement('div')
-  matchElement.innerHTML = `<h3>マッチしました!</h3><p>${data.user.name}, ${data.age}歳, ${data.distance}m先</p><button>今すぐ会う</input>`
-  document.body.appendChild(matchElement)
-  let imageElement = document.createElement('img')
-  imageElement.src = data.image
-  document.body.appendChild(imageElement)
-}
+
 
 document.addEventListener('DOMContentLoaded', () =>{
 

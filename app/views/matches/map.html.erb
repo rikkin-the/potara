@@ -3,6 +3,15 @@
     <%= link_to "オフライン", '#', id: "disconnect-link" %>
   </div>
   <div id="map">
-    <%= image_tag current_user.image.variant(:display), id: "my_image" %>
+    <%= image_tag current_user.image.variant(:display), id: "my-image" %>
+  </div>
+  <div id="match-info" style="display: none;">
+    <h2>
+      <span id="name"></span>
+      <span id="age"></span>
+      <p id="distance"></p>
+    </h2>
+    <img id="her-his-image"></img>
+    <button id="agreement">今すぐ会う</button>
   </div>
 </div>

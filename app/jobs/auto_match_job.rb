@@ -10,6 +10,7 @@ class AutoMatchJob < ApplicationJob
   end
 
   def perform
+    $redis_agreement.flushdb
     boys = $redis.keys("boy*")
     girls = $redis.keys("girl*")
     if boys && girls
@@ -34,8 +35,14 @@ class AutoMatchJob < ApplicationJob
           boy_instance.get_age
           girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image, host: "localhost:3000")
           boy_url = Rails.application.routes.url_helpers.rails_blob_url(boy_instance.image, host: "localhost:3000")
-          PublicChannel.broadcast_to(girl_instance, {user: boy_instance, age: boy_instance.age, distance: distance_to_m(shortest_distance), image: boy_url})
-          PublicChannel.broadcast_to(boy_instance, {user: girl_instance, age: girl_instance.age, distance: distance_to_m(shortest_distance), image: girl_url})
+          PublicChannel.broadcast_to(girl_instance,
+          {
+            user: boy_instance, age: boy_instance.age, distance: distance_to_m(shortest_distance), image: boy_url
+          })
+          PublicChannel.broadcast_to(boy_instance,
+          {
+            user: girl_instance, age: girl_instance.age, distance: distance_to_m(shortest_distance), image: girl_url
+          })
         end
       end
     end

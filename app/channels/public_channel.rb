@@ -7,4 +7,15 @@ class PublicChannel < ApplicationCable::Channel
   def unsubscribed
     puts "サーバー：接続切断"
   end
+
+  def receive(data)
+    like = data.like
+    liked = data.liked
+    if $redis_agreement.get(liked, like)
+      #ActionCable.server.broadcast ここから。Channel数は2つか。3つか。javascriptでデータの個数を判別してもらってもいいかも
+      #ActionCable.server.broadcast
+    else
+      $redis_agreement.set(like, liked)
+    end
+  end
 end
