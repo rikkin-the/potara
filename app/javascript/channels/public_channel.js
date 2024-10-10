@@ -4,6 +4,8 @@ let latitude;
 let longitude;
 let subscription;
 let watchId;
+let privateSubscription;
+
 
 async function fetchForSql(f) {
   const response = await fetch(`/entry/${currentUserId}`, { 
@@ -132,8 +134,7 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-async function removeMatchInfo() {
-  await delay(45000)
+function removeInfo() {
   console.log('timeover')
   let matchInfoElement = document.getElementById('match-info')
   let lists = ['name' , 'age',  'distance']
@@ -142,6 +143,11 @@ async function removeMatchInfo() {
   }
   document.getElementById('her-his-image').removeAttribute('src')
   matchInfoElement.style.display = 'none'
+}
+
+async function removeInfoWithDelay() {
+  await delay(45000)
+  removeInfo()
 }
 
 function displayMatchInfo(data) {
@@ -157,16 +163,29 @@ function displayMatchInfo(data) {
   imageElement.src = data.image
   matchInfoElement.style.display = 'block'
   agreementElement.addEventListener('click',() => {
-    subscription.send({ like: currentUserId, liked: data.user.id })
+    let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
+    subscription.send(agreement_params)
   })
-  setTimeout(removeMatchInfo(), 450000)
+  removeInfoWithDelay()
+}
+
+function prepareForSending() {
+  const messageInputElement = document.getElementById('message')
+  const submissionElement = document.getElementById('submission')
+
+  submissionElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    privateSubscription.send({ message: messageInputElement.value })
+  })
+
 }
 
 
 async function connection() {
   const connectLink = document.getElementById('connect-link')
   const form = document.getElementById('whole-form');
-  // const disconnectLink = document.getElementById('disconnect-link')
+
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
 
@@ -177,17 +196,48 @@ async function connection() {
         },
 
         disconnected() {
-          // Called when the subscription has been terminated by the server
           console.log('リアルタイム通信への接続がきれました')
         },
 
         received(data) {
-          // Called when there's incoming data on the websocket for this channel
-          console.log(data)
-          displayMatchInfo(data);
+          if(typeof(data) === 'object') {
+            displayMatchInfo(data);
+          } else if(typeof(data) === 'number' ) {
+            subscription.unsubscribe();
+            privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', first_like_id: data}, {
+              connected() {
+                const chatElement = document.getElementById('chat')
+                
+                console.log('start private')
+                removeInfo();
+                prepareForSending();
+                chatElement.style.display = 'block'
+              }, 
+
+              disconnceted() {
+                console.log('cannot start private')
+              }, 
+
+              received(partnerData) {
+                const chatDisplayElement = document.getElementById('chat-display')
+
+                console.log(partnerData)
+                let newElement = document.createElement('p')
+                newElement.textContent = partnerData.message
+                chatDisplayElement.appendChild(newElement)
+                /* let partnerPos = partnerData['pos'];
+                let parnerImage = partnerData['image]
+                let partnerLocation = new AdvancedMarkerElement({
+                  map,
+                  position: partnerPos,
+                  content: partnerImage
+                }) */
+              } 
+            })
+          }
         }
-      });
-   } 
+      })
+    } 
   });
 } 
 
