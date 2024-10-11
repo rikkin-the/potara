@@ -5,7 +5,9 @@ let longitude;
 let subscription;
 let watchId;
 let privateSubscription;
-
+let map;
+let myLocation;
+let partnerImageUrl;
 
 async function fetchForSql(f) {
   const response = await fetch(`/entry/${currentUserId}`, { 
@@ -26,6 +28,11 @@ function locationWatching(){
         let data = position.coords 
         latitude = data.latitude
         longitude = data.longitude
+        if(map && myLocation) {
+          map.setCenter({lat: latitude, lng: longitude})
+          myLocation.position = {lat: latitude, lng: longitude}
+          console.log('reset location')
+        }
         let patch_data = { user: {
           id: currentUserId, 
           latitude: latitude,
@@ -81,14 +88,14 @@ async function showGoogleMap() {
     const myImage = document.getElementById("my-image")
     const { Map } = await google.maps.importLibrary('maps')
     const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
-    let map = new Map(document.getElementById('map'), {
+    map = new Map(document.getElementById('map'), {
       mapId: "3c6f58db644be140",
       center: pos,
       zoom: 15,
       disableDefaultUI: true
     })
     
-    let myLocation = new AdvancedMarkerElement({
+    myLocation = new AdvancedMarkerElement({
       map,
       position: pos,
       content: myImage
@@ -151,6 +158,7 @@ async function removeInfoWithDelay() {
 }
 
 function displayMatchInfo(data) {
+  partnerImageUrl = data.image
   let matchInfoElement = document.getElementById('match-info')
   let nameElement = document.getElementById('name') 
   let ageElement = document.getElementById('age')
@@ -160,9 +168,9 @@ function displayMatchInfo(data) {
   nameElement.textContent = data.user.name
   ageElement.textContent = data.age
   distanceElement.textContent = `${data.distance}m先`
-  imageElement.src = data.image
+  imageElement.src = partnerImageUrl
   matchInfoElement.style.display = 'block'
-  agreementElement.addEventListener('click',() => {
+  agreementElement.addEventListener('click', () => {
     let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
     subscription.send(agreement_params)
   })
@@ -171,11 +179,10 @@ function displayMatchInfo(data) {
 
 function prepareForSending() {
   const messageInputElement = document.getElementById('message')
-  const submissionElement = document.getElementById('submission')
+  const formElement = document.getElementById('form')
 
-  submissionElement.addEventListener('click', (event) => {
-    event.preventDefault();
-
+  formElement.addEventListener('submit', (event) => {
+    event.preventDefault()
     privateSubscription.send({ message: messageInputElement.value })
   })
 
@@ -202,16 +209,18 @@ async function connection() {
         received(data) {
           if(typeof(data) === 'object') {
             displayMatchInfo(data);
-          } else if(typeof(data) === 'number' ) {
+          } else if(typeof(data) === 'number') {
             subscription.unsubscribe();
             privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', first_like_id: data}, {
               connected() {
                 const chatElement = document.getElementById('chat')
+                const partnerImageElement = document.getElementById('partner-image')
                 
                 console.log('start private')
                 removeInfo();
                 prepareForSending();
                 chatElement.style.display = 'block'
+                partnerImageElement.src = partnerImageUrl
               }, 
 
               disconnceted() {
@@ -219,8 +228,8 @@ async function connection() {
               }, 
 
               received(partnerData) {
+                console.log(partnerData)
                 const chatDisplayElement = document.getElementById('chat-display')
-
                 console.log(partnerData)
                 let newElement = document.createElement('p')
                 newElement.textContent = partnerData.message

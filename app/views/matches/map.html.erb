@@ -3,8 +3,9 @@
     <%= link_to "オフライン", '#', id: "disconnect-link" %>
   </div>
   <div id="map">
-    <%= image_tag current_user.image.variant(:display), id: "my-image" %>
+    <%= image_tag current_user.image.variant(:display), id: "my-image" %> 
   </div>
+  <img id="partner-image" alt="nothing"> 
   <div id="match-info" style="display: none;">
     <h2>
       <span id="name"></span>
@@ -16,9 +17,9 @@
   </div>
   <div id="chat" style="display: none;">
     <div id="chat-display"></div>
-    <div id="messege" >
+    <form id="form">
       <input type="text", id="message" />
       <button type="submit", id="submission">送信</button>
-    </div>
+    </form>
   </div>
 </div>
