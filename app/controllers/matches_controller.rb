@@ -4,11 +4,20 @@ class MatchesController < ApplicationController
 
   def update_location
     user = User.find(params[:user][:id])
-    array_for_save = ["lat", params[:user][:latitude], "lng", params[:user][:longitude]]
-    if user.girl
-      $redis.hmset("girl_#{user.id}", array_for_save)
+    lat = params[:user][:latitude]
+    lng = params[:user][:longitude]
+    array_for_save = ["lat", lat, "lng", lng]
+    if $redis_matched.exists(user.id) == 1
+      $redis_matched.hset(user.id, array_for_save)
+      partner_id = $redis_matched.hget(user.id, "partner").to_i
+      partner_user = User.find(partner_id)
+      LocationChannel.broadcast_to(partner_user, {lat: lat, lng: lng})
     else
-      $redis.hmset("boy_#{user.id}", array_for_save)
+      if user.girl
+        $redis.hmset("girl_#{user.id}", array_for_save)
+      else
+        $redis.hmset("boy_#{user.id}", array_for_save)
+      end
     end
     render json: { statusText: "位置情報が更新されました" }, status: :ok
   end

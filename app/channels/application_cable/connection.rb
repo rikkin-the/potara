@@ -15,6 +15,7 @@ module ApplicationCable
       else
         $redis.del("boy_#{self.current_user.id}")
       end
+      $redis_matched.del(self.current_user.id)
     end
 
     private

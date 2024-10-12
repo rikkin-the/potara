@@ -2,10 +2,9 @@
   <div>
     <%= link_to "オフライン", '#', id: "disconnect-link" %>
   </div>
-  <div id="map">
-    <%= image_tag current_user.image.variant(:display), id: "my-image" %> 
-  </div>
-  <img id="partner-image" alt="nothing"> 
+  <div id="map"></div>
+  <%= image_tag current_user.image.variant(:display), id: "my-image" %> 
+  <img id="partner-image" alt="nothing", style="display: none;"> 
   <div id="match-info" style="display: none;">
     <h2>
       <span id="name"></span>
@@ -16,6 +15,7 @@
     <button id="agreement">今すぐ会う</button>
   </div>
   <div id="chat" style="display: none;">
+    <button id="unmatch">マッチ解除</button>
     <div id="chat-display"></div>
     <form id="form">
       <input type="text", id="message" />

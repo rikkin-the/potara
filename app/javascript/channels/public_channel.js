@@ -5,7 +5,9 @@ let longitude;
 let subscription;
 let watchId;
 let privateSubscription;
+let locationSubscription;
 let map;
+let MarkerClass;
 let myLocation;
 let partnerImageUrl;
 
@@ -88,6 +90,8 @@ async function showGoogleMap() {
     const myImage = document.getElementById("my-image")
     const { Map } = await google.maps.importLibrary('maps')
     const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
+    MarkerClass = AdvancedMarkerElement
+
     map = new Map(document.getElementById('map'), {
       mapId: "3c6f58db644be140",
       center: pos,
@@ -95,7 +99,7 @@ async function showGoogleMap() {
       disableDefaultUI: true
     })
     
-    myLocation = new AdvancedMarkerElement({
+    myLocation = new MarkerClass({
       map,
       position: pos,
       content: myImage
@@ -110,8 +114,9 @@ function prepareDisconnection() {
 
   disconnectLink.addEventListener('click', (event) => {
     event.preventDefault();
-    consumer.connection.close();
+    subscription.unsubscribe();
     subscription = null;
+    consumer.connection.close();
     navigator.geolocation.clearWatch(watchId);
     fetch('/exit', {
       method: 'PATCH',
@@ -184,10 +189,10 @@ function prepareForSending() {
   formElement.addEventListener('submit', (event) => {
     event.preventDefault()
     privateSubscription.send({ message: messageInputElement.value })
+    messageInputElement.value = null;
   })
 
 }
-
 
 async function connection() {
   const connectLink = document.getElementById('connect-link')
@@ -211,16 +216,40 @@ async function connection() {
             displayMatchInfo(data);
           } else if(typeof(data) === 'number') {
             subscription.unsubscribe();
+            subscription = null;
             privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', first_like_id: data}, {
               connected() {
                 const chatElement = document.getElementById('chat')
                 const partnerImageElement = document.getElementById('partner-image')
+                const unmatchElement = document.getElementById('unmatch')
                 
                 console.log('start private')
                 removeInfo();
                 prepareForSending();
                 chatElement.style.display = 'block'
                 partnerImageElement.src = partnerImageUrl
+                unmatchElement.addEventListener('click', (event) => {
+                  event.preventDefault()
+                  privateSubscription.unsubscribe()
+                  locationSubscription.unsubscribe()
+                  privateSubscription = null
+                  locationSubscription = null
+                  consumer.connection.close()
+                  navigator.geolocation.clearWatch(watchId)
+                  async function exitToEntry() {
+                    const response =  await fetch('/exit', {
+                      method: 'PATCH',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                      },
+                      body: JSON.stringify({id: currentUserId})
+                    })
+                    const data = await response.json()
+                    window.location.href = data.redirect_url
+                  }
+                  exitToEntry();
+                })
               }, 
 
               disconnceted() {
@@ -234,14 +263,24 @@ async function connection() {
                 let newElement = document.createElement('p')
                 newElement.textContent = partnerData.message
                 chatDisplayElement.appendChild(newElement)
-                /* let partnerPos = partnerData['pos'];
-                let parnerImage = partnerData['image]
-                let partnerLocation = new AdvancedMarkerElement({
-                  map,
-                  position: partnerPos,
-                  content: partnerImage
-                }) */
               } 
+            })
+            
+            locationSubscription = consumer.subscriptions.create('LocationChannel', {
+              connected() {
+                console.log('start receiveing location')
+              },
+              disconnected() {
+              },
+              received(data) {
+                const partnerImageElement = document.getElementById('partner-image')
+                partnerImageElement.style.display = 'inline'
+                let partnerLocation = new MarkerClass({
+                  map,
+                  position: data,
+                  content: partnerImageElement
+                })
+              }
             })
           }
         }
