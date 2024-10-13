@@ -201,16 +201,14 @@ async function connection() {
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
 
-    if (!subscription) {
+    function subscribePublicChannel() {
       subscription = consumer.subscriptions.create("PublicChannel",  {
         connected() {
+          console.log("パブリック通信開始")
           executeInTurn(form)
         },
-
         disconnected() {
-          console.log('リアルタイム通信への接続がきれました')
         },
-
         received(data) {
           if(typeof(data) === 'object') {
             displayMatchInfo(data);
@@ -266,9 +264,10 @@ async function connection() {
                   privateSubscription = null
                   locationSubscription = null
                   chatElement.style.display = 'none'
-                  partnerImageElement.src = null
+                  partnerImageElement.src = ""
                   partnerImageElement.style.display = 'none'
                   partnerImageUrl = null
+                  subscribePublicChannel();
                 } else {
                 const chatDisplayElement = document.getElementById('chat-display')
                 let newElement = document.createElement('p')
@@ -297,7 +296,9 @@ async function connection() {
           }
         }
       })
-    } 
+    }
+    subscribePublicChannel();
+
   });
 } 
 

@@ -6,6 +6,7 @@ class PrivateChannel < ApplicationCable::Channel
 
   def unsubscribed
     ActionCable.server.broadcast("chat_#{params[:first_like_id]}", 0)
+    $redis_matched.del(current_user.id)
   end
 
   def receive(data)

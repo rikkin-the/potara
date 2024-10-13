@@ -10,12 +10,6 @@ module ApplicationCable
       self.current_user = find_verified_user
       offline_status = {comment: nil, image: nil}
       self.current_user.update(offline_status)
-      if self.current_user.girl
-        $redis.del("girl_#{self.current_user.id}")
-      else
-        $redis.del("boy_#{self.current_user.id}")
-      end
-      $redis_matched.del(self.current_user.id)
     end
 
     private
