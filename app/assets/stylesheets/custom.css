@@ -1,3 +1,32 @@
+/* universal */
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  font-size: 30px;
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(243, 199, 255, 0.784);
+  background-color: rgba(19, 0, 40, 0.887);
+}
+
+.container {
+  margin: 5;
+
+}
+
+
+
 #map {
   height: 100%;
   width: 100%;

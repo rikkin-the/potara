@@ -1,0 +1,119 @@
+[33mcommit 9a53d2d954209d2a188cff8c7e123005426e0582[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mexit-to-offline[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sun Oct 13 16:00:29 2024 +0900
+
+    Resubsecribe public channel
+
+[33mcommit 4f446401f836f57e8a7019d3eba801223dee0192[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sun Oct 13 12:44:52 2024 +0900
+
+    Complete unmatch process
+
+[33mcommit de5a35957f3025e8985dccd0099c3e74965df142[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sat Oct 12 23:43:39 2024 +0900
+
+    Obtain and show  partner location
+
+[33mcommit 10e898596b47e31b029930a3232535ceafb232ec[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Fri Oct 11 16:36:50 2024 +0900
+
+    display matched user image
+
+[33mcommit 8c22211e4ba8cd4465995c3af32832693fcc9504[m[33m ([m[1;32mprivate-connection[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Thu Oct 10 23:54:46 2024 +0900
+
+    Complete Chat fundamental
+
+[33mcommit 22aded991f1e4b51364faed196bbdd35728c8ae7[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Thu Oct 10 00:59:39 2024 +0900
+
+    Manipulate display style and set timeout of matching
+
+[33mcommit 184c2f4d89f57f28323bce55433a644b72350aae[m[33m ([m[1;32mmatching-job[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Wed Oct 9 01:33:12 2024 +0900
+
+    Complete matching job system
+
+[33mcommit 838b1e62724a4b5f8e0dce093d6bb580eece4a65[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Tue Oct 8 00:52:00 2024 +0900
+
+    Integrate Redis, Sidekiq, scheduled job and auto-matching system
+
+[33mcommit fc52dc1c31398eed334d6a96b1a100d79c7a5d3b[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Mon Oct 7 01:13:20 2024 +0900
+
+    Create a match_job manuscript
+
+[33mcommit 48d12ef15d004b609e8c95fe6fea9fe0921a59d7[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sat Oct 5 22:52:43 2024 +0900
+
+    Finish connection and location
+
+[33mcommit 6167cdb2de159681dec7361f6e18ddcf4b0e2316[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Fri Oct 4 16:22:43 2024 +0900
+
+    Integrate Google map
+
+[33mcommit 4ad8fbce7ce9cd5211f32dad6de5c6d703c7b05e[m[33m ([m[1;32mrealtime-matching[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Wed Oct 2 01:11:54 2024 +0900
+
+    Set a redirection to waiting screen
+
+[33mcommit b087fcb124775fe0d6e71b8dce6bef56c7f1da0b[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Mon Sep 30 22:31:57 2024 +0900
+
+    Complete entry form
+
+[33mcommit 451c67eb5ba9fea203406f2f5c68c38dfa186fb2[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sun Sep 29 23:03:17 2024 +0900
+
+    Set location saving
+
+[33mcommit 4c26c64bac6d356c505c6f935e642a3336ac9dab[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sun Sep 29 16:10:02 2024 +0900
+
+    Establish connection
+
+[33mcommit aaee7b83ceee45efbcab5ccd3dc313fa78390388[m[33m ([m[1;32mcookie[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Sun Sep 29 13:09:52 2024 +0900
+
+    Allow user cookies
+
+[33mcommit 6f60ebb5d28b86af34a6cadb30d00671d842d6fc[m[33m ([m[1;32mto_matching_system[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Thu Sep 26 19:17:14 2024 +0900
+
+    Complete basic user function
+
+[33mcommit e933b8e50e5a3185c0bb298dd875226e9b8cd2f5[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Thu Sep 26 14:26:31 2024 +0900
+
+    Code user create action
+
+[33mcommit 5701d7c0891b5d0b6b45cbe956e1b19ab49d2301[m[33m ([m[1;32mfundamentals[m[33m)[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Mon Sep 23 23:38:11 2024 +0900
+
+    Create user model and Controller
+
+[33mcommit d5a3a3d10ba025eef7ef4a597bc247034123326c[m
+Author: riku_nakama <k74rikkin@outlook.com>
+Date:   Mon Sep 23 14:50:39 2024 +0900
+
+    Initialize new app
