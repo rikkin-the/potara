@@ -4,8 +4,8 @@ class PrivateChannel < ApplicationCable::Channel
     puts "Private channel succeed"
   end
 
-
   def unsubscribed
+    ActionCable.server.broadcast("chat_#{params[:first_like_id]}", 0)
   end
 
   def receive(data)

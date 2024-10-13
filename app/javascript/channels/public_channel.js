@@ -253,16 +253,28 @@ async function connection() {
               }, 
 
               disconnceted() {
-                console.log('cannot start private')
               }, 
 
               received(partnerData) {
                 console.log(partnerData)
+                if(typeof(partnerData) == 'number') {
+                  const chatElement = document.getElementById('chat')
+                  const partnerImageElement = document.getElementById('partner-image')
+
+                  privateSubscription.unsubscribe()
+                  locationSubscription.unsubscribe()
+                  privateSubscription = null
+                  locationSubscription = null
+                  chatElement.style.display = 'none'
+                  partnerImageElement.src = null
+                  partnerImageElement.style.display = 'none'
+                  partnerImageUrl = null
+                } else {
                 const chatDisplayElement = document.getElementById('chat-display')
-                console.log(partnerData)
                 let newElement = document.createElement('p')
                 newElement.textContent = partnerData.message
-                chatDisplayElement.appendChild(newElement)
+                chatDisplayElement.appendChild(newElement) 
+                }
               } 
             })
             
