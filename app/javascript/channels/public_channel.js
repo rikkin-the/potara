@@ -54,7 +54,6 @@ function locationWatching(){
         var errorNo = error.code ;
         var errorMessage = errorInfo[ errorNo ];
         alert( errorMessage );
-        document.getElementById("location-result").textContent = errorMessage;
         reject();
       },
       {

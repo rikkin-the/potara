@@ -1,9 +1,5 @@
-<% provide(:title, "エントリー") %>
-<%= form_with model: current_user, id: "whole-form" do |f| %>
-  <%= f.file_field :image, capture: 'camera' %>
-
-  <%= f.label :comment, "つぶやき" %>
-  <%= f.text_area :comment %>
-
-  <%= f.submit "マッチを探す", id: "connect-link" %>
+<% if logged_in? %>
+  <%= render 'logged_in' %>
+<% else %>
+  <%= render 'not_logged_in' %>
 <% end %>
