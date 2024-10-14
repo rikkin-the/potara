@@ -1,3 +1,12 @@
+:root {
+  ---primary-color: #ff6f91;
+  --secondary-color: #ffc1e3;
+  --accent-color: #d4a5ff;
+  --background-color: #fff9f4;
+  --text-color: #333333;
+  --subtext-color: #777777;
+}
+
 /* universal */
 
 body {
@@ -16,8 +25,8 @@ body {
     sans-serif;
   line-height: 1.5;
   text-align: center;
-  color: rgba(243, 199, 255, 0.784);
-  background-color: rgba(19, 0, 40, 0.887);
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 .container {

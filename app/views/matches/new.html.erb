@@ -1,5 +1,4 @@
-<h1>エントリー</h1>
-
+<% provide(:title, "エントリー") %>
 <%= form_with model: current_user, id: "whole-form" do |f| %>
   <%= f.file_field :image, capture: 'camera' %>
 
