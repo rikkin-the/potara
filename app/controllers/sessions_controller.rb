@@ -5,10 +5,17 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(email: params[:session][:email].downcase)
     if user&.authenticate(params[:session][:password])
-      reset_session
-      remember user
-      log_in user
-      redirect_to root_url
+      if user.activated?
+        reset_session
+        remember user
+        log_in user
+        redirect_to root_url
+      else
+        message = "アカウントが認証されていません"
+        message += "登録のメールアドレスから認証リンクを探してください"
+        flash[:warning] = message
+        redirect_to root_url
+      end
     else
       flash.now[:danger] = 'メールアドレスまたはパスワードが間違っています'
       render 'new', status: :unprocessable_entity

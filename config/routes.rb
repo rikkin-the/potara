@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'password_resets/new'
+  get 'password_resets/edit'
   patch '/exit', to: "matches#disconnect"
   get '/online', to: "matches#be_waiting"
   patch '/update_location', to: "matches#update_location"
@@ -13,4 +15,6 @@ Rails.application.routes.draw do
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy"
   resources :users, only: [:new, :create, :show, :update, :destroy]
+  resources :account_activations, only: [:edit]
+  resources :password_resets, only: [:new, :create, :edit, :update]
 end
