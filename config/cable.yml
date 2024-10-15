@@ -1,6 +1,6 @@
 development:
   adapter: redis
-  url: <%= "#{ENV['REDIS_URL']}/0" %>
+  url: <%= "#{ENV['REDIS_URL']}/1" %>
   channel_prefix: muber_development
 
 test:
@@ -8,5 +8,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= "#{ENV['REDIS_URL']}/0" %>
+  url: <%= "#{ENV['REDIS_URL']}/1" %>
   channel_prefix: muber_production

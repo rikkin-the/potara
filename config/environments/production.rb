@@ -70,11 +70,12 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: host }
   ActionMailer::Base.smtp_settings = {
     :port => 587,
-    :address => 'smtp.mailgun.org',
-    :user_name => ENV['MAILGUN_SMTP_LOGIN'],
-    :password => ENV['MAILGUN_SMTP_PASSWORD'],
-    :domain => host,
+    :address => 'smtp.gmail.com',
+    :domain => 'google.com',
+    :user_name => ENV['GMAIL_ADDRESS'],
+    :password => ENV['GMAIL_APP_KEY'],
     :authentication => :plain,
+    :enable_starttls_auto => true
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
