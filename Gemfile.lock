@@ -105,6 +105,10 @@ GEM
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    dotenv (3.1.4)
+    dotenv-rails (3.1.4)
+      dotenv (= 3.1.4)
+      railties (>= 6.1)
     erubi (1.13.0)
     et-orbi (1.2.11)
       tzinfo
@@ -320,6 +324,7 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  dotenv-rails
   image_processing (= 1.12.2)
   importmap-rails
   jbuilder

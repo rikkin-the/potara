@@ -1,11 +1,11 @@
 $redis = Redis.new(
-  url: 'redis://localhost:6379/2'
+  url: "#{ENV['REDIS_URL']}/2"
 )
 
 $redis_agreement = Redis.new(
-  url: "redis://localhost:6379/3"
+  url: "#{ENV['REDIS_URL']}/3"
 )
 
 $redis_matched =  Redis.new(
-  url: "redis://localhost:6379/4"
+  url: "#{ENV['REDIS_URL']}/4"
 )
