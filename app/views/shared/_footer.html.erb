@@ -1,0 +1,16 @@
+<div class="logo">
+  <h3>Muber</h3>
+</div>
+<% if logged_in? %>
+  <button>マッチと出会う</button>
+
+  <ul class="hamburger">
+      <li>
+        <%= link_to "プロフィール", current_user %>
+      </li>
+      <li>
+        <%= link_to "ログアウト", logout_path,
+                                  data: { "turbo-method": :delete } %>
+      </li>
+  </ul>
+ <% end %>

@@ -19,27 +19,21 @@
   </head>
 
   <body>
-    <div class="container">
-      <% flash.each do |message_type, message| %>
-        <div><%= message %></div>
-      <% end %>
-      <%= yield %>
-    </div>  
-    <footer>
-      <div class="container">
-        <ul>
-          <% if logged_in? %>
-            <li>
-              <%= link_to "プロフィール", current_user %>
-            </li>
-            <li>
-              <%= link_to "ログアウト", logout_path,
-                                        data: { "turbo-method": :delete } %>
-            </li>
-          <% end %>
-        </ul>
+    <div class="body__container">
+      <div class="flash__container">
+        <% flash.each do |message_type, message| %>
+          <div><%= message %></div>
+        <% end %>
       </div>
-    </footer>
+      <div class="main__container">
+        <%= yield %>
+      </div>
+      <footer>
+        <div class="footer__container">
+          <%= render 'shared/footer' %>
+        </div>
+      </footer>
+    </div>
   </body>
 
 
