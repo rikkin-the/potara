@@ -9,6 +9,14 @@ class AutoMatchJob < ApplicationJob
     (100000*hypotenuse_in_angle).floor
   end
 
+  def filter(id, keys_array)
+    invalid_ids = $redis_past.lrange(id, 0, -1)
+    girl_ids = keys_array.map { |key| key.delete('^0-9') }
+    valid_ids = girl_ids - invalid_ids
+    valid_name_included_girls = valid_ids.map { |i| "girl_#{i}" }
+    return valid_name_included_girls
+  end
+
   def perform
     $redis_agreement.flushdb
     boys = $redis.keys("boy*")
@@ -16,21 +24,29 @@ class AutoMatchJob < ApplicationJob
     if boys && girls
       boys.each do |boy|
         nearest_girl = nil
-        shortest_distance = 10000
+        shortest_distance = 10000000
+        boy_id = boy.delete('^0-9').to_i
         boy_lat = $redis.hget(boy, "lat").to_f
         boy_lng = $redis.hget(boy, "lng").to_f
-        girls.each do |girl|
-          girl_lat = $redis.hget(girl, "lat").to_f
-          girl_lng = $redis.hget(girl, "lng").to_f
-          calculation_result = distance(boy_lat, boy_lng, girl_lat, girl_lng)
-          if calculation_result < shortest_distance
-            shortest_distance = calculation_result
-            nearest_girl = girl
+        valid_girls = filter(boy_id, girls)
+        valid_girls.each do |girl|
+          valid_girl_id = girl.delete('^0-9')
+          past_boy_ids = $redis_past.lrange(valid_girl_id, 0, -1)
+          past_boy_ids = past_boy_ids.map { |i| i.to_i }
+          if !past_boy_ids.include?(boy_id)
+            girl_lat = $redis.hget(girl, "lat").to_f
+            girl_lng = $redis.hget(girl, "lng").to_f
+            calculation_result = distance(boy_lat, boy_lng, girl_lat, girl_lng)
+            if calculation_result < shortest_distance
+              shortest_distance = calculation_result
+              nearest_girl = girl
+            end
           end
         end
         if !nearest_girl.nil?
-          girl_instance = User.find_by(id: nearest_girl.delete('^0-9'))
-          boy_instance = User.find_by(id: boy.delete('^0-9'))
+          nearest_girl_id = nearest_girl.delete('^0-9').to_i
+          girl_instance = User.find_by(id: nearest_girl_id)
+          boy_instance = User.find_by(id: boy_id)
           girl_instance.get_age
           boy_instance.get_age
           girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image, host: "localhost:3000")
@@ -43,6 +59,8 @@ class AutoMatchJob < ApplicationJob
           {
             user: girl_instance, age: girl_instance.age, distance: distance_to_m(shortest_distance), image: girl_url
           })
+          $redis_past.rpush(boy_id, nearest_girl_id)
+          $redis_past.rpush(nearest_girl_id, boy_id)
         end
       end
     end

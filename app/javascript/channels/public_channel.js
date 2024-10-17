@@ -167,17 +167,21 @@ function displayMatchInfo(data) {
   let nameElement = document.getElementById('name') 
   let ageElement = document.getElementById('age')
   let distanceElement = document.getElementById('distance')
+  let commentElement = document.getElementById('comment')
   let imageElement = document.getElementById('her-his-image')
   let agreementElement = document.getElementById('agreement')
+
   nameElement.textContent = data.user.name
   ageElement.textContent = data.age
   distanceElement.textContent = `${data.distance}m先`
+  commentElement.textContent = data.user.comment
   imageElement.src = partnerImageUrl
   matchInfoElement.style.display = 'block'
   agreementElement.addEventListener('click', () => {
     let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
     subscription.send(agreement_params)
   })
+
   removeInfoWithDelay()
 }
 
@@ -209,93 +213,91 @@ async function connection() {
         disconnected() {
         },
         received(data) {
-          if(typeof(data) === 'object') {
+          console.log(data)
+          if(data['user']) {
             displayMatchInfo(data);
-          } else if(typeof(data) === 'number') {
-            subscription.unsubscribe();
-            subscription = null;
-            privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', first_like_id: data}, {
-              connected() {
-                const chatElement = document.getElementById('chat')
-                const partnerImageElement = document.getElementById('partner-image')
-                const unmatchElement = document.getElementById('unmatch')
-                
-                console.log('start private')
-                removeInfo();
-                prepareForSending();
-                chatElement.style.display = 'block'
-                partnerImageElement.src = partnerImageUrl
-                unmatchElement.addEventListener('click', (event) => {
-                  event.preventDefault()
-                  privateSubscription.unsubscribe()
-                  locationSubscription.unsubscribe()
-                  privateSubscription = null
-                  locationSubscription = null
-                  consumer.connection.close()
-                  navigator.geolocation.clearWatch(watchId)
-                  async function exitToEntry() {
-                    const response =  await fetch('/exit', {
-                      method: 'PATCH',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                      },
-                      body: JSON.stringify({id: currentUserId})
-                    })
-                    const data = await response.json()
-                    window.location.href = data.redirect_url
-                  }
-                  exitToEntry();
-                })
-              }, 
-
-              disconnceted() {
-              }, 
-
-              received(partnerData) {
-                console.log(partnerData)
-                if(typeof(partnerData) == 'number') {
-                  const chatElement = document.getElementById('chat')
+          } else if(data['roomId']) {
+            if(subscription) {
+              subscription.unsubscribe();
+              subscription = null;
+            }
+            if(!privateSubscription) {
+              privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
+                connected() {
+                  //const chatElement = document.getElementById('chat')
                   const partnerImageElement = document.getElementById('partner-image')
+                  console.log(partnerImageElement)
+                  const unmatchElement = document.getElementById('unmatch')
 
-                  privateSubscription.unsubscribe()
-                  locationSubscription.unsubscribe()
-                  privateSubscription = null
-                  locationSubscription = null
-                  chatElement.style.display = 'none'
-                  partnerImageElement.src = ""
-                  partnerImageElement.style.display = 'none'
-                  partnerImageUrl = null
-                  subscribePublicChannel();
-                } else {
-                const chatDisplayElement = document.getElementById('chat-display')
-                let newElement = document.createElement('p')
-                newElement.textContent = partnerData.message
-                chatDisplayElement.appendChild(newElement) 
-                }
-              } 
-            })
-            
-            locationSubscription = consumer.subscriptions.create('LocationChannel', {
-              connected() {
-                console.log('start receiveing location')
-              },
-              disconnected() {
-              },
-              received(data) {
-                const partnerImageElement = document.getElementById('partner-image')
-                partnerImageElement.style.display = 'inline'
-                let partnerLocation = new MarkerClass({
+                  removeInfo();
+
+                  let partnerLocation = new MarkerClass({
                   map,
-                  position: data,
-                  content: partnerImageElement
-                })
-              }
-            })
+                  position: data['partnerLocation'],
+                  content: partnerImageElement})
+                  
+                  partnerImageElement.style.display = 'inline'
+                
+                  //prepareForSending();
+                  //chatElement.style.display = 'block'
+                  unmatchElement.style.display = 'block'
+                  partnerImageElement.src = partnerImageUrl
+                  unmatchElement.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    privateSubscription.unsubscribe()
+                    privateSubscription = null;
+                    consumer.connection.close()
+                    navigator.geolocation.clearWatch(watchId)
+
+                    async function exitToEntry() {
+                      const response =  await fetch('/exit', {
+                        method: 'PATCH',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({id: currentUserId})
+                      })
+                      const data = await response.json()
+                      window.location.href = data.redirect_url
+                    }
+
+                    exitToEntry();
+                  })
+                }, 
+                disconnceted() {
+                }, 
+                received(partnerData) {
+                  if(partnerData === 0) {
+                    //const chatElement = document.getElementById('chat')
+                    const partnerImageElement = document.getElementById('partner-image')
+                    const unmatchElement = document.getElementById('unmatch')
+
+                    privateSubscription.unsubscribe()
+                    //locationSubscription.unsubscribe()
+                    privateSubscription = null
+                    //locationSubscription = null
+                    //chatElement.style.display = 'none'
+                    unmatchElement.style.display = 'none'
+                    partnerImageElement.src = ""
+                    partnerImageElement.style.display = 'none'
+                    partnerImageUrl = null
+
+                    subscribePublicChannel();
+                  } else {
+                  //const chatDisplayElement = document.getElementById('chat-display')
+                  //let newElement = document.createElement('p')
+                  //newElement.textContent = partnerData.message
+                  //chatDisplayElement.appendChild(newElement) 
+                  }
+                } 
+              })
+            }
           }
         }
       })
     }
+
     subscribePublicChannel();
 
   });
@@ -326,7 +328,12 @@ document.addEventListener('DOMContentLoaded', () =>{
   })
 })
 
-
+/* const partnerImageElement = document.getElementById('partner-image')
+partnerImageElement.style.display = 'inline'
+let partnerLocation = new MarkerClass({
+map,
+position: data,
+content: partnerImageElement */
 
 
 

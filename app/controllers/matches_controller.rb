@@ -7,11 +7,9 @@ class MatchesController < ApplicationController
     lat = params[:user][:latitude]
     lng = params[:user][:longitude]
     array_for_save = ["lat", lat, "lng", lng]
+
     if $redis_matched.exists(user.id) == 1
       $redis_matched.hset(user.id, array_for_save)
-      partner_id = $redis_matched.hget(user.id, "partner").to_i
-      partner_user = User.find(partner_id)
-      LocationChannel.broadcast_to(partner_user, {lat: lat, lng: lng})
     else
       if user.girl
         $redis.hmset("girl_#{user.id}", array_for_save)
