@@ -49,6 +49,7 @@ gem "image_processing", "1.12.2"
 gem "redis", '~> 4.0'
 gem "redis-rails"
 gem "dotenv-rails"
+gem "http"
 
 # Use Sass to process CSS
 # gem "sassc-rails"

@@ -8,7 +8,7 @@ class MatchesController < ApplicationController
     lng = params[:user][:longitude]
     array_for_save = ["lat", lat, "lng", lng]
 
-    if $redis_matched.exists(user.id) == 1
+    if $redis_matched.exists?(user.id)
       $redis_matched.hset(user.id, array_for_save)
     else
       if user.girl

@@ -226,22 +226,37 @@ async function connection() {
                 connected() {
                   //const chatElement = document.getElementById('chat')
                   const partnerImageElement = document.getElementById('partner-image')
-                  console.log(partnerImageElement)
+                  const appointmentElement = document.getElementById('appointment')
+                  const stationElement = document.getElementById('station')
+                  const distanceToStationElement = document.getElementById('distance-to-station')
+                  const timeElement = document.getElementById('meeting-time')
                   const unmatchElement = document.getElementById('unmatch')
+                  const appointmentData = data['appointment']
+
 
                   removeInfo();
 
                   let partnerLocation = new MarkerClass({
-                  map,
-                  position: data['partnerLocation'],
-                  content: partnerImageElement})
-                  
-                  partnerImageElement.style.display = 'inline'
-                
-                  //prepareForSending();
-                  //chatElement.style.display = 'block'
-                  unmatchElement.style.display = 'block'
+                    map,
+                    position: data['partnerLocation'],
+                    content: partnerImageElement
+                  })
+                  console.log(appointmentData)
+                  let stationLocation = new MarkerClass({
+                    map,
+                    position: {lat: appointmentData['station_lat'], lng: appointmentData['station_lng']}
+                  })
+
+                  stationElement.textContent = `${appointmentData['station']}駅`
+                  distanceToStationElement.textContent = `${appointmentData['distance']}m先`
+                  timeElement.textContent = appointmentData['meeting_time']
                   partnerImageElement.src = partnerImageUrl
+                  partnerImageElement.style.display = 'inline'
+                  appointmentElement.style.display = 'block'
+
+                
+
+
                   unmatchElement.addEventListener('click', (event) => {
                     event.preventDefault()
                     privateSubscription.unsubscribe()
@@ -271,14 +286,14 @@ async function connection() {
                   if(partnerData === 0) {
                     //const chatElement = document.getElementById('chat')
                     const partnerImageElement = document.getElementById('partner-image')
-                    const unmatchElement = document.getElementById('unmatch')
+                    const appointmentElement = document.getElementById('appointment')
 
                     privateSubscription.unsubscribe()
                     //locationSubscription.unsubscribe()
                     privateSubscription = null
                     //locationSubscription = null
                     //chatElement.style.display = 'none'
-                    unmatchElement.style.display = 'none'
+                    appointmentElement.style.display = 'none'
                     partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
                     partnerImageUrl = null
