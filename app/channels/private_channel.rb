@@ -9,6 +9,5 @@ class PrivateChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    #ActionCable.server.broadcast("chat_#{params[:first_like_id]}", data)
   end
 end

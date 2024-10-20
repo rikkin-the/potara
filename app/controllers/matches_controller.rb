@@ -2,24 +2,6 @@ class MatchesController < ApplicationController
   def new
   end
 
-  def update_location
-    user = User.find(params[:user][:id])
-    lat = params[:user][:latitude]
-    lng = params[:user][:longitude]
-    array_for_save = ["lat", lat, "lng", lng]
-
-    if $redis_matched.exists?(user.id)
-      $redis_matched.hset(user.id, array_for_save)
-    else
-      if user.girl
-        $redis.hmset("girl_#{user.id}", array_for_save)
-      else
-        $redis.hmset("boy_#{user.id}", array_for_save)
-      end
-    end
-    render json: { statusText: "位置情報が更新されました" }, status: :ok
-  end
-
   def await
     user = User.find(params[:id])
     user.comment = user_params[:comment]
