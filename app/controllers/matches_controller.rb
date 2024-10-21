@@ -4,9 +4,8 @@ class MatchesController < ApplicationController
 
   def await
     user = User.find(params[:id])
-    user.comment = user_params[:comment]
-    user.image.attach(user_params[:image])
-    if user.save
+    user.update_attribute(:comment, user_params[:comment])
+    if user.image.attach(user_params[:image])
       render 'map'
     else
       flash[:danger] = "ユーザー情報の更新に失敗しました。"

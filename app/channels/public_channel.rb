@@ -50,25 +50,42 @@ class PublicChannel < ApplicationCable::Channel
       boy_lng = boy_lng.to_f
       center_lat = (girl_lat + boy_lat)/2
       center_lng = (girl_lng + boy_lng)/2
-      response = HTTP.get('https://express.heartrails.com/api/json',
-        :params => {:method => "getStations", :x => center_lng, :y => center_lat})
-      response = response.parse["response"]["station"][0]
-      station = response["name"]
+      retries = 3
+
+      begin
+        response = HTTP.get('https://express.heartrails.com/api/json',
+          :params => {:method => "getStations", :x => center_lng, :y => center_lat})
+        p response
+        response = response.parse["response"]["station"][0]
+        station = response["name"]
+      rescue => e
+        retries -= 1
+        p e
+        if retries > 0
+          sleep(2)
+          retry
+        else
+          Rails.logger.error("HTTPリクエストが失敗しました")
+          station = "不明"
+        end
+      end
+
       station_lat = response["y"].to_f
       station_lng = response["x"].to_f
-      girl_distance_on_road = 1.3*distance_to_m(distance(girl_lat, girl_lng, station_lat, station_lng))
-      boy_distance_on_road = 1.3*distance_to_m(distance(boy_lat, boy_lng, station_lat, station_lng))
+      girl_distance_on_road = 1.3*distance_to_km(distance(girl_lat, girl_lng, station_lat, station_lng))
+      boy_distance_on_road = 1.3*distance_to_km(distance(boy_lat, boy_lng, station_lat, station_lng))
       max_distance_on_road = boy_distance_on_road > girl_distance_on_road ?
                              boy_distance_on_road : girl_distance_on_road
-      required_time = max_distance_on_road / 80
+      required_time = max_distance_on_road / 0.08
       meeting_time = Time.current.since(required_time.minute) + 15.minute
       time_params = meeting_time.strftime("%H:%M")
 
+
       PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerLocation: {lat: boy_lat.to_f, lng: boy_lng.to_f},
-        appointment: {station: station, station_lat: station_lat, station_lng: station_lng, distance: girl_distance_on_road.floor,
+        appointment: {station: station, station_lat: station_lat, station_lng: station_lng, distance: girl_distance_on_road,
         meeting_time: time_params}})
       PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerLocation: {lat: girl_lat.to_f, lng: girl_lng.to_f},
-        appointment: {station: station, station_lat: station_lat, station_lng: station_lng, distance: boy_distance_on_road.floor,
+        appointment: {station: station, station_lat: station_lat, station_lng: station_lng, distance: boy_distance_on_road,
         meeting_time: time_params}})
 
       $redis_agreement.del(liked_id)

@@ -13,6 +13,7 @@ let myLocation;
 let partnerImageUrl;
 
 
+
 function removeInfo() {
   console.log('timeover')
   let matchInfoElement = document.getElementById('match-info')
@@ -25,8 +26,11 @@ function removeInfo() {
 }
 
 function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms))
-      }
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+
+
 
 function connection() {
   const connectLink = document.getElementById('connect-link')
@@ -58,7 +62,7 @@ function connection() {
 
               nameElement.textContent = data.user.name
               ageElement.textContent = data.age
-              distanceElement.textContent = `${data.distance}m先`
+              distanceElement.textContent = `${data.distance}km`
               commentElement.textContent = data.user.comment
               imageElement.src = partnerImageUrl
               matchInfoElement.style.display = 'block'
@@ -108,7 +112,7 @@ function connection() {
                   })
 
                   stationElement.textContent = `${appointmentData['station']}駅`
-                  distanceToStationElement.textContent = `${appointmentData['distance']}m先`
+                  distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
                   partnerImageElement.src = partnerImageUrl
                   partnerImageElement.style.display = 'inline'
