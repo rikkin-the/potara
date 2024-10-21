@@ -50,7 +50,7 @@ gem "redis", '~> 4.0'
 gem "redis-rails"
 gem "dotenv-rails"
 gem "http"
-
+gem "pg", "1.3.5"
 # Use Sass to process CSS
 # gem "sassc-rails"
 
@@ -81,6 +81,5 @@ group :test do
 end
 
 group :production do
-  gem "pg", "1.3.5"
   gem "aws-sdk-s3", "1.114.0", require: false
 end

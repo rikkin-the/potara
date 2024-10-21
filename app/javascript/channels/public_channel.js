@@ -11,6 +11,8 @@ let map;
 let MarkerClass;
 let myLocation;
 let partnerImageUrl;
+let partnerLocation;
+let stationLocation;
 
 
 
@@ -100,18 +102,18 @@ function connection() {
 
 
                   removeInfo();
-                  let partnerLocation = new MarkerClass({
+                  partnerLocation = new MarkerClass({
                     map,
                     position: data['partnerLocation'],
                     content: partnerImageElement
                   })
-                  console.log(appointmentData)
-                  let stationLocation = new MarkerClass({
+                  
+                  stationLocation = new MarkerClass({
                     map,
                     position: {lat: appointmentData['station_lat'], lng: appointmentData['station_lng']}
                   })
 
-                  stationElement.textContent = `${appointmentData['station']}駅`
+                  stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
                   partnerImageElement.src = partnerImageUrl
@@ -160,12 +162,17 @@ function connection() {
                     partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
                     partnerImageUrl = null
+                    partnerLocation.setMap(null);
+                    stationLocation.setMap(null);
 
+  
                     subscribePublic();
                   }
                 } 
               })
             }
+          } else if(data === 0) {
+            console.log('エラーによりマッチングできませんでした。ごめんなさい。。')
           }
         }
       })
