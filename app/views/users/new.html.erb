@@ -1,31 +1,44 @@
 <% provide(:title, "新規登録") %>
-<div>
+
+<div class="usersNew__form">
   <%= form_with(model: @user) do |f| %>
 
     <%= render 'shared/error_messages' %>
 
+  <div class="usersNew__field">
     <%= f.label :name, "ニックネーム" %>
     <%= f.text_field :name %>
-    
-    <%= f.radio_button :girl, 0 %>
-    <%= f.label :girl, "男" %>
-    <%= f.radio_button :girl, 1 %>
-    <%= f.label :girl, "女" %>
-    
+  </div>
 
+  <label>性別</label>
+  <div class="usersNew__field gender">
+    <%= f.radio_button :girl, 0 %>
+    <%= f.label :girl, "男", for: "user_girl_0" %>
+    <%= f.radio_button :girl, 1 %>
+    <%= f.label :girl, "女", for: "user_girl_1" %>
+  </div>
+
+  <div class="usersNew__field"> 
     <%= f.label :date_of_birth, "生年月日" %>
     <%= f.date_field :date_of_birth %>
-    
+  </div>
+   
+  <div class="usersNew__field">
     <%= f.label :email, "メールアドレス" %>
     <%= f.email_field :email %>
-
+  </div>
+  <div class="usersNew__field">
     <%= f.label :password, "パスワード" %>
     <%= f.password_field :password %>
-
+  </div>
+  <div class="usersNew__field">
     <%= f.label :password_confirmation, "パスワード確認用" %>
     <%= f.password_field :password_confirmation %>
+  </div>
+  <div class="usersNew__field submitToSignup">
+    <%= f.submit "登録", class: "btn" %>
+  </div>
 
-    <%= f.submit "登録" %>
-    <p>※ログイン情報はクッキーに保存されます</p>
+<p>※ログイン情報はクッキーに保存されます</p>
   <% end %>
 </div>
