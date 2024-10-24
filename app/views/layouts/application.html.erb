@@ -20,10 +20,15 @@
 
   <body>
     <div class="body__container">
-      <div class="flash__container">
+      <!-- <div class="flash__container">
         <% flash.each do |message_type, message| %>
           <div><%= message %></div>
         <% end %>
+      </div> -->
+      <div class="popup <%= 'show' if flash.present? || (@user && @user.errors.any?) %>">
+        <div class="popup_container">
+          <%= render 'shared/popup' %>
+        </div>
       </div>
       <div class="main__container">
         <%= yield %>

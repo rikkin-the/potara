@@ -3,19 +3,17 @@
 <div class="usersNew__form">
   <%= form_with(model: @user) do |f| %>
 
-    <%= render 'shared/error_messages' %>
-
-  <div class="usersNew__field">
-    <%= f.label :name, "ニックネーム" %>
-    <%= f.text_field :name %>
-  </div>
-
   <label>性別</label>
   <div class="usersNew__field gender">
     <%= f.radio_button :girl, 0 %>
     <%= f.label :girl, "男", for: "user_girl_0" %>
     <%= f.radio_button :girl, 1 %>
     <%= f.label :girl, "女", for: "user_girl_1" %>
+  </div>
+
+  <div class="usersNew__field">
+    <%= f.label :name, "ニックネーム" %>
+    <%= f.text_field :name %>
   </div>
 
   <div class="usersNew__field"> 

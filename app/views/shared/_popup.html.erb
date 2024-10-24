@@ -1,0 +1,20 @@
+<% if (@user && @user.errors.any?) %>
+  <div>
+    <%= @user.errors.count %>個のエラーがあります。
+  </div>
+  <div>
+    <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+  <button id="closeCross">✕</button>
+  <button id="closeBar">_________</button>
+<% elsif flash.any? %>
+  <% flash.each do |message_type, message| %>
+    <h4><%= message %></h4>
+  <% end %>
+  <button id="closeCross">✕</button>
+  <button id="closeBar">_________</button>
+<% end %>

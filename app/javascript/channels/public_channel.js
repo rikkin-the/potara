@@ -320,7 +320,6 @@ function connection() {
   });
 } 
 
-
 document.addEventListener('DOMContentLoaded', () =>{
 
   if (document.getElementById('connect-link')) {

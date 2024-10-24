@@ -15,6 +15,53 @@ body {
   margin: 0;
 }
 
+.popup {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 100;
+  max-height: 0;
+  background-color: var(--first-color);
+  border-radius: 40px;
+}
+
+.popup.show {
+  max-height: 80svh;
+  padding: 8px;
+}
+
+.popup.collapsed {
+  max-height: 16px;
+}
+
+.popup_container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.popup #closeCross, #closeBar {
+  position: absolute;
+  font-size: 32px;
+  font-weight: bold;
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 0;
+}
+
+.popup #closeCross {
+  top: 0;
+  right: 16px;
+}
+
+.popup #closeBar {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
 footer {
   position: absolute;
   bottom: 0;
@@ -59,11 +106,17 @@ input {
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  background-color: beige;
+  background-color: rgb(250, 235, 255);
 }
 
 label {
   font-size: 24px;
+}
+
+.field_with_errors input {
+  padding: 1px;
+  border: 1px solid red;
+  display: table;
 }
 
 /* page when logged in */
@@ -110,7 +163,7 @@ label {
 
 .gender label {
   display: inline-block;
-  padding: 8px 48px;
+  padding: 8px 30px;
   margin: 0 8px;
   border: 1px solid pink;
   border-radius: 12px;

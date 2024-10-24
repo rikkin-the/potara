@@ -12,6 +12,7 @@ module Muber
     config.load_defaults 7.0
     config.active_storage_variant_processor = :mini_magick
     config.active_job.queue_adapter = :sidekiq
+    config.i18n.default_locale = :ja
 
     # Configuration for the application, engines, and railties goes here.
     #

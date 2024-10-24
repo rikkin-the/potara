@@ -51,6 +51,7 @@ gem "redis-rails"
 gem "dotenv-rails"
 gem "http"
 gem "pg", "1.3.5"
+gem "rails-i18n"
 # Use Sass to process CSS
 # gem "sassc-rails"
 

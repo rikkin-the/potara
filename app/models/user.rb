@@ -10,8 +10,9 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false}
   has_secure_password
   validates :password, presence: true, length: { minimum: 8 }, allow_nil: true
-  validates :girl, inclusion: [true, false]
+  validates :girl, inclusion: {in: [true, false], message: "を選択してください"}
   validates :date_of_birth, presence: true
+  validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
   has_one_attached :image do |attachable|
     attachable.variant :display, resize_to_limit: [500, 500]
   end
