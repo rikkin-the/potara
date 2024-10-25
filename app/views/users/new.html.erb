@@ -12,31 +12,35 @@
   </div>
 
   <div class="usersNew__field">
-    <%= f.label :name, "ニックネーム" %>
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
 
   <div class="usersNew__field"> 
-    <%= f.label :date_of_birth, "生年月日" %>
+    <%= f.label :date_of_birth %>
     <%= f.date_field :date_of_birth %>
   </div>
    
   <div class="usersNew__field">
-    <%= f.label :email, "メールアドレス" %>
+    <%= f.label :email %>
     <%= f.email_field :email %>
   </div>
   <div class="usersNew__field">
-    <%= f.label :password, "パスワード" %>
+    <%= f.label :password %>
     <%= f.password_field :password %>
   </div>
   <div class="usersNew__field">
-    <%= f.label :password_confirmation, "パスワード確認用" %>
+    <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation %>
   </div>
-  <div class="usersNew__field submitToSignup">
-    <%= f.submit "登録", class: "btn" %>
+  
+  <div class="usersNew__field">
+    <%= f.label :agreement, "利用規約に同意する" %>
+    <%= f.check_box :agreement %>
   </div>
+  <%= f.submit "登録", class: "btn" %>
 
-<p>※ログイン情報はクッキーに保存されます</p>
   <% end %>
+  <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
+
 </div>

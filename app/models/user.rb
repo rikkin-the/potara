@@ -13,6 +13,7 @@ class User < ApplicationRecord
   validates :girl, inclusion: {in: [true, false], message: "を選択してください"}
   validates :date_of_birth, presence: true
   validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
+  validates_acceptance_of :agreement
   has_one_attached :image do |attachable|
     attachable.variant :display, resize_to_limit: [500, 500]
   end

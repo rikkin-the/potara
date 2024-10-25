@@ -26,9 +26,7 @@
         <% end %>
       </div> -->
       <div class="popup <%= 'show' if flash.present? || (@user && @user.errors.any?) %>">
-        <div class="popup_container">
-          <%= render 'shared/popup' %>
-        </div>
+        <%= render 'shared/popup' %>
       </div>
       <div class="main__container">
         <%= yield %>

@@ -1,18 +1,22 @@
 <% provide(:title, "ログイン") %>
 <div>
   <%= form_with(url: login_path, scope: :session) do |f| %>
-
-    <%= f.label :email %>
+    <div class="general_field">
+    <%= f.label :email, "メールアドレス" %>
     <%= f.email_field :email %>
+    </div>
 
-    <%= f.label :password %>
-    <%= link_to "(パスワードを忘れた)", new_password_reset_path %>
+    <div class="general_field">
+    <%= f.label :password, "パスワード" %>
     <%= f.password_field :password %>
+    </div>
     
-    <%= f.submit "ログイン" %>
-    <p>※ログイン情報はクッキーに保存されます</p>
+    <div class="general_field">
+    <%= f.submit "ログイン", class: "btn" %>
+    </div>
   <% end %>
 
-  <p>新規登録がまだの方はこちら</p>
-  <%= link_to "新規登録", signup_path %>
+  <p>パスワードを忘れた: <%= link_to "再登録", new_password_reset_path %></p>
+  <p>アカウントを持っていない: <%= link_to "新規登録", signup_path %></p>
+
 </div>

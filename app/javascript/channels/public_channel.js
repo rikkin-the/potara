@@ -130,7 +130,7 @@ function connection() {
                     navigator.geolocation.clearWatch(watchId)
 
                     async function exitToEntry() {
-                      const response =  await fetch('/exit', {
+                      var response =  await fetch('/exit', {
                         method: 'PATCH',
                         headers: {
                           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ function connection() {
                         },
                         body: JSON.stringify({id: currentUserId})
                       })
-                      const data = await response.json()
+                      var data = await response.json()
                       window.location.href = data.redirect_url
                     }
                     exitToEntry();
@@ -221,14 +221,14 @@ function connection() {
       }
 
       async function updateDatabase() {
-        const response = await fetch(`/entry/${currentUserId}`, { 
+        var response = await fetch(`/entry/${currentUserId}`, { 
           method: 'PATCH',
           headers: {
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           },
           body: new FormData(form)
         })
-        const html = await response.text()
+        var html = await response.text()
         document.documentElement.innerHTML = html
       }
 
@@ -319,6 +319,29 @@ function connection() {
     
   });
 } 
+
+/* function displayPopup() {
+  const submitElement = document.getElementsByTagName('input[type=submit]')
+  const form = document.getElementsByTagName('form')
+  submitElement.addEventListener(('submit'), (event) => {
+    event.preventDefault
+
+    
+    async function waitForPopup(f) {
+
+      var response = await fetch('/users', {method: 'POST',
+        header :{
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: new FormData(f)
+      })
+
+      var data = await response.json()
+      console.log(data)
+
+    waitForPopup(form);
+  })
+} */
 
 document.addEventListener('DOMContentLoaded', () =>{
 

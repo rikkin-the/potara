@@ -9,12 +9,8 @@
       <% end %>
     </ul>
   </div>
-  <button id="closeCross">✕</button>
-  <button id="closeBar">_________</button>
 <% elsif flash.any? %>
   <% flash.each do |message_type, message| %>
     <h4><%= message %></h4>
   <% end %>
-  <button id="closeCross">✕</button>
-  <button id="closeBar">_________</button>
 <% end %>

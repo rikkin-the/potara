@@ -13,7 +13,7 @@ class PasswordResetsController < ApplicationController
       flash[:info] = "パスワード再設定のためのメールが送られました"
       redirect_to root_url
     else
-      flash.now[:danger] = "Email address not found"
+      flash.now[:danger] = "入力されたメールアドレスは登録されていません"
       render 'new', status: :unprocessable_entity
     end
   end

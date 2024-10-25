@@ -16,50 +16,14 @@ body {
 }
 
 .popup {
-  position: fixed;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  z-index: 100;
+  font-size: 14px;
   max-height: 0;
   background-color: var(--first-color);
-  border-radius: 40px;
 }
 
 .popup.show {
   max-height: 80svh;
-  padding: 8px;
-}
-
-.popup.collapsed {
-  max-height: 16px;
-}
-
-.popup_container {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
-.popup #closeCross, #closeBar {
-  position: absolute;
-  font-size: 32px;
-  font-weight: bold;
-  background: transparent;
-  color: white;
-  border: none;
-  padding: 0;
-}
-
-.popup #closeCross {
-  top: 0;
-  right: 16px;
-}
-
-.popup #closeBar {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%)
+  border-radius: 20px;
 }
 
 footer {
@@ -100,26 +64,28 @@ footer {
 }
 
 
-input {
-  font-size: 24px;
+input[type=text], input[type=date], input[type=email], input[type=password] {
+  font-size: 16px;
   display: block;
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  background-color: rgb(250, 235, 255);
+  background-color: rgb(244, 210, 255);
+}
+
+input[type=submit] {
+  width: 100%;
 }
 
 label {
-  font-size: 24px;
+  font-size: 16px;
 }
 
-.field_with_errors input {
-  padding: 1px;
-  border: 1px solid red;
-  display: table;
+a {
+  color: white;
 }
 
-/* page when logged in */
+/* logged in */
 
 #map {
   height: 100%;
@@ -136,7 +102,7 @@ label {
   width: 70px;
 }
 
-/* page when logged in  */
+/* not logged in  */
 
 .matchesNew__information {
   text-align: left;
@@ -152,7 +118,7 @@ label {
   font-size: 14px;
 }
 
-/* signup page */
+/* signup */
 .usersNew__field {
   margin-bottom: 8px;
 }
@@ -188,6 +154,7 @@ label {
   background-color: rgb(176, 194, 255);  
 }
 
-.submitToSignup {
-  margin-top: 16px;
+/* login */
+.general_field {
+  margin-top: 64px;
 }
