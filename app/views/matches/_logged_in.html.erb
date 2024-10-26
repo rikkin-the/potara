@@ -1,8 +1,12 @@
 <%= form_with model: current_user, id: "whole-form" do |f| %>
+<div class="general_field">
   <%= f.file_field :image, capture: 'camera' %>
-
-  <%= f.label :comment, "つぶやき" %>
+</div>
+<div class="general_field">
+  <%= f.label :comment, "つぶやき(省略可)" %>
   <%= f.text_area :comment %>
-
-  <%= f.submit "マッチを探す", id: "connect-link" %>
+</div>
+<div class="general_field">
+  <%= f.submit "マッチを探す", id: "connect-link", class: "btn" %>
+</div>
 <% end %>

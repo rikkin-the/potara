@@ -1,19 +1,18 @@
 <%= form_with(model: @user) do |f| %>
   <%= render 'shared/error_messages' %>
-
+<div class="general_field">
   <%= f.label :name, "ニックネーム" %>
   <%= f.text_field :name %>
+</div>
 
+<div class="general_field">
   <%= f.label :email, "メールアドレス" %>
   <%= f.email_field :email %>
+</div>
 
-  <%= f.label :password, "パスワード" %>
-  <%= f.password_field :password %>
-
-  <%= f.label :password_confirmation, "パスワード確認用" %>
-  <%= f.password_field :password_confirmation %>
-
-  <%= f.submit "更新" %>
+<div class="general_field">
+  <%= f.submit "更新", class: "btn" %>
+</div>
 <% end %>
 
 <%= link_to "アカウントを削除する", @user, data: { "turbo-method": :delete,

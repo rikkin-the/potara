@@ -29,15 +29,25 @@ body {
 footer {
   position: absolute;
   bottom: 0;
+  width: 100%;
   text-align: left;
 }
 
 #logo {
-  display: block;
+  float: left;
   text-decoration: none;
   color: var(--beige-color);
   font-size: 24px;
   margin: 16px;
+}
+
+nav {
+  float: right;
+  padding-right: 16px;
+}
+
+ul.nav-menu {
+  margin: 0;
 }
 
 .body__container {
@@ -64,13 +74,17 @@ footer {
 }
 
 
-input[type=text], input[type=date], input[type=email], input[type=password] {
+input[type=text], input[type=date], input[type=email], input[type=password], textarea {
   font-size: 16px;
   display: block;
   width: 100%;
   margin: 0 auto;
   text-align: center;
   background-color: rgb(244, 210, 255);
+}
+
+textarea {
+  text-align: left;
 }
 
 input[type=submit] {
@@ -152,6 +166,11 @@ a {
 
 .gender input[type=radio]:checked + label[for=user_girl_0] {
   background-color: rgb(176, 194, 255);  
+}
+
+/* logged in */
+label[for=user_comment] {
+  display: block;
 }
 
 /* login */

@@ -22,8 +22,8 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    if @user.update(user_params)
-      flash[:success] = "Profile updated"
+    if @user.update(update_params)
+      flash[:success] = "プロフィールが更新されました"
       redirect_to @user
     else
       render 'show', status: :unprocessable_entity
@@ -40,6 +40,10 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name, :girl, :date_of_birth, :email, :password,
                                    :password_confirmation, :agreement)
+    end
+
+    def update_params
+      params.require(:user).permit(:name, :email)
     end
 
     def logged_in_user
