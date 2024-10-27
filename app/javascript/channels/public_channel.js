@@ -1,6 +1,5 @@
 import consumer from "channels/consumer"
-
-
+import Cropper from "cropperjs";
 let latitude;
 let longitude;
 let subscription;
@@ -320,30 +319,41 @@ function connection() {
   });
 } 
 
-/* function displayPopup() {
-  const submitElement = document.getElementsByTagName('input[type=submit]')
-  const form = document.getElementsByTagName('form')
-  submitElement.addEventListener(('submit'), (event) => {
-    event.preventDefault
+function cropImage() {
+  const fileInputElement = document.querySelector('input[type="file"]');
+  const previewElement = document.getElementById('image-preview');
+  let cropper;
 
-    
-    async function waitForPopup(f) {
+  console.log(previewElement)
 
-      var response = await fetch('/users', {method: 'POST',
-        header :{
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: new FormData(f)
-      })
+  fileInputElement.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
 
-      var data = await response.json()
-      console.log(data)
+    console.log(file)
+    console.log(reader)
+    reader.readAsDataURL(file);
+    reader.addEventListener('load', () => {
+      previewElement.src = reader.result;
 
-    waitForPopup(form);
-  })
-} */
+      // Cropperインスタンスがあれば破棄
+      if (cropper) {
+        cropper.destroy();
+      }
+        // 新しいCropperインスタンスを作成
+      cropper = new Cropper(previewElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+      });
+      console.log("Cropper instance created:", cropper);
+    });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () =>{
+  if (document.getElementById('image-preview')) {
+    cropImage()
+  }
 
   if (document.getElementById('connect-link')) {
     connection();
@@ -363,6 +373,8 @@ document.addEventListener('DOMContentLoaded', () =>{
       subscription = null;
       navigator.geolocation.clearWatch(watchId)
     }
+
+  
   })
 })
 

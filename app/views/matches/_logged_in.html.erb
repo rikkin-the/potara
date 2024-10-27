@@ -2,6 +2,9 @@
 <div class="general_field">
   <%= f.file_field :image, capture: 'camera' %>
 </div>
+<div>
+  <img id="image-preview">
+</div>
 <div class="general_field">
   <%= f.label :comment, "つぶやき(省略可)" %>
   <%= f.text_area :comment %>

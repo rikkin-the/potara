@@ -173,6 +173,11 @@ label[for=user_comment] {
   display: block;
 }
 
+#image-preview {
+  display: block;
+  max-width: 100%;
+}
+
 /* login */
 .general_field {
   margin-top: 64px;
