@@ -45,6 +45,7 @@ gem "bcrypt", "3.1.18"
 gem "rails-controller-testing"
 gem "sidekiq"
 gem "sidekiq-scheduler"
+gem "active_storage_validations", "0.9.8"
 gem "image_processing", "1.12.2"
 gem "redis", '~> 4.0'
 gem "redis-rails"

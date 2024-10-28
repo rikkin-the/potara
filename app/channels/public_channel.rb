@@ -121,10 +121,13 @@ class PublicChannel < ApplicationCable::Channel
         meeting_time = Time.current.since(required_time.minute) + 15.minute
         time_params = meeting_time.strftime("%H:%M")
 
-        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerLocation: {lat: boy_lat.to_f, lng: boy_lng.to_f},
+        girl_image =  Rails.application.routes.url_helpers.rails_blob_url(girl.image.variant(:display), host: "localhost:3000")
+        boy_image =  Rails.application.routes.url_helpers.rails_blob_url(boy.image.variant(:display), host: "localhost:3000")
+
+        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: boy_image, partnerLocation: {lat: boy_lat.to_f, lng: boy_lng.to_f},
           appointment: {station_name: name, station_lat: station_lat, station_lng: station_lng, point: point, distance: girl_distance_on_road,
           meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerLocation: {lat: girl_lat.to_f, lng: girl_lng.to_f},
+        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: girl_image, partnerLocation: {lat: girl_lat.to_f, lng: girl_lng.to_f},
           appointment: {station_name: name, station_lat: station_lat, station_lng: station_lng, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
 

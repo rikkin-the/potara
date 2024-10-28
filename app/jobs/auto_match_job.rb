@@ -37,18 +37,16 @@ class AutoMatchJob < ApplicationJob
         end
         if !nearest_girl.nil?
           nearest_girl_id = nearest_girl.delete('^0-9').to_i
-          girl_instance = User.find_by(id: nearest_girl_id)
-          boy_instance = User.find_by(id: boy_id)
+          girl_instance = User.find(nearest_girl_id)
+          boy_instance = User.find(boy_id)
           girl_instance.get_age
           boy_instance.get_age
-          girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image, host: "localhost:3000")
-          boy_url = Rails.application.routes.url_helpers.rails_blob_url(boy_instance.image, host: "localhost:3000")
-          PublicChannel.broadcast_to(girl_instance,
-          {
+          girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image.variant(:display), host: "localhost:3000")
+          boy_url = Rails.application.routes.url_helpers.rails_blob_url(boy_instance.image.variant(:display), host: "localhost:3000")
+          PublicChannel.broadcast_to(girl_instance, {
             user: boy_instance, age: boy_instance.age, distance: distance_to_km(shortest_distance), image: boy_url
           })
-          PublicChannel.broadcast_to(boy_instance,
-          {
+          PublicChannel.broadcast_to(boy_instance, {
             user: girl_instance, age: girl_instance.age, distance: distance_to_km(shortest_distance), image: girl_url
           })
           $redis_past.rpush(boy_id, nearest_girl_id)

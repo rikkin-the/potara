@@ -106,14 +106,12 @@ a {
   width: 100%;
 }
 
-#my-image {
-  object-fit: cover;
+.icon {
   width: 70px;
-}
-
-#partner-image {
+  height: 70px;
   object-fit: cover;
-  width: 70px;
+  border-radius: 50%;
+  border: 5px solid var(--second-color);
 }
 
 /* not logged in  */

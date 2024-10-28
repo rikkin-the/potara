@@ -9,7 +9,6 @@ let locationSubscription;
 let map;
 let MarkerClass;
 let myLocation;
-let partnerImageUrl;
 let partnerLocation;
 let stationLocation;
 
@@ -31,11 +30,43 @@ function delay(ms) {
 }
 
 
-
-
 function connection() {
   const connectLink = document.getElementById('connect-link')
-  const form = document.getElementById('whole-form');
+  let cropper;
+
+  function cropImage() {
+    const fileInputElement = document.querySelector('input[type="file"]');
+    const previewElement = document.getElementById('image-preview');
+
+    fileInputElement.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+      reader.addEventListener('load', () => {
+        previewElement.src = reader.result;
+  
+        // Cropperインスタンスがあれば破棄
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+          // 新しいCropperインスタンスを作成
+        cropper = new Cropper(previewElement, {
+          aspectRatio: 4 / 5,
+          viewMode: 3,
+          dragMode: 'none',
+          movable: false,
+          zoomable: false,
+          guides: false,
+          center: false,
+          autoCropArea: 1.0,
+          cropBoxResizable: false
+        });
+      });
+    });
+  }
+  cropImage();
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
@@ -52,7 +83,6 @@ function connection() {
           if(data['user']) {
             
             function displayMatchInfo(data) {
-              partnerImageUrl = data.image
               let matchInfoElement = document.getElementById('match-info')
               let nameElement = document.getElementById('name') 
               let ageElement = document.getElementById('age')
@@ -65,7 +95,7 @@ function connection() {
               ageElement.textContent = data.age
               distanceElement.textContent = `${data.distance}km`
               commentElement.textContent = data.user.comment
-              imageElement.src = partnerImageUrl
+              imageElement.src = data.image
               matchInfoElement.style.display = 'block'
               agreementElement.addEventListener('click', () => {
                 let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
@@ -78,7 +108,6 @@ function connection() {
               removeInfo()
             }
 
-
             displayMatchInfo(data);
             removeInfoWithDelay();
 
@@ -90,7 +119,6 @@ function connection() {
             if(!privateSubscription) {
               privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
                 connected() {
-                  //const chatElement = document.getElementById('chat')
                   const partnerImageElement = document.getElementById('partner-image')
                   const appointmentElement = document.getElementById('appointment')
                   const stationElement = document.getElementById('station')
@@ -115,7 +143,8 @@ function connection() {
                   stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
-                  partnerImageElement.src = partnerImageUrl
+                  //partnerImageElement.src = partnerImageUrl
+                  partnerImageElement.src = data['partnerImage']
                   partnerImageElement.style.display = 'inline'
                   appointmentElement.style.display = 'block'
 
@@ -160,7 +189,6 @@ function connection() {
                     appointmentElement.style.display = 'none'
                     partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
-                    partnerImageUrl = null
                     partnerLocation.setMap(null);
                     stationLocation.setMap(null);
 
@@ -217,15 +245,29 @@ function connection() {
             } 
           );
         })
-      }
+      }   
 
       async function updateDatabase() {
+        function getBlobFromCanvas(c) {
+          return new Promise((resolve) => {
+            c.getCroppedCanvas().toBlob((blob) => {
+              resolve(blob);
+            })
+          })
+        }
+
+        const formData = new FormData();
+        const comment = document.getElementById('user_comment').value
+        const blob = await getBlobFromCanvas(cropper)
+        formData.append("user[comment]", comment)
+        formData.append("user[image]", blob);
+
         var response = await fetch(`/entry/${currentUserId}`, { 
           method: 'PATCH',
           headers: {
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           },
-          body: new FormData(form)
+          body: formData
         })
         var html = await response.text()
         document.documentElement.innerHTML = html
@@ -241,7 +283,7 @@ function connection() {
 
         async function initMap() {
           let pos = { lat: latitude, lng: longitude};
-          const myImage = document.getElementById("my-image")
+          const myImage = document.querySelector(".icon")
           const { Map } = await google.maps.importLibrary('maps')
           const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
           MarkerClass = AdvancedMarkerElement
@@ -319,46 +361,13 @@ function connection() {
   });
 } 
 
-function cropImage() {
-  const fileInputElement = document.querySelector('input[type="file"]');
-  const previewElement = document.getElementById('image-preview');
-  let cropper;
-
-  console.log(previewElement)
-
-  fileInputElement.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    console.log(file)
-    console.log(reader)
-    reader.readAsDataURL(file);
-    reader.addEventListener('load', () => {
-      previewElement.src = reader.result;
-
-      // Cropperインスタンスがあれば破棄
-      if (cropper) {
-        cropper.destroy();
-      }
-        // 新しいCropperインスタンスを作成
-      cropper = new Cropper(previewElement, {
-        aspectRatio: 1,
-        viewMode: 1,
-      });
-      console.log("Cropper instance created:", cropper);
-    });
-  });
-}
 
 document.addEventListener('DOMContentLoaded', () =>{
-  if (document.getElementById('image-preview')) {
-    cropImage()
-  }
 
-  if (document.getElementById('connect-link')) {
+  /* f (document.getElementById('connect-link')) {
     connection();
     console.log('リロードによりWebSocket接続が可能になりました')
-  }
+  } */
 
   document.addEventListener('turbo:load', () => {
     if (document.getElementById('connect-link')) {
@@ -370,11 +379,8 @@ document.addEventListener('DOMContentLoaded', () =>{
   window.addEventListener('popstate', () => {
     if(subscription){
       consumer.connection.close();
-      subscription = null;
       navigator.geolocation.clearWatch(watchId)
     }
-
-  
   })
 })
 

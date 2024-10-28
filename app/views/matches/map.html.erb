@@ -3,8 +3,8 @@
     <%= link_to "オフライン", '#', id: "disconnect-link" %>
   </div>
   <div id="map"></div>
-  <%= image_tag current_user.image.variant(:display), id: "my-image" %> 
-  <img id="partner-image" alt="nothing", style="display: none;"> 
+  <%= image_tag current_user.image.variant(:display), class: "icon" %> 
+  <img id="partner-image" alt="nothing" style="display: none;" class="icon"> 
   <div id="match-info" style="display: none;">
     <h2>
       <span id="name"></span>

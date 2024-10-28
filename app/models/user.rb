@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   attr_accessor :remember_token, :age, :activation_token, :reset_token
-  before_save { self.email = self.email.downcase }
   before_save :downcase_email
   before_create :create_activation_digest
   validates :name, presence: true, length: { maximum: 50 }
@@ -12,10 +11,12 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 8 }, allow_nil: true
   validates :girl, inclusion: {in: [true, false], message: "を選択してください"}
   validates :date_of_birth, presence: true
+  validates :image, content_type: { in: %w[image/jpeg image/png image/heic image/heif],
+                                    message: "この写真タイプは受け付けられません"}
   validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
   validates_acceptance_of :agreement
   has_one_attached :image do |attachable|
-    attachable.variant :display, resize_to_limit: [500, 500]
+    attachable.variant :display, resize_to_limit: [1080, 1350]
   end
 
   def User.digest(string)
