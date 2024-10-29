@@ -220,7 +220,7 @@ function connection() {
               } 
 
               if(map && myLocation) {
-                map.setCenter({lat: latitude, lng: longitude})
+                //map.setCenter({lat: latitude, lng: longitude})
                 myLocation.position = {lat: latitude, lng: longitude}
                 console.log('reset location')
               }

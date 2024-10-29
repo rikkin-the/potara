@@ -1,9 +1,13 @@
 <%= form_with model: current_user, id: "whole-form" do |f| %>
 <div class="general_field">
+  <%= f.label :image, "あなたの写真を撮る", id: 'camera' %>
   <%= f.file_field :image, capture: 'user' %>
 </div>
 <div>
   <img id="image-preview">
+    <span class="dli-camera"></span>
+  </img>
+  
 </div>
 <div class="general_field">
   <%= f.label :comment, "つぶやき(省略可)" %>
