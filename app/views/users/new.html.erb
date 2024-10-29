@@ -1,9 +1,9 @@
 <% provide(:title, "新規登録") %>
 
-<div class="usersNew__form">
+<div class="main__container usersNew__form">
   <%= form_with(model: @user) do |f| %>
 
-  <label>性別</label>
+  <label>あなたの性別</label>
   <div class="usersNew__field gender">
     <%= f.radio_button :girl, 0 %>
     <%= f.label :girl, "男", for: "user_girl_0" %>
@@ -13,7 +13,7 @@
 
   <div class="usersNew__field">
     <%= f.label :name %>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, placeholder: "例: ポルコ" %>
   </div>
 
   <div class="usersNew__field"> 
@@ -23,23 +23,23 @@
    
   <div class="usersNew__field">
     <%= f.label :email %>
-    <%= f.email_field :email %>
+    <%= f.email_field :email, placeholder: "例: porco92@example.com" %>
   </div>
   <div class="usersNew__field">
     <%= f.label :password %>
-    <%= f.password_field :password %>
+    <%= f.password_field :password, placeholder: "6文字以上" %>
   </div>
   <div class="usersNew__field">
     <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
+    <%= f.password_field :password_confirmation, placeholder: "もう一度入力してください" %>
   </div>
   
   <div class="usersNew__field">
     <%= f.label :agreement, "利用規約に同意する" %>
     <%= f.check_box :agreement %>
-  </div>
-  <%= f.submit "登録", class: "btn" %>
 
+    <%= f.submit "登録", class: "btn" %>
+  </div>
   <% end %>
   <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
 

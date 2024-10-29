@@ -1,19 +1,10 @@
 <%= form_with model: current_user, id: "whole-form" do |f| %>
-<div class="general_field">
-  <%= f.label :image, "あなたの写真を撮る", id: 'camera' %>
+<div class="matchesNew__image">
+  <img id="image-preview"> 
   <%= f.file_field :image, capture: 'user' %>
+  <%= f.label :image, "カメラ", id: 'camera' %>
 </div>
-<div>
-  <img id="image-preview">
-    <span class="dli-camera"></span>
-  </img>
-  
-</div>
-<div class="general_field">
-  <%= f.label :comment, "つぶやき(省略可)" %>
-  <%= f.text_area :comment %>
-</div>
-<div class="general_field">
+
+  <%= f.text_area :comment, placeholder: "ひとことを追加..." %>
   <%= f.submit "マッチを探す", id: "connect-link", class: "btn" %>
-</div>
 <% end %>

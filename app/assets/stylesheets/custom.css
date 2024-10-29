@@ -2,6 +2,7 @@
   --beige-color: #DCCBB4;
   --first-color: #495aff;
   --second-color: #0acffe;
+  --background-color: rgb(50, 50, 50);
 }
 
 /* universal */
@@ -34,24 +35,24 @@ footer {
 }
 
 #logo {
-  float: left;
+  float: right;
   text-decoration: none;
   color: var(--beige-color);
   font-size: 24px;
-  margin: 16px;
+  margin: 12px;
 }
 
 nav {
-  float: right;
+  float: left;
   padding-right: 16px;
 }
 
-ul.nav-menu {
+nav .nav-menu {
   margin: 0;
 }
 
 .body__container {
-  background-color: rgb(50, 50, 50);
+  background-color: var(--background-color);
   width: 100%;
   max-width: 512px;
   height: 100svh;
@@ -80,7 +81,8 @@ input[type=text], input[type=date], input[type=email], input[type=password], tex
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  background-color: rgb(244, 210, 255);
+  background-color: var(--background-color);
+  color: white;
 }
 
 textarea {
@@ -99,11 +101,17 @@ a {
   color: white;
 }
 
+.general_field {
+  margin-top: 64px;
+}
 /* logged in */
 
 #map {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100svw;
+  height: 100svh;
 }
 
 .icon {
@@ -167,23 +175,25 @@ a {
 }
 
 /* logged in */
+
 label[for=user_comment] {
   display: block;
+}
+
+.matchesNew__image {
+  position: relative;
 }
 
 #image-preview {
   display: block;
   max-width: 100%;
+  max-height: 80%;
 }
 
 #image-preview:not([src]) {
-  background-color: gray;
+  background-color: rgb(36, 36, 36);
   width: 100%;
   aspect-ratio: 4 / 5;
-}
-
-#whole-form .general_field {
-  margin: 0;
 }
 
 #user_image {
@@ -191,58 +201,19 @@ label[for=user_comment] {
 }
 
 #camera {
-  background-image: linear-gradient(to right, var(--second-color) 0%, var(--first-color) 100%);
-  padding: 5px;
-  border-radius: 100vh;
-  font-weight: bold;
-}
-
-.dli-camera {
-  display: inline-block;
-  vertical-align: middle;
-  color: #333;
-  line-height: 1;
-  position: relative;
-  width: 1.25em;
-  height: 0.85em;
-  background: #fff;
-  border: 0.1em solid currentColor;
-  border-radius: 0.1em;
-  box-sizing: content-box;
-}
-
-.dli-camera::before {
-  content: '';
   position: absolute;
-  left: 50%;
-  bottom: 100%;
-  width: 40%;
-  height: 0.1375em;
-  background: inherit;
-  border: 0.1em solid currentColor;
-  border-bottom: 0;
-  border-radius: 0.225em 0.225em 0 0;
-  box-sizing: content-box;
-  transform: translateX(-50%);
-}
-
-.dli-camera::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
-  margin: auto;
-  width: 0.646em;
-  height: 0.646em;
-  border: 0.125em solid currentColor;
-  border-radius: 50%;
-  box-sizing: border-box;
-  box-shadow: 0.39em -0.27em 0 -0.27em currentColor;
+  background-color: black;
+  opacity: 0.5;
+  padding: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+#connect-link {
+  width: 50%;
+  margin: 8px auto;
 }
 
 /* login */
-.general_field {
-  margin-top: 64px;
-}

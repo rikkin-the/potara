@@ -1,5 +1,6 @@
 import consumer from "channels/consumer"
 import Cropper from "cropperjs";
+
 let latitude;
 let longitude;
 let subscription;
@@ -37,11 +38,13 @@ function connection() {
   function cropImage() {
     const fileInputElement = document.querySelector('input[type="file"]');
     const previewElement = document.getElementById('image-preview');
+    console.log(previewElement)
 
     fileInputElement.addEventListener('change', (event) => {
       const file = event.target.files[0];
       const reader = new FileReader();
 
+      console.log(reader)
       reader.readAsDataURL(file);
       reader.addEventListener('load', () => {
         previewElement.src = reader.result;
@@ -70,6 +73,12 @@ function connection() {
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
+    if (!cropper) {
+      alert("写真が必要です")
+    } else {
+      subscribePublic();
+      subscribeLocation();
+    }
 
     function subscribePublic() {
       subscription = consumer.subscriptions.create("PublicChannel",  {
@@ -276,7 +285,7 @@ function connection() {
       async function showGoogleMap() {
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
         key: "AIzaSyCduQ2F4MLs5vF2I0BKKEqYJmDxA2Yq1QU",
-        v: "weekly",
+        v: "beta",
         // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
         // Add other bootstrap parameters as needed, using camel case.
         });
@@ -287,12 +296,16 @@ function connection() {
           const { Map } = await google.maps.importLibrary('maps')
           const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
           MarkerClass = AdvancedMarkerElement
+          const { ColorScheme } = await google.maps.importLibrary("core")
+       
 
           map = new Map(document.getElementById('map'), {
             mapId: "3c6f58db644be140",
             center: pos,
             zoom: 15,
-            disableDefaultUI: true
+            disableDefaultUI: true,
+            colorScheme: ColorScheme.DARK,
+            clickableIcons: false,
           })
           
           myLocation = new MarkerClass({
@@ -354,37 +367,19 @@ function connection() {
         }
       })
     }
-
-    subscribePublic();
-    subscribeLocation();
-    
   });
 } 
 
-
-document.addEventListener('DOMContentLoaded', () =>{
-
-  /* f (document.getElementById('connect-link')) {
-    connection();
-    console.log('リロードによりWebSocket接続が可能になりました')
-  } */
-
-  document.addEventListener('turbo:load', () => {
+document.addEventListener('turbo:load', () => {
     if (document.getElementById('connect-link')) {
       connection();
       console.log('ページ遷移によりWebSocket通信が可能になりました')
     }
-  })
+})
 
-  window.addEventListener('popstate', () => {
+window.addEventListener('popstate', () => {
     if(subscription){
       consumer.connection.close();
       navigator.geolocation.clearWatch(watchId)
     }
-  })
 })
-
-
-
-
-
