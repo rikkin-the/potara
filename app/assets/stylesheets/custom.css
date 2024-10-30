@@ -27,23 +27,42 @@ body {
   border-radius: 20px;
 }
 
+/* footer */
+
 footer {
   position: absolute;
   bottom: 0;
   width: 100%;
-  text-align: left;
 }
 
+.footer__container {
+  display: flex;
+  margin: 0 auto;
+  width: 99%
+}
+
+.menu-left, .menu-center, .menu-right {
+  width: 33%
+}
+
+
 #logo {
-  float: right;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
   text-decoration: none;
   color: var(--beige-color);
   font-size: 24px;
-  margin: 12px;
+}
+
+#connect-link {
+  width: 60%;
+  aspect-ratio: 1;
+  margin: 8px auto;
 }
 
 nav {
-  float: left;
   padding-right: 16px;
 }
 
@@ -104,6 +123,7 @@ a {
 .general_field {
   margin-top: 64px;
 }
+
 /* logged in */
 
 #map {
@@ -202,18 +222,14 @@ label[for=user_comment] {
 
 #camera {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 16px;
+  bottom: 16px;
   background-color: black;
   opacity: 0.5;
-  padding: 24px;
-  font-weight: bold;
-  border-radius: 8px;
+  width: 15%;
+  aspect-ratio: 1;
+  border-radius: 50%;
 }
 
-#connect-link {
-  width: 50%;
-  margin: 8px auto;
-}
 
 /* login */

@@ -2,9 +2,7 @@
 <div class="matchesNew__image">
   <img id="image-preview"> 
   <%= f.file_field :image, capture: 'user' %>
-  <%= f.label :image, "カメラ", id: 'camera' %>
+  <%= f.label :image, "a",  id: 'camera' %>
 </div>
-
   <%= f.text_area :comment, placeholder: "ひとことを追加..." %>
-  <%= f.submit "マッチを探す", id: "connect-link", class: "btn" %>
 <% end %>

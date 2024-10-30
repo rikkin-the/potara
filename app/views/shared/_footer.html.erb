@@ -1,15 +1,23 @@
 <% if logged_in? %>
-<nav class="nav">
-  <ul class="nav-menu">
-      <li>
-        <%= link_to "プロフィール", current_user %>
-      </li>
-      <li>
-        <%= link_to "ログアウト", logout_path,
-                                  data: { "turbo-method": :delete } %>
-      </li>
-  </ul>
-</nav>
+  <div class="menu-left">
+    <nav class="nav">
+      <ul class="nav-menu">
+        <li>
+          <%= link_to "プロフィール", current_user %>
+        </li>
+        <li>
+          <%= link_to "ログアウト", logout_path,
+                                    data: { "turbo-method": :delete } %>
+        </li>
+      </ul>
+    </nav>
+ 
+</div>
+<div class="menu-center">
+  <button id="connect-link" class="btn">電源</button>
+</div>
 <% end %>
 
+<div class="menu-right">
 <%= link_to "Muber", root_url, id: "logo" %>
+</div>
