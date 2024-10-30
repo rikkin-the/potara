@@ -5,17 +5,23 @@
   <div id="map"></div>
   <%= image_tag current_user.image.variant(:display), class: "icon" %> 
   <img id="partner-image" alt="nothing" style="display: none;" class="icon"> 
+
   <div id="match-info" style="display: none;">
-    <h2>
-      <span id="name"></span>
-      <span id="age"></span>
-    </h2>
-      <p id="distance"></p>
+    <div class="match-info__container">
+      <div class="main-info">
+        <h2>
+          <span id="name"></span>
+          <span id="age"></span>
+        </h2> 
+        <p id="distance"></p>
+      </div>
       <p id="comment"></p>
-   
-    <img id="her-his-image"></img>
-    <button id="agreement">今すぐ会う</button>
+      <button id="map__closeButton">✕</button>
+      <button id="agreement" class="btn">今すぐ会う</button>
+    </div>
   </div>
+  
+
   <div id="appointment" style="display: none">
     <h2 id="station"></h2>
     <h2 id="distance-to-station"></h2>

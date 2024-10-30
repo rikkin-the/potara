@@ -89,8 +89,10 @@ nav .nav-menu {
   font-weight: bold;
   display: block;
   border-radius: 100vh;
+  border: none;
   text-decoration: none;
   padding: 10px;
+  box-shadow: 0 0 6px gray;
 }
 
 
@@ -124,7 +126,7 @@ a {
   margin-top: 64px;
 }
 
-/* logged in */
+/* await matching */
 
 #map {
   position: absolute;
@@ -140,6 +142,58 @@ a {
   object-fit: cover;
   border-radius: 50%;
   border: 5px solid var(--second-color);
+}
+
+#match-info {
+  width: 95svw;
+  aspect-ratio: 4 / 5;
+  position: absolute;
+  z-index: 10;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-size: cover;
+  border-radius: 5%;
+}
+
+.match-info__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.main-info {
+  position: absolute;
+  left: 5%;
+  bottom: 5%;
+  z-index: 50;
+  max-width: 40%;
+}
+
+#comment {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  max-width: 40%;
+}
+
+#map__closeButton {
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  width: 10%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--background-color);
+  opacity: 0.5;
+}
+
+#agreement {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -25%;
+  width: 75%; 
 }
 
 /* not logged in  */
@@ -171,20 +225,13 @@ a {
   display: inline-block;
   padding: 8px 30px;
   margin: 0 8px;
-  border: 1px solid pink;
+  border: 1px solid white;
   border-radius: 12px;
-  background-color: white;
+  background-color: var(--background-color);
   color: black;
   opacity: 1.0;
 }
 
-.gender label[for=user_girl_1] {
-  border: 2px solid rgb(255, 1, 183);
-}
-
-.gender label[for=user_girl_0] {
-  border: 2px solid rgb(1, 111, 255);
-}
 
 .gender input[type=radio]:checked + label[for=user_girl_1] {
   background-color: rgb(255, 176, 206);  

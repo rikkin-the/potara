@@ -22,8 +22,9 @@ function removeInfo() {
   for ( let i = 0; i < lists.length; i++ ){
     document.getElementById(lists[i]).textContent = null;
   }
-  document.getElementById('her-his-image').removeAttribute('src')
+  document.getElementById('match-info').removeAttribute('background-image')
   matchInfoElement.style.display = 'none'
+  connectLink.style.display = 'block'
 }
 
 function delay(ms) {
@@ -33,18 +34,17 @@ function delay(ms) {
 
 function connection() {
   const connectLink = document.getElementById('connect-link')
+  const commentElement = document.getElementById('user_comment')
   let cropper;
 
   function cropImage() {
     const fileInputElement = document.querySelector('input[type="file"]');
     const previewElement = document.getElementById('image-preview');
-    console.log(previewElement)
 
     fileInputElement.addEventListener('change', (event) => {
       const file = event.target.files[0];
       const reader = new FileReader();
 
-      console.log(reader)
       reader.readAsDataURL(file);
       reader.addEventListener('load', () => {
         previewElement.src = reader.result;
@@ -73,8 +73,11 @@ function connection() {
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
+
     if (!cropper) {
       alert("写真が必要です")
+    } else if( commentElement.value.length > 63 ) {
+      alert("ひとことは63文字以内です")
     } else {
       subscribePublic();
       subscribeLocation();
@@ -97,18 +100,24 @@ function connection() {
               let ageElement = document.getElementById('age')
               let distanceElement = document.getElementById('distance')
               let commentElement = document.getElementById('comment')
-              let imageElement = document.getElementById('her-his-image')
+              //let imageElement = document.getElementById('her-his-image')
               let agreementElement = document.getElementById('agreement')
+              const closeButton = document.getElementById('map__closeButton')
 
               nameElement.textContent = data.user.name
               ageElement.textContent = data.age
               distanceElement.textContent = `${data.distance}km`
               commentElement.textContent = data.user.comment
-              imageElement.src = data.image
+              //imageElement.src = data.image
+              matchInfoElement.style.backgroundImage = `url(${data.image})`
               matchInfoElement.style.display = 'block'
+              connectLink.style.display = 'none'
               agreementElement.addEventListener('click', () => {
                 let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
                 subscription.send(agreement_params)
+              })
+              closeButton.addEventListener('click', () => {
+                removeInfo();
               })
             }
 
@@ -266,7 +275,7 @@ function connection() {
         }
 
         const formData = new FormData();
-        const comment = document.getElementById('user_comment').value
+        const comment = commentElement.value
         const blob = await getBlobFromCanvas(cropper)
         formData.append("user[comment]", comment)
         formData.append("user[image]", blob);
