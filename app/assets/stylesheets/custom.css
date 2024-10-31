@@ -193,7 +193,9 @@ a {
   left: 50%;
   transform: translateX(-50%);
   bottom: -25%;
+  z-index: 60;
   width: 75%; 
+  
 }
 
 /* not logged in  */

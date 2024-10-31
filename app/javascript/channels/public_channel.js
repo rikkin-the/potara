@@ -25,6 +25,7 @@ function removeInfo() {
   document.getElementById('match-info').removeAttribute('background-image')
   matchInfoElement.style.display = 'none'
   connectLink.style.display = 'block'
+  console.log(connectLink)
 }
 
 function delay(ms) {
@@ -73,6 +74,7 @@ function connection() {
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
+    console.log(connectLink)
 
     if (!cropper) {
       alert("写真が必要です")
@@ -111,6 +113,7 @@ function connection() {
               //imageElement.src = data.image
               matchInfoElement.style.backgroundImage = `url(${data.image})`
               matchInfoElement.style.display = 'block'
+              console.log(connectLink)
               connectLink.style.display = 'none'
               agreementElement.addEventListener('click', () => {
                 let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
@@ -327,9 +330,7 @@ function connection() {
       }
 
       function prepareDisconnection() {
-        const disconnectLink = document.getElementById('disconnect-link');
-
-        disconnectLink.addEventListener('click', (event) => {
+        connectLink.addEventListener('click', (event) => {
           event.preventDefault();
           subscription.unsubscribe();
           subscription = null;
