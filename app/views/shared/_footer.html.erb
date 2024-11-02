@@ -1,23 +1,30 @@
-<% if logged_in? %>
-  <div class="menu-left">
-    <nav class="nav">
-      <ul class="nav-menu">
-        <li>
-          <%= link_to "プロフィール", current_user %>
-        </li>
-        <li>
-          <%= link_to "ログアウト", logout_path,
-                                    data: { "turbo-method": :delete } %>
-        </li>
-      </ul>
-    </nav>
- 
-</div>
-<div class="menu-center">
-  <button id="connect-link" class="btn">電源</button>
-</div>
-<% end %>
+<p id="warning" style="display: none;">
+  画面から離れるとマッチは解除されます<br>
+  お互いの位置情報は更新されません
+</p>
 
-<div class="menu-right">
-<%= link_to "Muber", root_url, id: "logo" %>
+<div class="footer__container">
+  <% if logged_in? %>
+    <div class="menu-left">
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li>
+            <%= link_to "プロフィール", current_user %>
+          </li>
+          <li>
+            <%= link_to "ログアウト", logout_path,
+                                      data: { "turbo-method": :delete } %>
+          </li>
+        </ul>
+      </nav>
+  
+  </div>
+  <div class="menu-center">
+    <button id="connect-link" class="btn">オン</button>
+  </div>
+  <% end %>
+
+  <div class="menu-right">
+  <%= link_to "Muber", root_url, id: "logo" %>
+  </div>
 </div>

@@ -16,59 +16,24 @@ body {
   margin: 0;
 }
 
-.popup {
-  font-size: 14px;
-  max-height: 0;
-  background-color: var(--first-color);
-}
-
-.popup.show {
-  max-height: 80svh;
-  border-radius: 20px;
-}
-
-/* footer */
-
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-.footer__container {
-  display: flex;
-  margin: 0 auto;
-  width: 99%
-}
-
-.menu-left, .menu-center, .menu-right {
-  width: 33%
-}
-
-
-#logo {
+header {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 1000;
-  text-decoration: none;
-  color: var(--beige-color);
-  font-size: 24px;
+  font-size: 16px;
+  padding: 0;
+  max-height: 40svh;
+  background-color: var(--first-color);
+  border-radius: 16px;
+  z-index: 10000;
+  width: 100%;
+  text-align: center;
 }
 
-#connect-link {
-  width: 60%;
-  aspect-ratio: 1;
-  margin: 8px auto;
-}
-
-nav {
-  padding-right: 16px;
-}
-
-nav .nav-menu {
+header p, ul, div{
   margin: 0;
+  padding: 0;
 }
+
+
 
 .body__container {
   background-color: var(--background-color);
@@ -122,11 +87,58 @@ a {
   color: white;
 }
 
+/* footer */
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer__container {
+  display: flex;
+  margin: 0 auto;
+  width: 99%
+}
+
+.menu-left, .menu-center, .menu-right {
+  width: 33%
+}
+
+
+#logo {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  text-decoration: none;
+  color: var(--beige-color);
+  font-size: 24px;
+}
+
+#connect-link, #disconnect-link {
+  width: 60%;
+  aspect-ratio: 1;
+  margin: 8px auto;
+}
+
+#disconnect-link {
+  background-image: pink;
+}
+
+nav {
+  padding-right: 16px;
+}
+
+nav .nav-menu {
+  margin: 0;
+}
+
 .general_field {
   margin-top: 64px;
 }
 
-/* await matching */
+/* map */
 
 #map {
   position: absolute;
@@ -144,7 +156,11 @@ a {
   border: 5px solid var(--second-color);
 }
 
-#match-info {
+
+/* match info */
+
+
+#match-info, #appointment {
   width: 95svw;
   aspect-ratio: 4 / 5;
   position: absolute;
@@ -175,6 +191,7 @@ a {
   right: 5%;
   bottom: 5%;
   max-width: 40%;
+  font-size: 8px;
 }
 
 #map__closeButton {
@@ -196,6 +213,11 @@ a {
   z-index: 60;
   width: 75%; 
   
+}
+
+/* appointment */
+#appointment {
+  pointer-events: none;
 }
 
 /* not logged in  */
@@ -278,7 +300,5 @@ label[for=user_comment] {
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;
+  z-index: 10000;
 }
-
-
-/* login */

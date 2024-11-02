@@ -1,7 +1,7 @@
 <% if (@user && @user.errors.any?) %>
-  <div>
+  <p>
     <%= @user.errors.count %>個のエラーがあります。
-  </div>
+  </p>
   <div>
     <ul>
       <% @user.errors.full_messages.each do |message| %>
@@ -11,6 +11,8 @@
   </div>
 <% elsif flash.any? %>
   <% flash.each do |message_type, message| %>
-    <h4><%= message %></h4>
+    <p><%= message %></p>
   <% end %>
 <% end %>
+
+<div id="popup__javascript"><div>

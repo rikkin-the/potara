@@ -34,28 +34,13 @@ class PublicChannel < ApplicationCable::Channel
         girl = liked_user
         boy = like_user
         girl_key = "girl_#{liked_id}"
-        boy_key = "boy_#{liked_id}"
+        boy_key = "boy_#{like_id}"
         girl_id = liked_id
         boy_id = like_id
       end
 
-      retries = 3
-      girl_lat = nil
-      boy_lat = nil
-      loop{
-        girl_lat = $redis.hget(girl_key, "lat")
-        boy_lat = $redis.hget(boy_key, "lat")
-        break if girl_lat && boy_lat
-
-        retries -= 1
-        if retries == 0
-          PublicChannel.broadcast_to(girl, 0)
-          PublicChannel.broadcast_to(boy, 0)
-          exit
-        end
-        sleep(10)
-        p girl_lat
-      }
+      girl_lat = $redis.hget(girl_key, "lat")
+      boy_lat = $redis.hget(boy_key, "lat")
       girl_lng = $redis.hget(girl_key, "lng")
       boy_lng = $redis.hget(boy_key, "lng")
       $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])
@@ -125,10 +110,10 @@ class PublicChannel < ApplicationCable::Channel
         boy_image =  Rails.application.routes.url_helpers.rails_blob_url(boy.image.variant(:display), host: "localhost:3000")
 
         PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: boy_image, partnerLocation: {lat: boy_lat.to_f, lng: boy_lng.to_f},
-          appointment: {station_name: name, station_lat: station_lat, station_lng: station_lng, point: point, distance: girl_distance_on_road,
+          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
           meeting_time: time_params}})
         PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: girl_image, partnerLocation: {lat: girl_lat.to_f, lng: girl_lng.to_f},
-          appointment: {station_name: name, station_lat: station_lat, station_lng: station_lng, point: point, distance: boy_distance_on_road,
+          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
 
         $redis_agreement.del(liked_id)

@@ -14,29 +14,26 @@ let partnerLocation;
 let stationLocation;
 
 
-
-function removeInfo() {
-  console.log('timeover')
-  let matchInfoElement = document.getElementById('match-info')
-  let lists = ['name' , 'age',  'distance']
-  for ( let i = 0; i < lists.length; i++ ){
-    document.getElementById(lists[i]).textContent = null;
-  }
-  document.getElementById('match-info').removeAttribute('background-image')
-  matchInfoElement.style.display = 'none'
-  connectLink.style.display = 'block'
-  console.log(connectLink)
-}
-
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-
 function connection() {
-  const connectLink = document.getElementById('connect-link')
-  const commentElement = document.getElementById('user_comment')
+  let connectLink = document.getElementById('connect-link')
   let cropper;
+  const commentElement = document.getElementById('user_comment')
+  
+  function removeInfo() {
+    console.log('timeover')
+    let matchInfoElement = document.getElementById('match-info')
+    let lists = ['name' , 'age',  'distance']
+    for ( let i = 0; i < lists.length; i++ ){
+      document.getElementById(lists[i]).textContent = null;
+    }
+    document.getElementById('match-info').removeAttribute('background-image')
+    matchInfoElement.style.display = 'none'
+    connectLink.style.display = 'block'
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 
   function cropImage() {
     const fileInputElement = document.querySelector('input[type="file"]');
@@ -74,7 +71,6 @@ function connection() {
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
-    console.log(connectLink)
 
     if (!cropper) {
       alert("写真が必要です")
@@ -102,7 +98,6 @@ function connection() {
               let ageElement = document.getElementById('age')
               let distanceElement = document.getElementById('distance')
               let commentElement = document.getElementById('comment')
-              //let imageElement = document.getElementById('her-his-image')
               let agreementElement = document.getElementById('agreement')
               const closeButton = document.getElementById('map__closeButton')
 
@@ -110,10 +105,8 @@ function connection() {
               ageElement.textContent = data.age
               distanceElement.textContent = `${data.distance}km`
               commentElement.textContent = data.user.comment
-              //imageElement.src = data.image
               matchInfoElement.style.backgroundImage = `url(${data.image})`
               matchInfoElement.style.display = 'block'
-              console.log(connectLink)
               connectLink.style.display = 'none'
               agreementElement.addEventListener('click', () => {
                 let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
@@ -145,8 +138,9 @@ function connection() {
                   const stationElement = document.getElementById('station')
                   const distanceToStationElement = document.getElementById('distance-to-station')
                   const timeElement = document.getElementById('meeting-time')
-                  const unmatchElement = document.getElementById('unmatch')
+                  const warningElement = document.getElementById('warning')
                   const appointmentData = data['appointment']
+                  
 
 
                   removeInfo();
@@ -158,18 +152,23 @@ function connection() {
                   
                   stationLocation = new MarkerClass({
                     map,
-                    position: {lat: appointmentData['station_lat'], lng: appointmentData['station_lng']}
+                    position: appointmentData['stationLocation']
                   })
 
+                  map.setCenter(appointmentData['stationLocation'])
+                  map.setZoom(12)
+
+                  connectLink.innerText = '解除'
                   stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
-                  //partnerImageElement.src = partnerImageUrl
                   partnerImageElement.src = data['partnerImage']
                   partnerImageElement.style.display = 'inline'
                   appointmentElement.style.display = 'block'
+                  warningElement.style.display = 'block'
 
-                  unmatchElement.addEventListener('click', (event) => {
+
+                  connectLink.addEventListener('click', (event) => {
                     event.preventDefault()
                     privateSubscription.unsubscribe()
                     privateSubscription = null;
@@ -198,9 +197,10 @@ function connection() {
                 }, 
                 received(partnerData) {
                   if(partnerData === 0) {
-                    //const chatElement = document.getElementById('chat')
                     const partnerImageElement = document.getElementById('partner-image')
                     const appointmentElement = document.getElementById('appointment')
+                    const warningElement = document.getElementById('warning')
+
 
                     privateSubscription.unsubscribe()
                     //locationSubscription.unsubscribe()
@@ -208,11 +208,11 @@ function connection() {
                     //locationSubscription = null
                     //chatElement.style.display = 'none'
                     appointmentElement.style.display = 'none'
+                    warningElement.style.display = 'none'
                     partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
                     partnerLocation.setMap(null);
                     stationLocation.setMap(null);
-
   
                     subscribePublic();
                   }
@@ -220,7 +220,7 @@ function connection() {
               })
             }
           } else if(data === 0) {
-            console.log('エラーによりマッチングできませんでした。ごめんなさい。。')
+            alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
           }
         }
       })
@@ -241,7 +241,6 @@ function connection() {
               } 
 
               if(map && myLocation) {
-                //map.setCenter({lat: latitude, lng: longitude})
                 myLocation.position = {lat: latitude, lng: longitude}
                 console.log('reset location')
               }
@@ -292,6 +291,8 @@ function connection() {
         })
         var html = await response.text()
         document.documentElement.innerHTML = html
+        connectLink = document.getElementById('connect-link')
+        connectLink.innerText = 'オフ'
       }
 
       async function showGoogleMap() {
@@ -350,7 +351,7 @@ function connection() {
           .then((data) => {
             window.location.href = data.redirect_url
           })
-        })
+        }) 
       }
 
       async function executeInTurn() {
@@ -366,9 +367,9 @@ function connection() {
         },
         received(data) {
           console.log(data)
-          const notificationElement = document.getElementById('partner-info')
+          const notificationElement = document.getElementById('popup__javascript')
                     
-          notificationElement.textContent = '相手が移動しています'
+          notificationElement.textContent = '相手が移動しています!'
           async function removeNotification() {
             await delay(5000)
             notificationElement.textContent = ''
