@@ -3,7 +3,8 @@ class AutoMatchJob < ApplicationJob
 
   def filter(id, keys_array)
     invalid_ids = $redis_past.lrange(id, 0, -1)
-    girl_ids = keys_array.map { |key| key.delete('^0-9') }
+    unpaired_keys_array = keys_array.filter { |key| $redis.hget(key, "paired").to_i != 1 }
+    girl_ids = unpaired_keys_array.map { |key| key.delete('^0-9') }
     valid_ids = girl_ids - invalid_ids
     valid_name_included_girls = valid_ids.map { |i| "girl_#{i}" }
     return valid_name_included_girls
@@ -13,8 +14,11 @@ class AutoMatchJob < ApplicationJob
     $redis_agreement.flushdb
     boys = $redis.keys("boy*")
     girls = $redis.keys("girl*")
+
     if boys && girls
-      boys.each do |boy|
+      girls.each { |girl| $redis.hdel(girl, "paired") }
+      ordered_boys = boys.reverse
+      ordered_boys.each do |boy|
         nearest_girl = nil
         shortest_distance = 10000000
         boy_id = boy.delete('^0-9').to_i
@@ -49,6 +53,7 @@ class AutoMatchJob < ApplicationJob
           PublicChannel.broadcast_to(boy_instance, {
             user: girl_instance, age: girl_instance.age, distance: distance_to_km(shortest_distance), image: girl_url
           })
+          $redis.hset("girl_#{nearest_girl_id}", "paired", 1)
           $redis_past.rpush(boy_id, nearest_girl_id)
           $redis_past.rpush(nearest_girl_id, boy_id)
         end
