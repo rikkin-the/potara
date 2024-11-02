@@ -13,7 +13,7 @@
 
   <div class="usersNew__field">
     <%= f.label :name %>
-    <%= f.text_field :name, placeholder: "例: ポルコ" %>
+    <%= f.text_field :name, placeholder: "例: ポルコ(8文字以内)" %>
   </div>
 
   <div class="usersNew__field"> 
@@ -33,13 +33,15 @@
     <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation, placeholder: "もう一度入力してください" %>
   </div>
+  <div class="usersNew__field">
+    <%= f.label :agreement, "私は18歳未満ではありません" %>
+    <%= f.check_box :agreement %>
+  </div>
   
   <div class="usersNew__field">
-    <%= f.label :agreement, "利用規約に同意する" %>
-    <%= f.check_box :agreement %>
-
     <%= f.submit "登録", class: "btn" %>
   </div>
+
   <% end %>
   <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
 

@@ -6,6 +6,10 @@
   <%= image_tag current_user.image.variant(:display), class: "icon" %> 
   <img id="partner-image" alt="nothing" style="display: none;" class="icon"> 
 
+  <div id="loading-screen">
+    <div class="spinner"></div>
+  </div>
+
   <div id="match-info" style="display: none;">
     <div class="match-info__container">
       <div class="main-info">
@@ -18,12 +22,15 @@
       <p id="comment"></p>
       <button id="map__closeButton">✕</button>
       <button id="agreement" class="btn">今すぐ会う</button>
+      <div id="loading-screen2" style="display: none;">
+        <div class="spinner"></div>
+      </div>
     </div>
   </div>
 
   <div id="appointment" style="display: none">
     <div class="appointment__container">
-      <h1>Matched!</h1>
+      <h3>Matched!</h3>
       <h1 id="station"></h1>
       <p id="distance-to-station"></p>
       <h2 id="meeting-time"></h2>

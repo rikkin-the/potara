@@ -22,6 +22,7 @@ function connection() {
   function removeInfo() {
     console.log('timeover')
     let matchInfoElement = document.getElementById('match-info')
+    
     let lists = ['name' , 'age',  'distance']
     for ( let i = 0; i < lists.length; i++ ){
       document.getElementById(lists[i]).textContent = null;
@@ -29,6 +30,7 @@ function connection() {
     document.getElementById('match-info').removeAttribute('background-image')
     matchInfoElement.style.display = 'none'
     connectLink.style.display = 'block'
+    document.getElementById('loading-screen2').style.display = 'none'
   }
 
   function delay(ms) {
@@ -40,9 +42,11 @@ function connection() {
     const previewElement = document.getElementById('image-preview');
 
     fileInputElement.addEventListener('change', (event) => {
+      const addELement = document.querySelector('.add__icon')
       const file = event.target.files[0];
       const reader = new FileReader();
 
+      addELement.style.zIndex = '-10'
       reader.readAsDataURL(file);
       reader.addEventListener('load', () => {
         previewElement.src = reader.result;
@@ -111,6 +115,7 @@ function connection() {
               agreementElement.addEventListener('click', () => {
                 let agreement_params = { like_id: currentUserId, liked_id: data.user.id }
                 subscription.send(agreement_params)
+                document.getElementById('loading-screen2').style.display = 'block'
               })
               closeButton.addEventListener('click', () => {
                 removeInfo();
@@ -140,6 +145,7 @@ function connection() {
                   const timeElement = document.getElementById('meeting-time')
                   const warningElement = document.getElementById('warning')
                   const appointmentData = data['appointment']
+                  const connectText = document.getElementById('connect-text')
                   
 
 
@@ -158,7 +164,7 @@ function connection() {
                   map.setCenter(appointmentData['stationLocation'])
                   map.setZoom(12)
 
-                  connectLink.innerText = '解除'
+                  connectText.textContent = '解除'
                   stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
@@ -166,7 +172,8 @@ function connection() {
                   partnerImageElement.style.display = 'inline'
                   appointmentElement.style.display = 'block'
                   warningElement.style.display = 'block'
-
+                  document.getElementById('loading-screen').style.display = 'none'
+                  document.getElementById('loading-screen2').style.display = 'none'
 
                   connectLink.addEventListener('click', (event) => {
                     event.preventDefault()
@@ -211,6 +218,8 @@ function connection() {
                     warningElement.style.display = 'none'
                     partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
+                    document.getElementById('connect-text').textContent = 'オフ'
+                    document.getElementById('loading-screen').style.display = 'block'
                     partnerLocation.setMap(null);
                     stationLocation.setMap(null);
   
@@ -292,7 +301,8 @@ function connection() {
         var html = await response.text()
         document.documentElement.innerHTML = html
         connectLink = document.getElementById('connect-link')
-        connectLink.innerText = 'オフ'
+        document.getElementById('connect-text').textContent = 'オフ'
+        document.querySelector('.profile__icon').style.display = 'none'
       }
 
       async function showGoogleMap() {

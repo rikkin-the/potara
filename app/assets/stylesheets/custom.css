@@ -73,6 +73,9 @@ input[type=text], input[type=date], input[type=email], input[type=password], tex
 
 textarea {
   text-align: left;
+  background-color: black;
+  height: 64px;
+  border-radius: 0 0 32px 32px;
 }
 
 input[type=submit] {
@@ -85,6 +88,10 @@ label {
 
 a {
   color: white;
+}
+
+.image__icon {
+  width: 46px;
 }
 
 /* footer */
@@ -116,26 +123,31 @@ footer {
   font-size: 24px;
 }
 
-#connect-link, #disconnect-link {
-  width: 60%;
+#connect-link {
+  width: 40%;
   aspect-ratio: 1;
-  margin: 8px auto;
+  margin: 16px auto;
 }
 
-#disconnect-link {
-  background-image: pink;
+#connect-text {
+  margin-top: 8px;
 }
 
-nav {
-  padding-right: 16px;
+.profile__icon {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
 }
 
-nav .nav-menu {
-  margin: 0;
-}
+
+/* input fields */
 
 .general_field {
   margin-top: 64px;
+}
+
+.submit__field {
+  margin-top: 128px;
 }
 
 /* map */
@@ -154,6 +166,31 @@ nav .nav-menu {
   object-fit: cover;
   border-radius: 50%;
   border: 5px solid var(--second-color);
+}
+
+/* loading */
+#loading-screen {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 4px solid var(--background-color);
+  border-top-color: var(--second-color);
+  border-radius: 50%;
+  animation: spin 4s linear infinite; 
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -196,12 +233,15 @@ nav .nav-menu {
 
 #map__closeButton {
   position: absolute;
+  font-size: 16px;
+  font-weight: bold;
   right: 5%;
   top: 5%;
   width: 10%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: var(--background-color);
+  background-color: black;
+  color: white;
   opacity: 0.5;
 }
 
@@ -212,7 +252,14 @@ nav .nav-menu {
   bottom: -25%;
   z-index: 60;
   width: 75%; 
-  
+}
+
+#loading-screen2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -40%;
+  pointer-events: none;
 }
 
 /* appointment */
@@ -237,9 +284,15 @@ nav .nav-menu {
 }
 
 /* signup */
-.usersNew__field {
-  margin-bottom: 8px;
+.usersNew__form {
+  padding-top: 32px;
 }
+
+.usersNew__field {
+  margin-bottom: 16px;
+}
+
+
 
 .gender input[type=radio] {
   display: none;
@@ -258,11 +311,11 @@ nav .nav-menu {
 
 
 .gender input[type=radio]:checked + label[for=user_girl_1] {
-  background-color: rgb(255, 176, 206);  
+  background-color: rgb(186, 1, 97);  
 }
 
 .gender input[type=radio]:checked + label[for=user_girl_0] {
-  background-color: rgb(176, 194, 255);  
+  background-color: rgb(0, 45, 191);  
 }
 
 /* logged in */
@@ -282,9 +335,17 @@ label[for=user_comment] {
 }
 
 #image-preview:not([src]) {
-  background-color: rgb(36, 36, 36);
+  background-color: var(--first-color); 
   width: 100%;
   aspect-ratio: 4 / 5;
+}
+
+.add__icon {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 
 #user_image {
@@ -297,8 +358,16 @@ label[for=user_comment] {
   bottom: 16px;
   background-color: black;
   opacity: 0.5;
-  width: 15%;
+  width: 17%;
   aspect-ratio: 1;
   border-radius: 50%;
   z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* profile */
+.usersShow__delete {
+  margin-top: 24px;
 }
