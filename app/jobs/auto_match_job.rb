@@ -26,7 +26,7 @@ class AutoMatchJob < ApplicationJob
         boy_lng = $redis.hget(boy, "lng").to_f
         valid_girls = filter(boy_id, girls)
         valid_girls.each do |girl|
-          valid_girl_id = girl.delete('^0-9')
+          valid_girl_id = girl.delete('^0-9').to_i
           past_boy_ids = $redis_past.lrange(valid_girl_id, 0, -1)
           past_boy_ids = past_boy_ids.map { |i| i.to_i }
           if !past_boy_ids.include?(boy_id)

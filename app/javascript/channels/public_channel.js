@@ -10,27 +10,29 @@ let locationSubscription;
 let map;
 let MarkerClass;
 let myLocation;
-let partnerLocation;
 let stationLocation;
-
+let partnerLocation;
 
 function connection() {
   let connectLink = document.getElementById('connect-link')
+  let partnerImageElement;
   let cropper;
   const commentElement = document.getElementById('user_comment')
   
   function removeInfo() {
     console.log('timeover')
-    let matchInfoElement = document.getElementById('match-info')
-    
-    let lists = ['name' , 'age',  'distance']
+    const matchInfoElement = document.getElementById('match-info')
+    matchInfoElement.style.display = 'none'
+    connectLink.style.display = 'block'
+    document.getElementById('loading-screen2').style.display = 'none'
+    /* let lists = ['name' , 'age',  'distance']
     for ( let i = 0; i < lists.length; i++ ){
       document.getElementById(lists[i]).textContent = null;
     }
     document.getElementById('match-info').removeAttribute('background-image')
     matchInfoElement.style.display = 'none'
     connectLink.style.display = 'block'
-    document.getElementById('loading-screen2').style.display = 'none'
+    document.getElementById('loading-screen2').style.display = 'none'*/
   }
 
   function delay(ms) {
@@ -138,7 +140,7 @@ function connection() {
             if(!privateSubscription) {
               privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
                 connected() {
-                  const partnerImageElement = document.getElementById('partner-image')
+                  //const partnerImageElement = document.getElementById('partner-image')
                   const appointmentElement = document.getElementById('appointment')
                   const stationElement = document.getElementById('station')
                   const distanceToStationElement = document.getElementById('distance-to-station')
@@ -147,19 +149,7 @@ function connection() {
                   const appointmentData = data['appointment']
                   const connectText = document.getElementById('connect-text')
                   
-
-
                   removeInfo();
-                  partnerLocation = new MarkerClass({
-                    map,
-                    position: data['partnerLocation'],
-                    content: partnerImageElement
-                  })
-                  
-                  stationLocation = new MarkerClass({
-                    map,
-                    position: appointmentData['stationLocation']
-                  })
 
                   map.setCenter(appointmentData['stationLocation'])
                   map.setZoom(12)
@@ -174,6 +164,17 @@ function connection() {
                   warningElement.style.display = 'block'
                   document.getElementById('loading-screen').style.display = 'none'
                   document.getElementById('loading-screen2').style.display = 'none'
+
+                  partnerLocation = new MarkerClass({
+                    map,
+                    position: data['partnerLocation'],
+                    content: partnerImageElement
+                  })
+                  
+                  stationLocation = new MarkerClass({
+                    map,
+                    position: appointmentData['stationLocation']
+                  })
 
                   connectLink.addEventListener('click', (event) => {
                     event.preventDefault()
@@ -199,12 +200,21 @@ function connection() {
                     exitToEntry();
 
                   })
+
+                  partnerImageElement.addEventListener(('click'), (event) => { 
+                    event.preventDefault();
+                      const matchInfoElement = document.getElementById('match-info')
+                      const agreementElement = document.getElementById('agreement')
+
+                      matchInfoElement.style.display = 'block'
+                      agreementElement.style.display = 'none';
+                  })
                 }, 
                 disconnceted() {
                 }, 
                 received(partnerData) {
                   if(partnerData === 0) {
-                    const partnerImageElement = document.getElementById('partner-image')
+                    //const partnerImageElement = document.getElementById('partner-image')
                     const appointmentElement = document.getElementById('appointment')
                     const warningElement = document.getElementById('warning')
 
@@ -216,12 +226,20 @@ function connection() {
                     //chatElement.style.display = 'none'
                     appointmentElement.style.display = 'none'
                     warningElement.style.display = 'none'
-                    partnerImageElement.src = ""
                     partnerImageElement.style.display = 'none'
                     document.getElementById('connect-text').textContent = 'オフ'
                     document.getElementById('loading-screen').style.display = 'block'
+                    document.getElementById('agreement').style.display = 'block'
                     partnerLocation.setMap(null);
                     stationLocation.setMap(null);
+                  
+                    async function removeNotification() {
+                      const notificationElement = document.getElementById('popup__javascript')
+                      notificationElement.textContent = '相手がマッチを解除しました'
+                      await delay(15000)
+                      notificationElement.textContent = ''
+                    }
+                    removeNotification()
   
                     subscribePublic();
                   }
@@ -303,7 +321,8 @@ function connection() {
         connectLink = document.getElementById('connect-link')
         document.getElementById('connect-text').textContent = 'オフ'
         document.querySelector('.profile__icon').style.display = 'none'
-      }
+        partnerImageElement = document.getElementById('partner-image')
+        }
 
       async function showGoogleMap() {
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
@@ -403,4 +422,4 @@ window.addEventListener('popstate', () => {
       consumer.connection.close();
       navigator.geolocation.clearWatch(watchId)
     }
-})
+}) 

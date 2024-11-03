@@ -4,7 +4,7 @@
   </div>
   <div id="map"></div>
   <%= image_tag current_user.image.variant(:display), class: "icon" %> 
-  <img id="partner-image" alt="nothing" style="display: none;" class="icon"> 
+  <img id="partner-image" alt="partner-icon" style="display: none;" class="icon"> 
 
   <div id="loading-screen">
     <div class="spinner"></div>
@@ -36,4 +36,7 @@
       <h2 id="meeting-time"></h2>
     </div>
   </div>
+
 </div>
+
+<%= javascript_importmap_tags %>
