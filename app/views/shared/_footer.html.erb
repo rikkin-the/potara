@@ -9,13 +9,13 @@
     <%= link_to image_tag("profile-user.png", alt: "プロフィール", class: "image__icon profile__icon"), current_user %>
   </div>
   <div class="menu-center">
-    <%= link_to entry_path, id: "connect-link", class: "btn" do %>
+    <%= link_to entry_path, id: "connect-link", class: "btn", data: { turbo: false } do %>
       <div id="connect-text">オン</div>
     <% end %>
   </div>
   <% end %>
 
   <div class="menu-right">
-  <%= link_to "Muber", root_url, id: "logo" %>
+  <%= link_to "Muber", root_url, id: "logo", data: { turbo: false } %>
   </div>
 </div>

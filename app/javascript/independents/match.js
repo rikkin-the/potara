@@ -1,4 +1,4 @@
-import consumer from "channels/consumer"
+import consumer from "consumer"
 import Cropper from "cropperjs";
 
 let latitude;
@@ -411,7 +411,8 @@ function connection() {
 } 
 
 document.addEventListener('turbo:load', () => {
-    if (document.getElementById('connect-link')) {
+  console.log('JavaScriptを読み込み')
+    if (document.querySelector('.matchesNew__Image')) {
       connection();
       console.log('ページ遷移によりWebSocket通信が可能になりました')
     }
