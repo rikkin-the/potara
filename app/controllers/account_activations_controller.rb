@@ -5,11 +5,7 @@ class AccountActivationsController < ApplicationController
     if user && !user.activated? && user.authenticated?(:activation, params[:id])
       user.update_attribute(:activated, true)
       user.update_attribute(:activated_at, Time.zone.now)
-      reset_session
-      remember user
-      log_in user
-      flash[:sucess] = "アカウントが認証されました！"
-      redirect_to root_url
+      redirect_to account_activations_success_path
     else
       flash[:danger] = "このリンクは無効です"
       redirect_to root_url

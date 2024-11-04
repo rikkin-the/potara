@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'account_activations/success'
   get 'password_resets/new'
   get 'password_resets/edit'
   patch '/exit', to: "matches#disconnect"

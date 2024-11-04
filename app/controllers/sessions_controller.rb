@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
         message = "アカウントが認証されていません"
         message += "登録のメールアドレスから認証リンクを探してください"
         flash[:warning] = message
-        redirect_to root_url
+        redirect_to root_url, turbolinks: false
       end
     else
       flash.now[:danger] = 'メールアドレスまたはパスワードが間違っています'

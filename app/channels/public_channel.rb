@@ -53,7 +53,7 @@ class PublicChannel < ApplicationCable::Channel
       center_lat = (girl_lat + boy_lat)/2
       center_lng = (girl_lng + boy_lng)/2
 
-      retries = 3
+      retries = 2
       begin
         response = HTTP.get('https://express.heartrails.com/api/json',
           :params => {:method => "getStations", :x => center_lng, :y => center_lat})
@@ -71,7 +71,7 @@ class PublicChannel < ApplicationCable::Channel
       rescue => e
         retries -= 1
         if retries > 0
-          sleep(3)
+          sleep(5)
           retry
         else
           Rails.logger.error("HTTPリクエストが失敗しました")
@@ -109,10 +109,15 @@ class PublicChannel < ApplicationCable::Channel
         girl_image =  Rails.application.routes.url_helpers.rails_blob_url(girl.image.variant(:display), host: "localhost:3000")
         boy_image =  Rails.application.routes.url_helpers.rails_blob_url(boy.image.variant(:display), host: "localhost:3000")
 
-        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: boy_image, partnerLocation: {lat: boy_lat.to_f, lng: boy_lng.to_f},
+        variations = Array.new(2) { Random.rand(-0.005..0.005) }
+        boy_location = { lat: boy_lat.to_f + variations[0], lng: boy_lng.to_f + variations[1] }
+        girl_location = {lat: girl_lat.to_f + variations[0], lng: girl_lng.to_f + variations[1] }
+        p variations
+
+        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: boy_image, partnerLocation: girl_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
           meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: girl_image, partnerLocation: {lat: girl_lat.to_f, lng: girl_lng.to_f},
+        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: girl_image, partnerLocation: boy_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
 
