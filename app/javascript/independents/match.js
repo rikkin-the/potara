@@ -409,18 +409,5 @@ function connection() {
     }
   });
 } 
-
-document.addEventListener('turbo:load', () => {
-  console.log('JavaScriptを読み込み')
-    if (document.querySelector('.matchesNew__Image')) {
-      connection();
-      console.log('ページ遷移によりWebSocket通信が可能になりました')
-    }
-})
-
-window.addEventListener('popstate', () => {
-    if(subscription){
-      consumer.connection.close();
-      navigator.geolocation.clearWatch(watchId)
-    }
-}) 
+console.log("This is match.js")
+connection();

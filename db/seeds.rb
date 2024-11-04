@@ -15,23 +15,35 @@ User.create!(name: "花子", email: "girl@girl.com",
 
 date_from = Date.new(1995, 01, 01)
 date_to = Date.new(2006, 11, 03)
+m_lat = 35.4681482
+m_lng = 139.5037682
 
-25.times do |n|
+10.times do |n|
   name = Faker::Name.male_first_name
   email = "email-#{n + 1}@example.com"
   password = "password"
   date_of_birth = Random.rand(date_from..date_to)
-  User.create!({name: name, email: email,
+  comment = Faker::Lorem.sentence(word_count: 10)
+  user = User.create!({name: name, email: email,
     password: password, password_confirmation: password,
-    date_of_birth: date_of_birth, girl: 0, activated: 1  })
+    date_of_birth: date_of_birth, girl: 0, activated: 1,
+    comment: comment})
+  user.image.attach(io: File.open("./app/assets/images/man-#{(n%4) + 1}.png"), filename: "woman.png")
+  variations = Array.new(2) { Random.rand(-0.5..0.5) }
+  $redis.hset("boy_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1] )
 end
 
-25.times do |n|
+10.times do |n|
   name = Faker::Name.female_first_name
-  email = "email-#{n + 26}@example.com"
+  email = "email-#{n + 11}@example.com"
   password = "password"
   date_of_birth = Random.rand(date_from..date_to)
-  User.create!({name: name, email: email,
+  comment = Faker::Lorem.sentence(word_count: 10)
+  user = User.create!({name: name, email: email,
     password: password, password_confirmation: password,
-    date_of_birth: date_of_birth, girl: 1, activated: 1  })
+    date_of_birth: date_of_birth, girl: 1, activated: 1,
+    comment: comment})
+  user.image.attach(io: File.open("./app/assets/images/woman-#{(n%4) + 1}.png"), filename: "man.png")
+  variations = Array.new(2) { Random.rand(-0.5..0.5) }
+  $redis.hset("girl_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1])
 end
