@@ -53,6 +53,7 @@ gem "dotenv-rails"
 gem "http"
 gem "pg", "1.3.5"
 gem "rails-i18n"
+gem "faker"
 # Use Sass to process CSS
 # gem "sassc-rails"
 
