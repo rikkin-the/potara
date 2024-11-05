@@ -106,8 +106,8 @@ class PublicChannel < ApplicationCable::Channel
         meeting_time = Time.current.since(required_time.minute) + 15.minute
         time_params = meeting_time.strftime("%H:%M")
 
-        girl_image =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:display))
-        boy_image =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:display))
+        girl_image =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:display), only_path: true)
+        boy_image =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:display), only_path: true)
 
         variations = Array.new(2) { Random.rand(-0.005..0.005) }
         boy_location = { lat: boy_lat.to_f + variations[0], lng: boy_lng.to_f + variations[1] }
