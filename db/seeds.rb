@@ -30,7 +30,7 @@ m_lng = 139.5037682
     password: password, password_confirmation: password,
     date_of_birth: date_of_birth, girl: 0, activated: 1,
     comment: comment})
-  user.image.attach(io: File.open(Rails.root.join("app/assets/images/man-#{(n%4) + 1}.png")), filename: "man-#{(n%4) + 1}.png")
+  user.image.attach(io: File.open(Rails.root.join("app/assets/images/man-#{(n%4) + 1}.png")), filename: "man-#{n + 1}.png")
   variations = Array.new(2) { Random.rand(-0.5..0.5) }
   $redis.hset("boy_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1] )
 end
@@ -45,7 +45,7 @@ end
     password: password, password_confirmation: password,
     date_of_birth: date_of_birth, girl: 1, activated: 1,
     comment: comment})
-  user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{(n%4) + 1}.png")
+  user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{n + 11}.png")
   variations = Array.new(2) { Random.rand(-0.5..0.5) }
   $redis.hset("girl_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1])
 end

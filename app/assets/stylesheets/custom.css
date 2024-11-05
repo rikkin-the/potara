@@ -271,7 +271,7 @@ footer {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -40%;
+  bottom: -35%;
   pointer-events: none;
 }
 
