@@ -10,6 +10,7 @@ module Muber
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+    Rails.application.routes.default_url_options[:host] = ENV['APP_URL']
     config.active_storage_variant_processor = :mini_magick
     config.active_job.queue_adapter = :sidekiq
     config.i18n.default_locale = :ja
