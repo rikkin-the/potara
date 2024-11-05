@@ -258,21 +258,23 @@ function connection() {
         return new Promise(function(resolve, reject) {
           watchId = navigator.geolocation.watchPosition(
             (position) => {
-              let data = position.coords 
-              latitude = data.latitude
-              longitude = data.longitude
-              let patch_data = { 
-                id: currentUserId, 
-                latitude: latitude,
-                longitude: longitude
-              } 
+              let data = position.coords;
+              if(Math.abs(latitude - data.latitude) > 0.0005 || Math.abs(longitude - data.longitude) > 0.0005 || !latitude) {
+                latitude = data.latitude
+                longitude = data.longitude
+                let patch_data = { 
+                  id: currentUserId, 
+                  latitude: latitude,
+                  longitude: longitude
+                } 
+                locationSubscription.send(patch_data)
 
-              if(map && myLocation) {
-                myLocation.position = {lat: latitude, lng: longitude}
+                if(map && myLocation) {
+                  myLocation.position = {lat: latitude, lng: longitude}
+                  
+                }
                 console.log('reset location')
               }
-
-              locationSubscription.send(patch_data)
               resolve()
             },
             (error) => {
