@@ -45,8 +45,8 @@ class AutoMatchJob < ApplicationJob
           boy_instance = User.find(boy_id)
           girl_instance.get_age
           boy_instance.get_age
-          girl_url = Rails.application.routes.url_helpers.rails_blob_url(girl_instance.image.variant(:display), host: "localhost:3000")
-          boy_url = Rails.application.routes.url_helpers.rails_blob_url(boy_instance.image.variant(:display), host: "localhost:3000")
+          girl_url = Rails.application.routes.url_helpers.rails_blob_path(girl_instance.image.variant(:display))
+          boy_url = Rails.application.routes.url_helpers.rails_blob_path(boy_instance.image.variant(:display))
           PublicChannel.broadcast_to(girl_instance, {
             user: boy_instance, age: boy_instance.age, distance: distance_to_km(shortest_distance), image: boy_url
           })
