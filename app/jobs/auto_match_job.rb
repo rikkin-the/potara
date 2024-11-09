@@ -20,7 +20,7 @@ class AutoMatchJob < ApplicationJob
       ordered_boys = boys.reverse
       ordered_boys.each do |boy|
         nearest_girl = nil
-        shortest_distance = 10000000
+        shortest_distance = 0.05
         boy_id = boy.delete('^0-9').to_i
         boy_lat = $redis.hget(boy, "lat").to_f
         boy_lng = $redis.hget(boy, "lng").to_f
