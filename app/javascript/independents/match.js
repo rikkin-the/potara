@@ -158,7 +158,7 @@ function connection() {
                   stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
-                  partnerIcon.src = data['partnerImage']['icon']
+                  partnerIcon.src = data['partnerIcon']
                   partnerIcon.style.display = 'inline'
                   appointmentElement.style.display = 'block'
                   warningElement.style.display = 'block'
@@ -203,6 +203,7 @@ function connection() {
 
                   partnerIcon.addEventListener(('click'), (event) => { 
                     event.preventDefault();
+                    console.log("hey")
                       const matchInfoElement = document.getElementById('match-info')
                       const agreementElement = document.getElementById('agreement')
 
@@ -258,7 +259,7 @@ function connection() {
           watchId = navigator.geolocation.watchPosition(
             (position) => {
               let data = position.coords;
-              if(Math.abs(latitude - data.latitude) > 0.001 || Math.abs(longitude - data.longitude) > 0.001 || !latitude) {
+              if(Math.abs(latitude - data.latitude) > 0.0005 || Math.abs(longitude - data.longitude) > 0.0005 || !latitude) {
                 latitude = data.latitude
                 longitude = data.longitude
                 let patch_data = { 
