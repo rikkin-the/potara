@@ -108,16 +108,18 @@ class PublicChannel < ApplicationCable::Channel
 
         girl_image =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:display), only_path: true)
         boy_image =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:display), only_path: true)
+        girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:icon), only_path: true)
+        boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:icon), only_path: true)
 
         variations = Array.new(2) { Random.rand(-0.005..0.005) }
         boy_location = { lat: boy_lat.to_f + variations[0], lng: boy_lng.to_f + variations[1] }
         girl_location = {lat: girl_lat.to_f + variations[0], lng: girl_lng.to_f + variations[1] }
         p variations
 
-        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: boy_image, partnerLocation: girl_location,
+        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerImage: {image: boy_image, icon: boy_icon}, partnerLocation: girl_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
           meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: girl_image, partnerLocation: boy_location,
+        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerImage: {image: girl_image, icon: girl_icon}, partnerLocation: boy_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
 

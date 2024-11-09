@@ -16,7 +16,8 @@ class User < ApplicationRecord
   validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
   validates_acceptance_of :agreement
   has_one_attached :image do |attachable|
-    attachable.variant :display, resize_to_limit: [720, 900]
+    attachable.variant :display, resize_to_limit: [400, 500]
+    attachable.variant :icon, resize_to_limit: [100, 100]
   end
 
   def User.digest(string)

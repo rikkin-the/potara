@@ -35,4 +35,3 @@
 /config/master.key
 
 /.env.development
-/http_test.rb

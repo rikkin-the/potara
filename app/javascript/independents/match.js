@@ -15,7 +15,6 @@ let partnerLocation;
 
 function connection() {
   let connectLink = document.getElementById('connect-link')
-  let partnerImageElement;
   let cropper;
   const commentElement = document.getElementById('user_comment')
   
@@ -148,6 +147,7 @@ function connection() {
                   const warningElement = document.getElementById('warning')
                   const appointmentData = data['appointment']
                   const connectText = document.getElementById('connect-text')
+                  const partnerIcon = document.getElementById('partner-icon')
                   
                   removeInfo();
 
@@ -158,8 +158,8 @@ function connection() {
                   stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
                   distanceToStationElement.textContent = `${appointmentData['distance']}km`
                   timeElement.textContent = appointmentData['meeting_time']
-                  partnerImageElement.src = data['partnerImage']
-                  partnerImageElement.style.display = 'inline'
+                  partnerIcon.src = data['partnerImage']['icon']
+                  partnerIcon.style.display = 'inline'
                   appointmentElement.style.display = 'block'
                   warningElement.style.display = 'block'
                   document.getElementById('loading-screen').style.display = 'none'
@@ -168,7 +168,7 @@ function connection() {
                   partnerLocation = new MarkerClass({
                     map,
                     position: data['partnerLocation'],
-                    content: partnerImageElement
+                    content: partnerIcon
                   })
                   
                   stationLocation = new MarkerClass({
@@ -201,7 +201,7 @@ function connection() {
 
                   })
 
-                  partnerImageElement.addEventListener(('click'), (event) => { 
+                  partnerIcon.addEventListener(('click'), (event) => { 
                     event.preventDefault();
                       const matchInfoElement = document.getElementById('match-info')
                       const agreementElement = document.getElementById('agreement')
@@ -226,7 +226,6 @@ function connection() {
                     //chatElement.style.display = 'none'
                     appointmentElement.style.display = 'none'
                     warningElement.style.display = 'none'
-                    partnerImageElement.style.display = 'none'
                     document.getElementById('connect-text').textContent = 'オフ'
                     document.getElementById('loading-screen').style.display = 'block'
                     document.getElementById('agreement').style.display = 'block'
@@ -323,13 +322,12 @@ function connection() {
         connectLink = document.getElementById('connect-link')
         document.getElementById('connect-text').textContent = 'オフ'
         document.querySelector('.profile__icon').style.display = 'none'
-        partnerImageElement = document.getElementById('partner-image')
         }
 
       async function showGoogleMap() {
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
         key: "AIzaSyCduQ2F4MLs5vF2I0BKKEqYJmDxA2Yq1QU",
-        v: "beta",
+        v: "weekly",
         // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
         // Add other bootstrap parameters as needed, using camel case.
         });

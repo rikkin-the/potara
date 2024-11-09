@@ -3,8 +3,8 @@
     <%= link_to "オフライン", '#', id: "disconnect-link" %>
   </div>
   <div id="map"></div>
-  <%= image_tag current_user.image.variant(:display), class: "icon" %> 
-  <img id="partner-image" alt="partner-icon" style="display: none;" class="icon"> 
+  <%= image_tag current_user.image.variant(:icon), class: "icon" %> 
+  <img id="partner-icon" alt="partner-icon" style="display: none;" class="icon"> 
 
   <div id="loading-screen">
     <div class="spinner"></div>
