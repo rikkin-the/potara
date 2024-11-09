@@ -259,6 +259,11 @@ function connection() {
           watchId = navigator.geolocation.watchPosition(
             (position) => {
               let data = position.coords;
+
+              if(map && myLocation) {
+                myLocation.position = {lat: latitude, lng: longitude}
+              }
+
               if(Math.abs(latitude - data.latitude) > 0.0005 || Math.abs(longitude - data.longitude) > 0.0005 || !latitude) {
                 latitude = data.latitude
                 longitude = data.longitude
@@ -269,11 +274,7 @@ function connection() {
                 } 
                 locationSubscription.send(patch_data)
 
-                if(map && myLocation) {
-                  myLocation.position = {lat: latitude, lng: longitude}
-                  
-                }
-                console.log('reset location')
+                console.log('updated location')
               }
               resolve()
             },
@@ -393,7 +394,6 @@ function connection() {
 
       locationSubscription = consumer.subscriptions.create('LocationChannel', {
         connected() {
-          executeInTurn();
         },
         received(data) {
           console.log(data)
@@ -407,6 +407,7 @@ function connection() {
           removeNotification()
         }
       })
+      executeInTurn();
     }
   });
 } 
