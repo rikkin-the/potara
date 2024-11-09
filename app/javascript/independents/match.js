@@ -393,7 +393,8 @@ function connection() {
       }
 
       locationSubscription = consumer.subscriptions.create('LocationChannel', {
-        connected() {
+        initialized() {
+          executeInTurn();
         },
         received(data) {
           console.log(data)
@@ -407,7 +408,6 @@ function connection() {
           removeNotification()
         }
       })
-      executeInTurn();
     }
   });
 } 
