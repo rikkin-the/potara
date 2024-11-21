@@ -19,6 +19,8 @@ date_from = Date.new(1995, 01, 01)
 date_to = Date.new(2006, 11, 03)
 m_lat = 35.4681482
 m_lng = 139.5037682
+boys = [];
+girls = [];
 
 10.times do |n|
   name = Faker::Name.male_first_name
@@ -31,7 +33,8 @@ m_lng = 139.5037682
     date_of_birth: date_of_birth, girl: 0, activated: 1,
     comment: comment})
   user.image.attach(io: File.open(Rails.root.join("app/assets/images/man-#{(n%4) + 1}.png")), filename: "man-#{n + 1}.png")
-  variations = Array.new(2) { Random.rand(-0.5..0.5) }
+  boys[n] = user
+  variations = Array.new(2) { Random.rand(-0.1..0.1) }
   $redis.hset("boy_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1] )
 end
 
@@ -46,6 +49,14 @@ end
     date_of_birth: date_of_birth, girl: 1, activated: 1,
     comment: comment})
   user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{n + 11}.png")
-  variations = Array.new(2) { Random.rand(-0.5..0.5) }
+  girls[n] = user
+  variations = Array.new(2) { Random.rand(-0.1..0.1) }
   $redis.hset("girl_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1])
+end
+
+boys.each do |boy|
+  girls.each do |girl|
+    $redis_past.rpush(boy.id, girl.id)
+    $redis_past.rpush(girl.id, boy.id)
+  end
 end

@@ -21,8 +21,9 @@ class PublicChannel < ApplicationCable::Channel
     liked_id = data["liked_id"]
     like_user = User.find_by(id: like_id)
     liked_user = User.find_by(id: liked_id)
+    const = (3..22).to_a
 
-    if $redis_agreement.get(liked_id) == like_id.to_s
+    if ($redis_agreement.get(liked_id) == like_id.to_s || const.include?(liked_id))
       if like_user.girl
         girl = like_user
         boy = liked_user
@@ -52,6 +53,15 @@ class PublicChannel < ApplicationCable::Channel
       boy_lng = boy_lng.to_f
       center_lat = (girl_lat + boy_lat)/2
       center_lng = (girl_lng + boy_lng)/2
+
+      p girl_lat
+      p girl_lng
+      p "-----"
+      p boy_lat
+      p boy_lng
+      p "-----"
+      p center_lat
+      p center_lng
 
       retries = 2
       begin

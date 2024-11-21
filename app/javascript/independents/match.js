@@ -24,14 +24,6 @@ function connection() {
     matchInfoElement.style.display = 'none'
     connectLink.style.display = 'block'
     document.getElementById('loading-screen2').style.display = 'none'
-    /* let lists = ['name' , 'age',  'distance']
-    for ( let i = 0; i < lists.length; i++ ){
-      document.getElementById(lists[i]).textContent = null;
-    }
-    document.getElementById('match-info').removeAttribute('background-image')
-    matchInfoElement.style.display = 'none'
-    connectLink.style.display = 'block'
-    document.getElementById('loading-screen2').style.display = 'none'*/
   }
 
   function delay(ms) {
@@ -411,5 +403,7 @@ function connection() {
     }
   });
 } 
+
+
 console.log("This is match.js")
 connection();
