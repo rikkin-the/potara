@@ -44,8 +44,6 @@ class PublicChannel < ApplicationCable::Channel
       boy_lat = $redis.hget(boy_key, "lat")
       girl_lng = $redis.hget(girl_key, "lng")
       boy_lng = $redis.hget(boy_key, "lng")
-      $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])
-      $redis_matched.hmset(boy_id, ["lat", boy_lat, "lng", boy_lng, "partner", girl_id])
 
       girl_lat = girl_lat.to_f
       girl_lng = girl_lng.to_f
@@ -92,7 +90,8 @@ class PublicChannel < ApplicationCable::Channel
         station_lat = station["response"]["station"][0]["y"].to_f
         station_lng = station["response"]["station"][0]["x"].to_f
         point = "改札前"
-        if exit_arr = exit_info["ResultSet"]["Information"]["Exit"]
+        exit_arr = exit_info["ResultSet"]["Information"]["Exit"]
+        if exit_arr
           exit_center = exit_arr.filter { |e| e["Name"].include?("中央") }
           if exit_center.any?
             point = exit_center.sample["Name"]
@@ -122,7 +121,7 @@ class PublicChannel < ApplicationCable::Channel
         variations = Array.new(2) { Random.rand(-0.005..0.005) }
         boy_location = { lat: boy_lat.to_f + variations[0], lng: boy_lng.to_f + variations[1] }
         girl_location = {lat: girl_lat.to_f + variations[0], lng: girl_lng.to_f + variations[1] }
-        p variations
+
 
         PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerIcon: boy_icon, partnerLocation: girl_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
@@ -130,6 +129,9 @@ class PublicChannel < ApplicationCable::Channel
         PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerIcon: girl_icon, partnerLocation: boy_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
+
+        $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])
+        $redis_matched.hmset(boy_id, ["lat", boy_lat, "lng", boy_lng, "partner", girl_id])
 
         $redis_agreement.del(liked_id)
       end

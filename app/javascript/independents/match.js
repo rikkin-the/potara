@@ -246,15 +246,15 @@ function connection() {
     }
 
     async function subscribeLocation() {
-      function watchCurrent() {
+      async function watchCurrent() {
         return new Promise(function(resolve, reject) {
           watchId = navigator.geolocation.watchPosition(
             (position) => {
               let data = position.coords;
 
-              if(map && myLocation) {
+              /*if(map && myLocation) {
                 myLocation.position = {lat: latitude, lng: longitude}
-              }
+              } */
 
               if(Math.abs(latitude - data.latitude) > 0.0005 || Math.abs(longitude - data.longitude) > 0.0005 || !latitude) {
                 latitude = data.latitude
@@ -265,10 +265,9 @@ function connection() {
                   longitude: longitude
                 } 
                 locationSubscription.send(patch_data)
-
                 console.log('updated location')
               }
-              resolve()
+              resolve();
             },
             (error) => {
               const errorInfo = [
@@ -382,12 +381,19 @@ function connection() {
         await updateDatabase();
         showGoogleMap();
         prepareDisconnection();
+        let patch_data = { 
+          id: currentUserId, 
+          latitude: latitude,
+          longitude: longitude
+        } 
+        locationSubscription.send(patch_data) 
       }
 
       locationSubscription = consumer.subscriptions.create('LocationChannel', {
         initialized() {
           executeInTurn();
         },
+        
         received(data) {
           console.log(data)
           const notificationElement = document.getElementById('popup__javascript')
