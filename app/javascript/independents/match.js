@@ -1,6 +1,7 @@
 import consumer from "consumer";
 import Cropper from "cropperjs";
 
+const currentUserId = document.getElementById('current_user_id').value
 let latitude;
 let longitude;
 let subscription;
@@ -89,7 +90,6 @@ function connection() {
         received(data) {
           console.log(data)
           if(data['user']) {
-
             displayMatchInfo(data);
             removeInfoWithDelay();
 
@@ -134,6 +134,7 @@ function connection() {
             }
           } else if(data === 0) {
             alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
+            removeInfo();
           }
         }
       })
@@ -153,7 +154,6 @@ function connection() {
           partnerIcon.alt = "partner-icon"
           partnerIcon.classList.add("icon")
           partnerIcon.src = data['partnerIcon']
-          //partnerIcon.style.display = 'inline'
           
           removeInfo();
           map.setCenter(appointmentData['stationLocation'])
@@ -170,12 +170,22 @@ function connection() {
           partnerLocation = new MarkerClass({
             map,
             position: data['partnerLocation'],
-            content: partnerIcon
+            content: partnerIcon,
+            gmpClickable: true
           })
           
           stationLocation = new MarkerClass({
             map,
             position: appointmentData['stationLocation']
+          })
+
+          partnerLocation.addEventListener('gmp-click', (event) => { 
+            event.preventDefault();
+            const matchInfoElement = document.getElementById('match-info')
+            const agreementElement = document.getElementById('agreement')
+
+            matchInfoElement.style.display = 'block'
+            agreementElement.style.display = 'none'
           })
 
           connectLink.addEventListener('click', (event) => {
@@ -200,16 +210,6 @@ function connection() {
               var data = await response.json()
               window.location.href = data.redirect_url
             }
-          })
-
-          partnerIcon.addEventListener(('click'), (event) => { 
-            event.preventDefault();
-            console.log("hey")
-              const matchInfoElement = document.getElementById('match-info')
-              const agreementElement = document.getElementById('agreement')
-
-              matchInfoElement.style.display = 'block'
-              agreementElement.style.display = 'none';
           })
         }, 
         received(partnerData) {
@@ -265,14 +265,7 @@ function connection() {
         await updateDatabase();
         showGoogleMap();
         prepareDisconnection();
-        /*
-        let patch_data = { 
-          id: currentUserId, 
-          latitude: latitude,
-          longitude: longitude
-        } 
-        locationSubscription.send(patch_data) 
-        */
+        locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
       }
 
       async function watchCurrent() {
@@ -287,7 +280,7 @@ function connection() {
 
               if(Math.abs(latitude - data.latitude) > 0.0005 ||
                  Math.abs(longitude - data.longitude) > 0.0005 || 
-                 !latitude || longitude) {
+                 !latitude) {
                 latitude = data.latitude
                 longitude = data.longitude
                 let patch_data = { 
@@ -315,11 +308,14 @@ function connection() {
             {
               "enableHighAccuracy": true
             } 
-          );
+          );  
         })
       }   
 
       async function updateDatabase() {
+        const formData = new FormData();
+        const comment = commentElement.value
+        const blob = await getBlobFromCanvas(cropper)
         function getBlobFromCanvas(c) {
           return new Promise((resolve) => {
             c.getCroppedCanvas().toBlob((blob) => {
@@ -328,9 +324,6 @@ function connection() {
           })
         }
 
-        const formData = new FormData();
-        const comment = commentElement.value
-        const blob = await getBlobFromCanvas(cropper)
         formData.append("user[comment]", comment)
         formData.append("user[image]", blob);
 
@@ -351,7 +344,7 @@ function connection() {
       async function showGoogleMap() {
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
         key: "AIzaSyCduQ2F4MLs5vF2I0BKKEqYJmDxA2Yq1QU",
-        v: "weekly",
+        v: "beta",
         // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
         // Add other bootstrap parameters as needed, using camel case.
         });
@@ -371,8 +364,8 @@ function connection() {
             center: pos,
             zoom: 15,
             disableDefaultUI: true,
-            colorScheme: ColorScheme.DARK,
             clickableIcons: false,
+            colorScheme: ColorScheme.DARK
           })
           
           myLocation = new MarkerClass({

@@ -1,6 +1,7 @@
 <% provide(:independent, javascript_import_module_tag("independents/match")) %>
+<%= hidden_field_tag "current_user_id", @current_user.id %>
 
-<%= form_with model: current_user, id: "whole-form" do |f| %>
+<%= form_with model: @current_user, id: "whole-form" do |f| %>
 <div class="matchesNew__image">
   <img id="image-preview">
   <%= image_tag 'add-photo.png', class: "image__icon add__icon" %>
