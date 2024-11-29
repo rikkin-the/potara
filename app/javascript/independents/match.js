@@ -27,6 +27,7 @@ function delay(ms) {
 }
 
 
+
 connection();
 console.log("This is match.js")
 function connection() {
@@ -117,6 +118,7 @@ function connection() {
               closeButton.addEventListener('click', () => {
                 removeInfo();
               })
+              agreementElement.classList.add('animate')
             }
 
             async function removeInfoWithDelay() {
@@ -125,6 +127,7 @@ function connection() {
             }
 
           } else if(data['roomId']) {
+            removeInfo();
             if(subscription) {
               subscription.unsubscribe();
               subscription = null;
@@ -133,8 +136,8 @@ function connection() {
               subscribePrivate(data);
             }
           } else if(data === 0) {
-            alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
             removeInfo();
+            alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
           }
         }
       })
@@ -146,22 +149,25 @@ function connection() {
           const appointmentElement = document.getElementById('appointment')
           const stationElement = document.getElementById('station')
           const distanceToStationElement = document.getElementById('distance-to-station')
-          const timeElement = document.getElementById('meeting-time')
+          //const timeElement = document.getElementById('meeting-time')
           const warningElement = document.getElementById('warning')
           const appointmentData = data['appointment']
           const connectText = document.getElementById('connect-text')
           let partnerIcon = document.createElement('img')
+          let timeIcon = document.createElement('div')
+
           partnerIcon.alt = "partner-icon"
           partnerIcon.classList.add("icon")
           partnerIcon.src = data['partnerIcon']
+          timeIcon.className = 'meeting-time'
+          timeIcon.textContent = appointmentData['meeting_time']
           
-          removeInfo();
           map.setCenter(appointmentData['stationLocation'])
           map.setZoom(12)
           connectText.textContent = '解除'
           stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
           distanceToStationElement.textContent = `${appointmentData['distance']}km`
-          timeElement.textContent = appointmentData['meeting_time']
+          //timeElement.textContent = appointmentData['meeting_time']
           appointmentElement.style.display = 'block'
           warningElement.style.display = 'block'
           document.getElementById('loading-screen').style.display = 'none'
@@ -176,7 +182,8 @@ function connection() {
           
           stationLocation = new MarkerClass({
             map,
-            position: appointmentData['stationLocation']
+            position: appointmentData['stationLocation'],
+            content: timeIcon
           })
 
           partnerLocation.addEventListener('gmp-click', (event) => { 
@@ -274,9 +281,9 @@ function connection() {
             (position) => {
               let data = position.coords;
 
-              /*if(map && myLocation) {
+              if(myLocation) {
                 myLocation.position = {lat: latitude, lng: longitude}
-              } */
+              } 
 
               if(Math.abs(latitude - data.latitude) > 0.0005 ||
                  Math.abs(longitude - data.longitude) > 0.0005 || 
@@ -339,7 +346,12 @@ function connection() {
         connectLink = document.getElementById('connect-link')
         document.getElementById('connect-text').textContent = 'オフ'
         document.querySelector('.profile__icon').style.display = 'none'
-        }
+        document.querySelector('footer').style.pointerEvents = 'none'
+        document.getElementById('current-location').addEventListener('click', () => {
+          map.setCenter({lat: latitude, lng: longitude})
+          map.setZoom(14)
+        })
+      }
 
       async function showGoogleMap() {
         (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
@@ -362,7 +374,7 @@ function connection() {
           map = new Map(document.getElementById('map'), {
             mapId: "3c6f58db644be140",
             center: pos,
-            zoom: 15,
+            zoom: 14,
             disableDefaultUI: true,
             clickableIcons: false,
             colorScheme: ColorScheme.DARK

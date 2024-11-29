@@ -1,7 +1,4 @@
 <div id="map-page">
-  <div>
-    <%= link_to "オフライン", '#', id: "disconnect-link" %>
-  </div>
   <div id="map"></div>
   <%= image_tag current_user.image.variant(:icon), class: "icon" %> 
   <div id="loading-screen">
@@ -31,7 +28,9 @@
       <h3>Matched!</h3>
       <h1 id="station"></h1>
       <p id="distance-to-station"></p>
-      <h2 id="meeting-time"></h2>
     </div>
+  </div>
+
+  <div id="current-location">
   </div>
 </div>

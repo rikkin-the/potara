@@ -127,6 +127,7 @@ footer {
   width: 40%;
   aspect-ratio: 1;
   margin: 16px auto;
+  pointer-events: auto;
 }
 
 #connect-text {
@@ -169,6 +170,21 @@ footer {
   height: 100svh;
 }
 
+#current-location {
+  position: absolute;
+  right: 16px;
+  bottom: 18%;
+  width: 15%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  z-index: 1;
+  background-color: var(--background-color);
+  background-image: url("navigation.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
+
 .icon {
   width: 70px;
   height: 70px;
@@ -202,9 +218,7 @@ footer {
   }
 }
 
-
 /* match info */
-
 
 #match-info, #appointment {
   width: 95svw;
@@ -265,6 +279,23 @@ footer {
   bottom: -25%;
   z-index: 60;
   width: 75%; 
+  color: var(--background-color);
+  background-image: linear-gradient(to right, white 0%, var(--second-color) 100%);
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+}
+
+.animate {
+  animation: limitOfTimes 45s linear;
+}
+
+@keyframes limitOfTimes{
+  0%{
+    background-position: -100% 0%;
+  }
+  100%{
+    background-position: 0% 0%;
+  }
 }
 
 #loading-screen2 {
@@ -278,6 +309,28 @@ footer {
 /* appointment */
 #appointment {
   pointer-events: none;
+}
+
+.meeting-time {
+  background-color: #d44300;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 16px;
+  padding: 8px 12px;
+  position: relative;
+}
+
+.meeting-time::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #d44300;
 }
 
 /* not logged in  */
