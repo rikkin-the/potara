@@ -52,12 +52,6 @@ class PublicChannel < ApplicationCable::Channel
       center_lat = (girl_lat + boy_lat)/2
       center_lng = (girl_lng + boy_lng)/2
 
-      p girl_lat
-      p girl_lng
-      p "-----"
-      p boy_lat
-      p boy_lng
-      p "-----"
       p center_lat
       p center_lng
 
@@ -90,20 +84,24 @@ class PublicChannel < ApplicationCable::Channel
         station_lat = station["response"]["station"][0]["y"].to_f
         station_lng = station["response"]["station"][0]["x"].to_f
         point = "改札前"
+        p exit_info
         exit_arr = exit_info["ResultSet"]["Information"]["Exit"]
         if exit_arr
-          exit_center = exit_arr.filter { |e| e["Name"].include?("中央") }
+          if exit_arr.class != Array
+            exit_arr = [exit_arr]
+          end
+          exit_center = exit_arr.filter { |exit| exit["Name"].include?("中央") }
           if exit_center.any?
             point = exit_center.sample["Name"]
           else
-            exit_direction = exit_arr.filter do |e|
-              e["Name"].include?("西口") || e["Name"].include?("東口") ||
-              e["Name"].include?("南口") || e["Name"].include?("北口")
+            exit_direction = exit_arr.filter do |exit|
+              exit["Name"].include?("西口") || exit["Name"].include?("東口") ||
+              exit["Name"].include?("南口") || exit["Name"].include?("北口")
             end
             if exit_direction.any?
               point = exit_direction.sample["Name"]
             else
-              point = exit_info["ResultSet"]["Information"]["Exit"].sample["Name"]
+              point = exit_arr.sample["Name"]
             end
           end
         end

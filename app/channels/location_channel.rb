@@ -12,7 +12,6 @@ class LocationChannel < ApplicationCable::Channel
     lat = data["latitude"]
     lng = data["longitude"]
     array_for_save = ["lat", lat, "lng", lng]
-
     if $redis_matched.exists?(user.id)
       $redis_matched.hset(user.id, array_for_save)
       partner_id = $redis_matched.hget(user.id, "partner")

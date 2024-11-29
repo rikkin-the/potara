@@ -1,35 +1,39 @@
-import consumer from "consumer"
+import consumer from "consumer";
 import Cropper from "cropperjs";
 
 let latitude;
 let longitude;
 let subscription;
-let watchId;
 let privateSubscription;
 let locationSubscription;
+let watchId;
 let map;
 let MarkerClass;
 let myLocation;
 let stationLocation;
 let partnerLocation;
 
+function removeInfo() {
+  console.log('timeover')
+  const matchInfoElement = document.getElementById('match-info')
+  matchInfoElement.style.display = 'none'
+  document.getElementById('connect-link').style.display = 'block'
+  document.getElementById('loading-screen2').style.display = 'none'
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+
+connection();
+console.log("This is match.js")
 function connection() {
-  let connectLink = document.getElementById('connect-link')
   let cropper;
   const commentElement = document.getElementById('user_comment')
-  
-  function removeInfo() {
-    console.log('timeover')
-    const matchInfoElement = document.getElementById('match-info')
-    matchInfoElement.style.display = 'none'
-    connectLink.style.display = 'block'
-    document.getElementById('loading-screen2').style.display = 'none'
-  }
+  let connectLink = document.getElementById('connect-link')
 
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
+  cropImage();
   function cropImage() {
     const fileInputElement = document.querySelector('input[type="file"]');
     const previewElement = document.getElementById('image-preview');
@@ -64,7 +68,6 @@ function connection() {
       });
     });
   }
-  cropImage();
 
   connectLink.addEventListener('click', (event) => {
     event.preventDefault();
@@ -80,15 +83,16 @@ function connection() {
 
     function subscribePublic() {
       subscription = consumer.subscriptions.create("PublicChannel",  {
-        connected() {
+        initialized() {
           console.log("パブリック通信開始")
-        },
-        disconnected() {
         },
         received(data) {
           console.log(data)
           if(data['user']) {
-            
+
+            displayMatchInfo(data);
+            removeInfoWithDelay();
+
             function displayMatchInfo(data) {
               let matchInfoElement = document.getElementById('match-info')
               let nameElement = document.getElementById('name') 
@@ -120,123 +124,13 @@ function connection() {
               removeInfo()
             }
 
-            displayMatchInfo(data);
-            removeInfoWithDelay();
-
           } else if(data['roomId']) {
             if(subscription) {
               subscription.unsubscribe();
               subscription = null;
             }
             if(!privateSubscription) {
-              privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
-                connected() {
-                  //const partnerImageElement = document.getElementById('partner-image')
-                  const appointmentElement = document.getElementById('appointment')
-                  const stationElement = document.getElementById('station')
-                  const distanceToStationElement = document.getElementById('distance-to-station')
-                  const timeElement = document.getElementById('meeting-time')
-                  const warningElement = document.getElementById('warning')
-                  const appointmentData = data['appointment']
-                  const connectText = document.getElementById('connect-text')
-                  const partnerIcon = document.getElementById('partner-icon')
-                  
-                  removeInfo();
-
-                  map.setCenter(appointmentData['stationLocation'])
-                  map.setZoom(12)
-
-                  connectText.textContent = '解除'
-                  stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
-                  distanceToStationElement.textContent = `${appointmentData['distance']}km`
-                  timeElement.textContent = appointmentData['meeting_time']
-                  partnerIcon.src = data['partnerIcon']
-                  partnerIcon.style.display = 'inline'
-                  appointmentElement.style.display = 'block'
-                  warningElement.style.display = 'block'
-                  document.getElementById('loading-screen').style.display = 'none'
-                  document.getElementById('loading-screen2').style.display = 'none'
-
-                  partnerLocation = new MarkerClass({
-                    map,
-                    position: data['partnerLocation'],
-                    content: partnerIcon
-                  })
-                  
-                  stationLocation = new MarkerClass({
-                    map,
-                    position: appointmentData['stationLocation']
-                  })
-
-                  connectLink.addEventListener('click', (event) => {
-                    event.preventDefault()
-                    privateSubscription.unsubscribe()
-                    privateSubscription = null;
-                    locationSubscription.unsubscribe()
-                    locationSubscription = null;
-                    consumer.connection.close()
-                    navigator.geolocation.clearWatch(watchId)
-
-                    async function exitToEntry() {
-                      var response =  await fetch('/exit', {
-                        method: 'PATCH',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({id: currentUserId})
-                      })
-                      var data = await response.json()
-                      window.location.href = data.redirect_url
-                    }
-                    exitToEntry();
-
-                  })
-
-                  partnerIcon.addEventListener(('click'), (event) => { 
-                    event.preventDefault();
-                    console.log("hey")
-                      const matchInfoElement = document.getElementById('match-info')
-                      const agreementElement = document.getElementById('agreement')
-
-                      matchInfoElement.style.display = 'block'
-                      agreementElement.style.display = 'none';
-                  })
-                }, 
-                disconnceted() {
-                }, 
-                received(partnerData) {
-                  if(partnerData === 0) {
-                    //const partnerImageElement = document.getElementById('partner-image')
-                    const appointmentElement = document.getElementById('appointment')
-                    const warningElement = document.getElementById('warning')
-
-
-                    privateSubscription.unsubscribe()
-                    //locationSubscription.unsubscribe()
-                    privateSubscription = null
-                    //locationSubscription = null
-                    //chatElement.style.display = 'none'
-                    appointmentElement.style.display = 'none'
-                    warningElement.style.display = 'none'
-                    document.getElementById('connect-text').textContent = 'オフ'
-                    document.getElementById('loading-screen').style.display = 'block'
-                    document.getElementById('agreement').style.display = 'block'
-                    partnerLocation.setMap(null);
-                    stationLocation.setMap(null);
-                  
-                    async function removeNotification() {
-                      const notificationElement = document.getElementById('popup__javascript')
-                      notificationElement.textContent = '相手がマッチを解除しました'
-                      await delay(15000)
-                      notificationElement.textContent = ''
-                    }
-                    removeNotification()
-  
-                    subscribePublic();
-                  }
-                } 
-              })
+              subscribePrivate(data);
             }
           } else if(data === 0) {
             alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
@@ -245,7 +139,142 @@ function connection() {
       })
     }
 
+    function subscribePrivate(data) {
+      privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
+        initialized() {
+          const appointmentElement = document.getElementById('appointment')
+          const stationElement = document.getElementById('station')
+          const distanceToStationElement = document.getElementById('distance-to-station')
+          const timeElement = document.getElementById('meeting-time')
+          const warningElement = document.getElementById('warning')
+          const appointmentData = data['appointment']
+          const connectText = document.getElementById('connect-text')
+          let partnerIcon = document.createElement('img')
+          partnerIcon.alt = "partner-icon"
+          partnerIcon.classList.add("icon")
+          partnerIcon.src = data['partnerIcon']
+          //partnerIcon.style.display = 'inline'
+          
+          removeInfo();
+          map.setCenter(appointmentData['stationLocation'])
+          map.setZoom(12)
+          connectText.textContent = '解除'
+          stationElement.textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
+          distanceToStationElement.textContent = `${appointmentData['distance']}km`
+          timeElement.textContent = appointmentData['meeting_time']
+          appointmentElement.style.display = 'block'
+          warningElement.style.display = 'block'
+          document.getElementById('loading-screen').style.display = 'none'
+          document.getElementById('loading-screen2').style.display = 'none'
+
+          partnerLocation = new MarkerClass({
+            map,
+            position: data['partnerLocation'],
+            content: partnerIcon
+          })
+          
+          stationLocation = new MarkerClass({
+            map,
+            position: appointmentData['stationLocation']
+          })
+
+          connectLink.addEventListener('click', (event) => {
+            event.preventDefault()
+            privateSubscription.unsubscribe()
+            privateSubscription = null;
+            locationSubscription.unsubscribe()
+            locationSubscription = null;
+            consumer.connection.close()
+            navigator.geolocation.clearWatch(watchId)
+
+            exitToEntry();
+            async function exitToEntry() {
+              var response =  await fetch('/exit', {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({id: currentUserId})
+              })
+              var data = await response.json()
+              window.location.href = data.redirect_url
+            }
+          })
+
+          partnerIcon.addEventListener(('click'), (event) => { 
+            event.preventDefault();
+            console.log("hey")
+              const matchInfoElement = document.getElementById('match-info')
+              const agreementElement = document.getElementById('agreement')
+
+              matchInfoElement.style.display = 'block'
+              agreementElement.style.display = 'none';
+          })
+        }, 
+        received(partnerData) {
+          if(partnerData === 0) {
+            const appointmentElement = document.getElementById('appointment')
+            const warningElement = document.getElementById('warning')
+
+            appointmentElement.style.display = 'none'
+            warningElement.style.display = 'none'
+            document.getElementById('connect-text').textContent = 'オフ'
+            document.getElementById('loading-screen').style.display = 'block'
+            document.getElementById('agreement').style.display = 'block'
+            partnerLocation.setMap(null);
+            stationLocation.setMap(null);
+            privateSubscription.unsubscribe()
+            privateSubscription = null
+          
+            removeNotification()
+            async function removeNotification() {
+              const notificationElement = document.getElementById('popup__javascript')
+              notificationElement.textContent = '相手がマッチを解除しました'
+              await delay(15000)
+              notificationElement.textContent = ''
+            }
+
+            subscribePublic();
+          }
+        } 
+      })
+    }
+
     async function subscribeLocation() {
+      locationSubscription = consumer.subscriptions.create('LocationChannel', {
+        initialized() {
+          executeInTurn();
+        },
+        
+        received(data) {
+          console.log(data)
+          const notificationElement = document.getElementById('popup__javascript')
+                    
+          notificationElement.textContent = '相手が移動しています!'
+          async function removeNotification() {
+            await delay(5000)
+            notificationElement.textContent = ''
+          }
+          removeNotification()
+        }
+      })
+
+      async function executeInTurn() {
+        await watchCurrent();
+        await updateDatabase();
+        showGoogleMap();
+        prepareDisconnection();
+        /*
+        let patch_data = { 
+          id: currentUserId, 
+          latitude: latitude,
+          longitude: longitude
+        } 
+        locationSubscription.send(patch_data) 
+        */
+      }
+
       async function watchCurrent() {
         return new Promise(function(resolve, reject) {
           watchId = navigator.geolocation.watchPosition(
@@ -256,7 +285,9 @@ function connection() {
                 myLocation.position = {lat: latitude, lng: longitude}
               } */
 
-              if(Math.abs(latitude - data.latitude) > 0.0005 || Math.abs(longitude - data.longitude) > 0.0005 || !latitude) {
+              if(Math.abs(latitude - data.latitude) > 0.0005 ||
+                 Math.abs(longitude - data.longitude) > 0.0005 || 
+                 !latitude || longitude) {
                 latitude = data.latitude
                 longitude = data.longitude
                 let patch_data = { 
@@ -303,14 +334,14 @@ function connection() {
         formData.append("user[comment]", comment)
         formData.append("user[image]", blob);
 
-        var response = await fetch(`/entry/${currentUserId}`, { 
+        let response = await fetch(`/entry/${currentUserId}`, { 
           method: 'PATCH',
           headers: {
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           },
           body: formData
         })
-        var html = await response.text()
+        let html = await response.text()
         document.documentElement.innerHTML = html
         connectLink = document.getElementById('connect-link')
         document.getElementById('connect-text').textContent = 'オフ'
@@ -325,6 +356,7 @@ function connection() {
         // Add other bootstrap parameters as needed, using camel case.
         });
 
+        initMap();
         async function initMap() {
           let pos = { lat: latitude, lng: longitude};
           const myImage = document.querySelector(".icon")
@@ -349,7 +381,6 @@ function connection() {
             content: myImage
           })
         }
-        initMap();
       }
 
       function prepareDisconnection() {
@@ -375,41 +406,6 @@ function connection() {
           })
         }) 
       }
-
-      async function executeInTurn() {
-        await watchCurrent();
-        await updateDatabase();
-        showGoogleMap();
-        prepareDisconnection();
-        let patch_data = { 
-          id: currentUserId, 
-          latitude: latitude,
-          longitude: longitude
-        } 
-        locationSubscription.send(patch_data) 
-      }
-
-      locationSubscription = consumer.subscriptions.create('LocationChannel', {
-        initialized() {
-          executeInTurn();
-        },
-        
-        received(data) {
-          console.log(data)
-          const notificationElement = document.getElementById('popup__javascript')
-                    
-          notificationElement.textContent = '相手が移動しています!'
-          async function removeNotification() {
-            await delay(5000)
-            notificationElement.textContent = ''
-          }
-          removeNotification()
-        }
-      })
     }
   });
 } 
-
-
-console.log("This is match.js")
-connection();
