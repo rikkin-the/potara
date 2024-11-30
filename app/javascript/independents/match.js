@@ -2,6 +2,7 @@ import consumer from "consumer";
 import Cropper from "cropperjs";
 
 const currentUserId = document.getElementById('current_user_id').value
+let locationData;
 let latitude;
 let longitude;
 let subscription;
@@ -14,13 +15,20 @@ let myLocation;
 let stationLocation;
 let partnerLocation;
 let isAllowed = false;
+let audioElement;
 
 function removeInfo() {
-  console.log('timeover')
   const matchInfoElement = document.getElementById('match-info')
+  const audioElement = document.querySelector('audio')
+  
+  console.log('timeover')
   matchInfoElement.style.display = 'none'
   document.getElementById('connect-link').style.display = 'block'
   document.getElementById('loading-screen2').style.display = 'none'
+  if(isAllowed) {
+    audioElement.pause()
+    audioElement.load()
+  }
 }
 
 function delay(ms) {
@@ -92,6 +100,8 @@ function connection() {
         received(data) {
           console.log(data)
           if(data['user']) {
+            if(isAllowed) audioElement.play()
+          
             displayMatchInfo(data);
             removeInfoWithDelay();
 
@@ -173,6 +183,7 @@ function connection() {
           warningElement.style.display = 'block'
           document.getElementById('loading-screen').style.display = 'none'
           document.getElementById('loading-screen2').style.display = 'none'
+          document.getElementById('sound').style.display = 'none'
 
           partnerLocation = new MarkerClass({
             map,
@@ -230,6 +241,7 @@ function connection() {
             document.getElementById('connect-text').textContent = 'オフ'
             document.getElementById('loading-screen').style.display = 'block'
             document.getElementById('agreement').style.display = 'block'
+            document.getElementById('sound').style.display = 'block'
             partnerLocation.setMap(null);
             stationLocation.setMap(null);
             privateSubscription.unsubscribe()
@@ -242,7 +254,7 @@ function connection() {
               await delay(15000)
               notificationElement.textContent = ''
             }
-
+            locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
             subscribePublic();
           }
         } 
@@ -273,24 +285,21 @@ function connection() {
         await updateDatabase();
         showGoogleMap();
         prepareDisconnection();
-        locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
+        locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
       }
 
       async function watchCurrent() {
         return new Promise(function(resolve, reject) {
           watchId = navigator.geolocation.watchPosition(
             (position) => {
-              let data = position.coords;
+              locationData = position.coords;
 
-              if(myLocation) {
-                myLocation.position = {lat: latitude, lng: longitude}
-              } 
-
-              if(Math.abs(latitude - data.latitude) > 0.0005 ||
-                 Math.abs(longitude - data.longitude) > 0.0005 || 
+              if(myLocation) myLocation.position = {lat: locationData.latitude, lng: locationData.longitude}
+              if(Math.abs(latitude - locationData.latitude) > 0.0005 ||
+                 Math.abs(longitude - locationData.longitude) > 0.0005 || 
                  !latitude) {
-                latitude = data.latitude
-                longitude = data.longitude
+                latitude = locationData.latitude
+                longitude = locationData.longitude
                 let patch_data = { 
                   id: currentUserId, 
                   latitude: latitude,
@@ -349,14 +358,24 @@ function connection() {
         document.querySelector('.profile__icon').style.display = 'none'
         document.querySelector('footer').style.pointerEvents = 'none'
         document.getElementById('current-location').addEventListener('click', () => {
-          map.setCenter({lat: latitude, lng: longitude})
+          map.setCenter({lat: locationData.latitude, lng: locationData.longitude})
           map.setZoom(14)
         })
         const soundElement = document.getElementById('sound')
-        const audioElement = document.querySelector('audio')
+        audioElement = document.querySelector('audio')
         soundElement.addEventListener('click', () => {
-          audioElement.play()
-          isAllowed = true
+          if(isAllowed) isAllowed = false
+          else {
+            audioElement.play()
+              .then(() => {
+                audioElement.pause()
+                audioElement.load()
+                isAllowed = true
+              })
+              .catch(error => {
+                console.log("初回再生に失敗：", error)
+              })
+          }
           soundElement.classList.toggle('sound__on')
         })
       }
@@ -371,7 +390,7 @@ function connection() {
 
         initMap();
         async function initMap() {
-          let pos = { lat: latitude, lng: longitude};
+          let pos = { lat: locationData.latitude, lng: locationData.longitude};
           const myImage = document.querySelector(".icon")
           const { Map } = await google.maps.importLibrary('maps')
           const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
