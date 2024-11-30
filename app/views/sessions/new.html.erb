@@ -1,5 +1,6 @@
 <% provide(:title, "ログイン") %>
 <div class="main__container">
+  
   <%= form_with(url: login_path, scope: :session, data: { turbo: false }) do |f| %>
     <div class="general_field">
     <%= f.label :email, "メールアドレス" %>

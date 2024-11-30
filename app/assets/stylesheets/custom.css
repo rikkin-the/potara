@@ -173,7 +173,7 @@ footer {
 #current-location {
   position: absolute;
   right: 16px;
-  bottom: 18%;
+  top: 22%;
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -183,6 +183,29 @@ footer {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 50%;
+}
+
+.sound {
+  position: absolute;
+  right: 16px;
+  top: 12%;
+  width: 15%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  z-index: 1;
+  background-color: var(--background-color);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+  background-image: url("mute.png");
+}
+
+.sound.sound__on {
+  background-image: url("audio.png");
+}
+
+audio {
+  display: none;
 }
 
 .icon {

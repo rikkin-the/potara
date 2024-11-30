@@ -13,6 +13,7 @@ let MarkerClass;
 let myLocation;
 let stationLocation;
 let partnerLocation;
+let isAllowed = false;
 
 function removeInfo() {
   console.log('timeover')
@@ -350,6 +351,13 @@ function connection() {
         document.getElementById('current-location').addEventListener('click', () => {
           map.setCenter({lat: latitude, lng: longitude})
           map.setZoom(14)
+        })
+        const soundElement = document.getElementById('sound')
+        const audioElement = document.querySelector('audio')
+        soundElement.addEventListener('click', () => {
+          audioElement.play()
+          isAllowed = true
+          soundElement.classList.toggle('sound__on')
         })
       }
 
