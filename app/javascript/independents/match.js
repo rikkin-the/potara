@@ -137,7 +137,7 @@ function connection() {
               removeInfo()
             }
 
-          } else if(data['roomId']) {
+          } else if(data['partnerIcon']) {
             removeInfo();
             if(subscription) {
               subscription.unsubscribe();
@@ -155,7 +155,7 @@ function connection() {
     }
 
     function subscribePrivate(data) {
-      privateSubscription = consumer.subscriptions.create({channel: 'PrivateChannel', girl_id: data['roomId']}, {
+      privateSubscription = consumer.subscriptions.create('PrivateChannel', {
         initialized() {
           const appointmentElement = document.getElementById('appointment')
           const stationElement = document.getElementById('station')
@@ -166,6 +166,7 @@ function connection() {
           const connectText = document.getElementById('connect-text')
           let partnerIcon = document.createElement('img')
           let timeIcon = document.createElement('div')
+          let type = 0;
 
           partnerIcon.alt = "partner-icon"
           partnerIcon.classList.add("icon")
@@ -209,30 +210,22 @@ function connection() {
 
           connectLink.addEventListener('click', (event) => {
             event.preventDefault()
-            privateSubscription.unsubscribe()
-            privateSubscription = null;
-            locationSubscription.unsubscribe()
-            locationSubscription = null;
-            consumer.connection.close()
-            navigator.geolocation.clearWatch(watchId)
+            window.location.reload()
+          })
 
-            exitToEntry();
-            async function exitToEntry() {
-              var response =  await fetch('/exit', {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({id: currentUserId})
-              })
-              var data = await response.json()
-              window.location.href = data.redirect_url
-            }
+          window.addEventListener('beforeunload', e => {
+            const message = 'マッチは解除されます。よろしいですか？'
+            e.returnValue = message
+            return
+          })
+
+          window.addEventListener('unload', e => {
+            privateSubscription.send({type: type})
           })
         }, 
         received(partnerData) {
           if(partnerData === 0) {
+  
             const appointmentElement = document.getElementById('appointment')
             const warningElement = document.getElementById('warning')
 
@@ -247,12 +240,12 @@ function connection() {
             privateSubscription.unsubscribe()
             privateSubscription = null
           
-            removeNotification()
-            async function removeNotification() {
+            zeroNotification()
+            async function zeroNotification() {
               const notificationElement = document.getElementById('popup__javascript')
               notificationElement.textContent = '相手がマッチを解除しました'
-              await delay(15000)
-              notificationElement.textContent = ''
+              //await delay(15000)
+              //notificationElement.textContent = ''
             }
             locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
             subscribePublic();
@@ -284,7 +277,6 @@ function connection() {
         await watchCurrent();
         await updateDatabase();
         showGoogleMap();
-        prepareDisconnection();
         locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
       }
 
@@ -378,6 +370,10 @@ function connection() {
           }
           soundElement.classList.toggle('sound__on')
         })
+        connectLink.addEventListener('click', (event) => {
+          event.preventDefault();
+          window.location.reload()
+        }) 
       }
 
       async function showGoogleMap() {
@@ -413,30 +409,6 @@ function connection() {
             content: myImage
           })
         }
-      }
-
-      function prepareDisconnection() {
-        connectLink.addEventListener('click', (event) => {
-          event.preventDefault();
-          subscription.unsubscribe();
-          subscription = null;
-          locationSubscription.unsubscribe()
-          locationSubscription = null
-          consumer.connection.close();
-          navigator.geolocation.clearWatch(watchId);
-          fetch('/exit', {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({id: currentUserId})
-            })
-          .then(response => response.json())
-          .then((data) => {
-            window.location.href = data.redirect_url
-          })
-        }) 
       }
     }
   });

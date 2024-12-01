@@ -14,10 +14,6 @@ class MatchesController < ApplicationController
 
   end
 
-  def disconnect
-    render json: { redirect_url: entry_path }
-  end
-
   private
 
     def user_params

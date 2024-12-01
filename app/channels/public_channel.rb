@@ -121,10 +121,10 @@ class PublicChannel < ApplicationCable::Channel
         girl_location = {lat: girl_lat.to_f + variations[0], lng: girl_lng.to_f + variations[1] }
 
 
-        PublicChannel.broadcast_to(girl, {roomId: girl_id, partnerIcon: boy_icon, partnerLocation: girl_location,
+        PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: girl_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
           meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {roomId: girl_id, partnerIcon: girl_icon, partnerLocation: boy_location,
+        PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: boy_location,
           partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
           meeting_time: time_params}})
 
