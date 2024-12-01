@@ -122,10 +122,10 @@ class PublicChannel < ApplicationCable::Channel
 
 
         PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: girl_location,
-          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road,
+          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road.floor(1),
           meeting_time: time_params}})
         PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: boy_location,
-          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road,
+          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road.floor(1),
           meeting_time: time_params}})
 
         $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])
