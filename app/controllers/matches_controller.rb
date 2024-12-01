@@ -15,7 +15,7 @@ class MatchesController < ApplicationController
   end
 
   def rejected
-    flash.now[:danger] = "通信不良のため、マッチが解除されました"
+    flash.now[:danger] = "接続が失われました"
     render 'new'
   end
 

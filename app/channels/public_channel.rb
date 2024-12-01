@@ -1,9 +1,8 @@
 class PublicChannel < ApplicationCable::Channel
   def subscribed
     stream_for current_user
-    if $redis_matched.exists?(current_user.id)
-      $redis_matched.del(current_user.id)
-    end
+    $redis_matched.del(current_user.id) if $redis_matched.exists?(current_user.id)
+    reject unless current_user.image.attached?
   end
 
   def unsubscribed
