@@ -91,7 +91,7 @@ textarea {
   background-color: black;
   height: 64px;
   border-radius: 0 0 32px 32px;
-  width: 95vw;
+  width: 98vw;
 }
 
 input[type=submit] {
@@ -189,7 +189,7 @@ footer {
 #current-location {
   position: absolute;
   right: 16px;
-  top: 22%;
+  top: 62%;
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -204,7 +204,7 @@ footer {
 .sound {
   position: absolute;
   right: 16px;
-  top: 12%;
+  top: 72%;
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;

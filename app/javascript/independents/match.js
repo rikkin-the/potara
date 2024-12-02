@@ -51,6 +51,13 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+const alertBeforeUnload= (e) => {
+  e.preventDefault
+  const message = 'マッチは解除されます。よろしいですか？'
+  e.returnValue = message
+  return 
+}
+
 
 // main function
 
@@ -251,7 +258,11 @@ connectLink.addEventListener('click', (event) => {
       connectLink.addEventListener('click', (event) => {
         event.preventDefault();
         window.location.href = '/'
-      }) 
+      })
+
+      // confirmation before reload or browser-back
+      // but message don't make sence
+      window.addEventListener('beforeunload', alertBeforeUnload)
     }
 
     // https://developers.google.cn/maps/documentation/android-sdk/advanced-markers/add-marker?hl=ja
@@ -295,6 +306,7 @@ connectLink.addEventListener('click', (event) => {
         },
         rejected(){
           console.log('public rejected')
+          window.removeEventListener('beforeunload', alertBeforeUnload)
           window.location.href = '/exit'
         },
         received(data) {
@@ -401,14 +413,6 @@ connectLink.addEventListener('click', (event) => {
             agreementElement.style.display = 'none'
           })
 
-          // confirmation before reload or browser-back
-          // but message don't make sence
-          window.addEventListener('beforeunload', e => {
-            const message = 'マッチは解除されます。よろしいですか？'
-            e.returnValue = message
-            return
-          })
-
           // send a standard type of unmatch signals
           // but shoudn't use an unload event. i should find another way 
           let type = 0
@@ -419,6 +423,7 @@ connectLink.addEventListener('click', (event) => {
         rejected() {
           // if you leave from a browser app, you will be rejected when reconnecting
           console.log('private rejected')
+          window.removeEventListener('beforeunload', alertBeforeUnload)
           window.location.href = '/exit'
         },
         received(partnerData) {
