@@ -71,7 +71,7 @@ const addELement = document.querySelector('.add__icon')
 
 fileInputElement.addEventListener('change', (event) => {
   const file = event.target.files[0];
-  // set profile icon back
+  // set add icon back
   addELement.style.zIndex = '-10'
 
   // for operating file data
@@ -85,7 +85,8 @@ fileInputElement.addEventListener('change', (event) => {
       cropper.destroy();
       cropper = null;
     }
-      // 新しいCropperインスタンスを作成
+
+    // 新しいCropperインスタンスを作成
     cropper = new Cropper(previewElement, {
       aspectRatio: 4 / 5,
       viewMode: 3,
