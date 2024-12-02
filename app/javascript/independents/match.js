@@ -128,14 +128,25 @@ connectLink.addEventListener('click', (event) => {
 
     // being asynchronous is so important
     async function executeInTurn() {
+      wrapLoading();
+      await updateDatabase();
+      // if you don't uplaod an image before subscribe the public channel, you will be rejected. it is for reconnection of public
+      subscribePublic();
       // geolocation takes time and lat and lng is needed for the center of Google Map
       await watchCurrent();
       // image should be attached before requesting 'my icon'
-      await updateDatabase();
-      subscribePublic();
       showGoogleMap();
       // I don't know, but it is needed
       locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+    }
+
+    function wrapLoading() {
+      const body = document.querySelector('body')
+      body.classList.add('loading__wrapper')
+      const loadingScreen3 = document.createElement('div')
+      loadingScreen3.setAttribute("id", "loading-screen3")
+      loadingScreen3.innerHTML = '<div class="spinner"></div>'
+      document.querySelector('html').appendChild(loadingScreen3)
     }
 
     async function watchCurrent() {
@@ -243,7 +254,6 @@ connectLink.addEventListener('click', (event) => {
       }) 
     }
 
-
     // https://developers.google.cn/maps/documentation/android-sdk/advanced-markers/add-marker?hl=ja
     async function showGoogleMap() {
       (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
@@ -277,171 +287,171 @@ connectLink.addEventListener('click', (event) => {
         })
       }
     }
-  }
+      
+    function subscribePublic() {
+      subscription = consumer.subscriptions.create("PublicChannel",  {
+        initialized() {
+          console.log("パブリック通信開始")
+        },
+        rejected(){
+          console.log('public rejected')
+          window.location.href = '/exit'
+        },
+        received(data) {
+          // a lot of offers come repeatedly
+          console.log(data)
+          if(data['user']) {
+            // a loop attribute is contained of the audio tag in the html
+            if(isAllowed) audioElement.play()
 
-  function subscribePublic() {
-    subscription = consumer.subscriptions.create("PublicChannel",  {
-      initialized() {
-        console.log("パブリック通信開始")
-      },
-      rejected(){
-        console.log('public rejected')
-        window.location.href = '/exit'
-      },
-      received(data) {
-        // a lot of offers come repeatedly
-        console.log(data)
-        if(data['user']) {
-          // a loop attribute is contained of the audio tag in the html
-          if(isAllowed) audioElement.play()
+            // insert a set of data
+            document.getElementById('name').textContent = data.user.name
+            document.getElementById('age').textContent = data.age
+            document.getElementById('distance').textContent = `${data.distance}km`
+            document.getElementById('comment').textContent = data.user.comment
+            matchInfoElement.style.backgroundImage = `url(${data.image})`
+
+            // display a set of data
+            matchInfoElement.style.display = 'block'
+            connectLink.style.display = 'none'
+
+            // apply for the match
+            agreementElement.addEventListener('click', () => {
+              subscription.send({like_id: currentUserId, liked_id: data.user.id})
+              document.getElementById('loading-screen2').style.display = 'block'
+            })
+
+            document.getElementById('map__closeButton').addEventListener('click', () => {
+              removeInfo();
+            })
+
+            // start animation that shows limited times
+            agreementElement.classList.add('animate')
+            
+            removeInfoWithDelay();
+            async function removeInfoWithDelay() {
+              await delay(45000)
+              removeInfo()
+            }
+
+          } else if(data['partnerIcon']) {
+            // matched!!
+            removeInfo();
+            subscription.unsubscribe();
+            subscription = null;
+            subscribePrivate(data);
+
+          } else if(data === 0) {
+            // failed..
+            removeInfo();
+            alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
+          }
+        }
+      })
+    }
+
+    function subscribePrivate(data) {
+      privateSubscription = consumer.subscriptions.create('PrivateChannel', {
+        initialized() {
+          // appointment is a hash that contains a lot of information
+          const appointmentData = data['appointment']
+          
+          // display station as the center
+          map.setCenter(appointmentData['stationLocation'])
+          map.setZoom(12)
 
           // insert a set of data
-          document.getElementById('name').textContent = data.user.name
-          document.getElementById('age').textContent = data.age
-          document.getElementById('distance').textContent = `${data.distance}km`
-          document.getElementById('comment').textContent = data.user.comment
-          matchInfoElement.style.backgroundImage = `url(${data.image})`
+          connectText.textContent = '解除'
+          document.getElementById('station').textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
+          document.getElementById('distance-to-station').textContent = `${appointmentData['distance']}km`
 
-          // display a set of data
-          matchInfoElement.style.display = 'block'
-          connectLink.style.display = 'none'
+          // display or not
+          appointmentElement.style.display = 'block'
+          warningElement.style.display = 'block'
+          loadingScreen.style.display = 'none'
+          loadingScreen2.style.display = 'none'
+          soundElement.style.display = 'none'
 
-          // apply for the match
-          agreementElement.addEventListener('click', () => {
-            subscription.send({like_id: currentUserId, liked_id: data.user.id})
-            document.getElementById('loading-screen2').style.display = 'block'
+          // time-icon on the station
+          let timeIcon = document.createElement('div')
+          timeIcon.className = 'meeting-time'
+          timeIcon.textContent = appointmentData['meeting_time']
+          stationLocation = new MarkerClass({
+            map,
+            position: appointmentData['stationLocation'],
+            content: timeIcon
           })
 
-          document.getElementById('map__closeButton').addEventListener('click', () => {
-            removeInfo();
+          // partner-icon
+          let partnerIcon = document.createElement('img')
+          partnerIcon.alt = "partner-icon"
+          partnerIcon.classList.add("icon")
+          partnerIcon.src = data['partnerIcon']
+          partnerLocation = new MarkerClass({
+            map,
+            position: data['partnerLocation'],
+            content: partnerIcon,
+            gmpClickable: true
           })
 
-          // start animation that shows limited times
-          agreementElement.classList.add('animate')
-          
-          removeInfoWithDelay();
-          async function removeInfoWithDelay() {
-            await delay(45000)
-            removeInfo()
+          // thanks to a beta version, you can click the partner icon
+          partnerLocation.addEventListener('gmp-click', (event) => { 
+            event.preventDefault();
+            matchInfoElement.style.display = 'block'
+            agreementElement.style.display = 'none'
+          })
+
+          // confirmation before reload or browser-back
+          // but message don't make sence
+          window.addEventListener('beforeunload', e => {
+            const message = 'マッチは解除されます。よろしいですか？'
+            e.returnValue = message
+            return
+          })
+
+          // send a standard type of unmatch signals
+          // but shoudn't use an unload event. i should find another way 
+          let type = 0
+          window.addEventListener('unload', () => {
+            privateSubscription.send({type: type})
+          })
+        },
+        rejected() {
+          // if you leave from a browser app, you will be rejected when reconnecting
+          console.log('private rejected')
+          window.location.href = '/exit'
+        },
+        received(partnerData) {
+          if(partnerData === 0) {
+            backToThePublic('相手がマッチを解除しました')
+          }
+          if(partnerData === 1) {
+            backToThePublic('相手の接続が切れました')
           }
 
-        } else if(data['partnerIcon']) {
-          // matched!!
-          removeInfo();
-          subscription.unsubscribe();
-          subscription = null;
-          subscribePrivate(data);
+          function backToThePublic(content = '') {
+            zeroNotification()
+            async function zeroNotification() {
+              notificationElement.textContent = content
+              await delay(30000)
+              notificationElement.textContent = ''
+            }
 
-        } else if(data === 0) {
-          // failed..
-          removeInfo();
-          alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
-        }
-      }
-    })
-  }
-
-  function subscribePrivate(data) {
-    privateSubscription = consumer.subscriptions.create('PrivateChannel', {
-      initialized() {
-        // appointment is a hash that contains a lot of information
-        const appointmentData = data['appointment']
-        
-        // display station as the center
-        map.setCenter(appointmentData['stationLocation'])
-        map.setZoom(12)
-
-        // insert a set of data
-        connectText.textContent = '解除'
-        document.getElementById('station').textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
-        document.getElementById('distance-to-station').textContent = `${appointmentData['distance']}km`
-
-        // display or not
-        appointmentElement.style.display = 'block'
-        warningElement.style.display = 'block'
-        loadingScreen.style.display = 'none'
-        loadingScreen2.style.display = 'none'
-        soundElement.style.display = 'none'
-
-        // time-icon on the station
-        let timeIcon = document.createElement('div')
-        timeIcon.className = 'meeting-time'
-        timeIcon.textContent = appointmentData['meeting_time']
-        stationLocation = new MarkerClass({
-          map,
-          position: appointmentData['stationLocation'],
-          content: timeIcon
-        })
-
-        // partner-icon
-        let partnerIcon = document.createElement('img')
-        partnerIcon.alt = "partner-icon"
-        partnerIcon.classList.add("icon")
-        partnerIcon.src = data['partnerIcon']
-        partnerLocation = new MarkerClass({
-          map,
-          position: data['partnerLocation'],
-          content: partnerIcon,
-          gmpClickable: true
-        })
-
-        // thanks to a beta version, you can click the partner icon
-        partnerLocation.addEventListener('gmp-click', (event) => { 
-          event.preventDefault();
-          matchInfoElement.style.display = 'block'
-          agreementElement.style.display = 'none'
-        })
-
-        // confirmation before reload or browser-back
-        // but message don't make sence
-        window.addEventListener('beforeunload', e => {
-          const message = 'マッチは解除されます。よろしいですか？'
-          e.returnValue = message
-          return
-        })
-
-        // send a standard type of unmatch signals
-        // but shoudn't use an unload event. i should find another way 
-        let type = 0
-        window.addEventListener('unload', () => {
-          privateSubscription.send({type: type})
-        })
-      },
-      rejected() {
-        // if you leave from a browser app, you will be rejected when reconnecting
-        console.log('private rejected')
-        window.location.href = '/exit'
-      },
-      received(partnerData) {
-        if(partnerData === 0) {
-          backToThePublic('相手がマッチを解除しました')
-        }
-        if(partnerData === 1) {
-          backToThePublic('相手の接続が切れました')
-        }
-
-        function backToThePublic(content = '') {
-          zeroNotification()
-          async function zeroNotification() {
-            notificationElement.textContent = content
-            await delay(30000)
-            notificationElement.textContent = ''
+            appointmentElement.style.display = 'none'
+            warningElement.style.display = 'none'
+            connectText.textContent = 'オフ'
+            loadingScreen.style.display = 'block'
+            agreementElement.style.display = 'block'
+            soundElement.style.display = 'block'
+            partnerLocation.setMap(null);
+            stationLocation.setMap(null);
+            privateSubscription.unsubscribe()
+            privateSubscription = null
+            locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+            subscribePublic();
           }
-
-          appointmentElement.style.display = 'none'
-          warningElement.style.display = 'none'
-          connectText.textContent = 'オフ'
-          loadingScreen.style.display = 'block'
-          agreementElement.style.display = 'block'
-          soundElement.style.display = 'block'
-          partnerLocation.setMap(null);
-          stationLocation.setMap(null);
-          privateSubscription.unsubscribe()
-          privateSubscription = null
-          locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
-          subscribePublic();
-        }
-      } 
-    })
+        } 
+      })
+    }
   }
 });
