@@ -33,6 +33,20 @@ let soundElement;
 let loadingScreen;
 let loadingScreen2;
 
+// clock direction from a north-west point
+const yokohamaStationCoords = [
+  {lat: 35.46438063889209, lng: 139.60743880080318},
+  {lat: 35.47398264024477, lng: 139.62028925385252},
+  {lat: 35.46734049906691, lng: 139.63219808130850},
+  {lat: 35.45452490669175, lng: 139.61429875276860}
+]
+
+const minatomiraiCoords = [
+  {lat: 35.45452490669175, lng: 139.61429875276860},
+  {lat: 35.46734049906691, lng: 139.63219808130850},
+  {lat: 35.45654235523369, lng: 139.65027222102557},
+]
+
 
 // global function
 
@@ -297,6 +311,17 @@ connectLink.addEventListener('click', (event) => {
           position: pos,
           content: document.querySelector(".icon")
         })
+
+        const yokohamaStationTriangle = new google.maps.Polygon({
+          paths: yokohamaStationCoords,
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#FF0000",
+          fillOpacity: 0.35,
+        })
+
+        yokohamaStationTriangle.setMap(map);
       }
     }
       

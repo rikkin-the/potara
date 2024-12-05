@@ -144,6 +144,8 @@ footer {
   aspect-ratio: 1;
   margin: 16px auto;
   pointer-events: auto;
+  background-color: var(--first-color);
+  background-image: none;
 }
 
 #connect-text {
