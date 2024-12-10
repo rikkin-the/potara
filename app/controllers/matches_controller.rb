@@ -19,6 +19,15 @@ class MatchesController < ApplicationController
     render 'new'
   end
 
+  def create_bot
+    user = User.find(params[:id])
+    if user.girl
+      $redis.hset("boy_3", "lat", params[:latitude]+0.01, "lng", params[:longitude]+0.01)
+    else
+      $redis.hset("girl_13", "lat", params[:latitude]+0.01, "lng", params[:longitude]+0.01)
+    end
+  end
+
   private
 
     def user_params

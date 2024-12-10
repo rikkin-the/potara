@@ -91,7 +91,8 @@ textarea {
   background-color: black;
   height: 64px;
   border-radius: 0 0 32px 32px;
-  width: 98vw;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input[type=submit] {
@@ -113,19 +114,20 @@ a {
 /* footer */
 
 footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
+  max-width: 512px;
 }
 
 .footer__container {
   display: flex;
   margin: 0 auto;
-  width: 99%
+  width: 99%;
 }
 
 .menu-left, .menu-center, .menu-right {
-  width: 33%
+  width: 33%;
 }
 
 
@@ -232,6 +234,12 @@ audio {
   object-fit: cover;
   border-radius: 50%;
   border: 5px solid var(--second-color);
+}
+
+#bot-creater {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--first-color);
 }
 
 /* loading */

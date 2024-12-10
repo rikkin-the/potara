@@ -41,13 +41,6 @@ const yokohamaStationCoords = [
   {lat: 35.45452490669175, lng: 139.61429875276860}
 ]
 
-const minatomiraiCoords = [
-  {lat: 35.45452490669175, lng: 139.61429875276860},
-  {lat: 35.46734049906691, lng: 139.63219808130850},
-  {lat: 35.45654235523369, lng: 139.65027222102557},
-]
-
-
 // global function
 
 function removeInfo() {
@@ -278,6 +271,19 @@ connectLink.addEventListener('click', (event) => {
       // confirmation before reload or browser-back
       // but message don't make sence
       window.addEventListener('beforeunload', alertBeforeUnload)
+
+      //this is for create a nearby bot
+      document.getElementById('bot-creater').addEventListener('click', () => {
+        console.log(currentUserId)
+        fetch(`/matches/bot`, { 
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+        })
+      })
     }
 
     // https://developers.google.cn/maps/documentation/android-sdk/advanced-markers/add-marker?hl=ja
@@ -321,7 +327,7 @@ connectLink.addEventListener('click', (event) => {
           fillOpacity: 0.35,
         })
 
-        yokohamaStationTriangle.setMap(map);
+        //yokohamaStationTriangle.setMap(map);
       }
     }
       
