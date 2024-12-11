@@ -32,14 +32,36 @@ let warningElement;
 let soundElement;
 let loadingScreen;
 let loadingScreen2;
+let ackYokohama;
 
 // clock direction from a north-west point
-const yokohamaStationCoords = [
-  {lat: 35.46438063889209, lng: 139.60743880080318},
-  {lat: 35.47398264024477, lng: 139.62028925385252},
-  {lat: 35.46734049906691, lng: 139.63219808130850},
-  {lat: 35.45452490669175, lng: 139.61429875276860}
-]
+const nishiyokohama = {lat: 35.45336890218082, lng: 139.60865604253013}
+const mitsuzawa = {lat: 35.47654461293579, lng: 139.61502719928353}
+const shijou = {lat: 35.46767597074172, lng: 139.6350742306143}
+
+function deriveLineParameters(pt1, pt2) {
+  const a = (pt2['lat']-pt1['lat'])/(pt2['lng']-pt1['lng'])
+  const b = pt1['lat']-a*pt1['lng']
+  return {a: a, b: b}
+}
+
+const leftLine = deriveLineParameters(nishiyokohama, mitsuzawa)
+const rightLine = deriveLineParameters(mitsuzawa, shijou)
+const bottomLine = deriveLineParameters(shijou, nishiyokohama)
+
+function isInYokohama(location) {
+  function isUnderLine(line) {
+    if(location.lat < line['a']*location.lng+line['b']) {
+      return true
+    }
+    return false
+  }
+
+  if (isUnderLine(leftLine) && isUnderLine(rightLine) && !isUnderLine(bottomLine)) {
+    return true
+  }
+  return false
+}
 
 // global function
 
@@ -172,14 +194,22 @@ connectLink.addEventListener('click', (event) => {
             locationData = position.coords;
             if(myLocation) myLocation.position = {lat: locationData.latitude, lng: locationData.longitude}
 
-            // it's not until you walk about 50m that your location is updated 
-            if(Math.abs(latitude - locationData.latitude) > 0.0005 ||
-                Math.abs(longitude - locationData.longitude) > 0.0005 || 
-                !latitude) {
-              latitude = locationData.latitude
-              longitude = locationData.longitude
-              locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
-              console.log('updated location')
+            if(myLocation && isInYokohama(myLocation.position)) {
+              ackYokohama.innerText = 'マッチ範囲内'
+              ackYokohama.style.backgroundColor = '#0acffe'
+              // it's not until you walk about 50m that your location is updated 
+              if(Math.abs(latitude - locationData.latitude) > 0.0005 ||
+                  Math.abs(longitude - locationData.longitude) > 0.0005 || 
+                  !latitude) {
+                latitude = locationData.latitude
+                longitude = locationData.longitude
+                locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
+                console.log('updated location')
+              }
+            } else {
+              ackYokohama.innerText = 'マッチ範囲外'
+              ackYokohama.style.backgroundColor = 'red'
+              console.log('out of yokohama')
             }
             resolve();
           },
@@ -235,6 +265,7 @@ connectLink.addEventListener('click', (event) => {
       soundElement = document.getElementById('sound')
       loadingScreen = document.getElementById('loading-screen')
       loadingScreen2 = document.getElementById('loading-screen2')
+      ackYokohama = document.getElementById('ack-yokohama')
 
       // edit page is not needed and must not drag a footer 
       document.querySelector('.profile__icon').style.display = 'none'
@@ -319,15 +350,15 @@ connectLink.addEventListener('click', (event) => {
         })
 
         const yokohamaStationTriangle = new google.maps.Polygon({
-          paths: yokohamaStationCoords,
-          strokeColor: "#FF0000",
+          paths: [nishiyokohama, mitsuzawa, shijou],
+          strokeColor: "#0acffe",
           strokeOpacity: 0.8,
           strokeWeight: 2,
-          fillColor: "#FF0000",
+          fillColor: "#0acffe",
           fillOpacity: 0.35,
         })
 
-        //yokohamaStationTriangle.setMap(map);
+        yokohamaStationTriangle.setMap(map);
       }
     }
       

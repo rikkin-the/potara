@@ -7,9 +7,11 @@ module ApplicationCable
     end
 
     def disconnect
+=begin
       self.current_user = find_verified_user
       offline_status = {comment: nil, image: nil}
       self.current_user.update(offline_status)
+=end
     end
 
     private

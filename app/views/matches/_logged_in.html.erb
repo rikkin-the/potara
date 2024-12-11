@@ -1,4 +1,6 @@
+<% provide(:title, "エントリー") %>
 <% provide(:independent, javascript_import_module_tag("independents/match")) %>
+
 <%= hidden_field_tag "current_user_id", @current_user.id %>
 
 <%= form_with model: @current_user, id: "whole-form" do |f| %>
