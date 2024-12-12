@@ -12,18 +12,75 @@ class AutoMatchJob < ApplicationJob
 
   def perform
     $redis_agreement.flushdb
-    boys = $redis.keys("boy*")
-    girls = $redis.keys("girl*")
 
+    girls = []
+    boys = []
+    cursor = "0"
+    begin
+      cursor, keys = $redis.scan(cursor)
+      keys.each do |key|
+        id = key.delete('^0-9').to_i
+        location = $redis.hmget(key, "lat", "lng")
+        if key.include?("girl")
+          girls.push([id, location[0].to_f, location[1].to_f])
+        else
+          boys.push([id, location[0].to_f, location[1].to_f])
+        end
+      end
+    end until cursor == "0"
+
+    past_pairs = {}
+    begin
+      cursor, keys = $redis_past.scan(cursor)
+      keys.each do |key|
+        id = key.to_i
+        past_pairs[id] = []
+        $redis_past.lrange(id, 0, -1).each do |string_id|
+          past_pairs[id].push(string_id.to_i)
+        end
+      end
+    end until cursor == "0"
+
+    pairs = []
     if boys && girls
-      girls.each { |girl| $redis.hdel(girl, "paired") }
-      ordered_boys = boys.reverse
+      girls.each do |girl|
+        boys.each do |boy|
+          pairs.push([girl[0], boy[0], distance(girl[1], girl[2], boy[1], boy[2])])
+        end
+      end
+      pairs.sort_by! { |pair| pair[2] }
+      paired_girls = []
+      paired_boys = []
+      pairs.each do |pair|
+        if !paired_girls.include?(pair[0]) && !paired_boys.include?(pair[1]) && (!past_pairs[pair[0]] || !past_pairs[pair[0]].include?(pair[1])) && (!past_pairs[pair[1]] || !past_pairs[pair[1]].include?(pair[0]))
+          girl_instance = User.find(pair[0])
+          boy_instance = User.find(pair[1])
+          girl_instance.get_age
+          boy_instance.get_age
+          girl_url = Rails.application.routes.url_helpers.rails_blob_path(girl_instance.image.variant(:display), only_path: true)
+          boy_url = Rails.application.routes.url_helpers.rails_blob_path(boy_instance.image.variant(:display), only_path: true)
+          PublicChannel.broadcast_to(girl_instance, {
+            user: boy_instance, age: boy_instance.age, distance: distance_to_km(pair[2]), image: boy_url
+          })
+          PublicChannel.broadcast_to(boy_instance, {
+            user: girl_instance, age: girl_instance.age, distance: distance_to_km(pair[2]), image: girl_url
+          })
+          paired_girls.push(pair[0])
+          paired_boys.push(pair[1])
+          $redis_past.rpush(pair[0], pair[1])
+          $redis_past.rpush(pair[1], pair[0])
+        end
+      end
+    end
+  end
+end
+=begin
+      #girls.each { |girl| $redis.hdel(girl, "paired") }
+      #ordered_boys = boys.reverse
       ordered_boys.each do |boy|
         nearest_girl = nil
         shortest_distance = 0.1
-        boy_id = boy.delete('^0-9').to_i
-        boy_lat = $redis.hget(boy, "lat").to_f
-        boy_lng = $redis.hget(boy, "lng").to_f
+
         valid_girls = filter(boy_id, girls)
         valid_girls.each do |girl|
           valid_girl_id = girl.delete('^0-9').to_i
@@ -61,3 +118,4 @@ class AutoMatchJob < ApplicationJob
     end
   end
 end
+=end

@@ -1,6 +1,6 @@
 :scheduler:
   :schedule:
     auto_match:
-      cron: '0 0/1 * * * *'
+      cron: '0 0/2 * * * *'
       class: AutoMatchJob
     

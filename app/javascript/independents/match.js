@@ -5,7 +5,9 @@ console.log("This is the match.js")
 
 // global variables
 
-let locationData;
+// lat n lng are not updated.
+let lat;
+let lng;
 let latitude;
 let longitude;
 let subscription;
@@ -18,6 +20,7 @@ let myLocation;
 let stationLocation;
 let partnerLocation;
 let isAllowed = false;
+let isInArea = false;
 let cropper;
 let audioElement;
 let connectLink = document.getElementById('connect-link')
@@ -34,10 +37,11 @@ let loadingScreen;
 let loadingScreen2;
 let ackYokohama;
 
-// clock direction from a north-west point
+// clock direction from a south-west point
 const nishiyokohama = {lat: 35.45336890218082, lng: 139.60865604253013}
 const mitsuzawa = {lat: 35.47654461293579, lng: 139.61502719928353}
 const shijou = {lat: 35.46767597074172, lng: 139.6350742306143}
+
 
 function deriveLineParameters(pt1, pt2) {
   const a = (pt2['lat']-pt1['lat'])/(pt2['lng']-pt1['lng'])
@@ -49,9 +53,9 @@ const leftLine = deriveLineParameters(nishiyokohama, mitsuzawa)
 const rightLine = deriveLineParameters(mitsuzawa, shijou)
 const bottomLine = deriveLineParameters(shijou, nishiyokohama)
 
-function isInYokohama(location) {
+function isInYokohama(lat, lng) {
   function isUnderLine(line) {
-    if(location.lat < line['a']*location.lng+line['b']) {
+    if(lat < line['a']*lng+line['b']) {
       return true
     }
     return false
@@ -174,7 +178,9 @@ connectLink.addEventListener('click', (event) => {
       // image should be attached before requesting 'my icon'
       showGoogleMap();
       // I don't know, but it is needed
-      locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+      if (isInArea) {
+        locationSubscription.send({id: currentUserId, latitude: lat, longitude: lng})
+      }
     }
 
     function wrapLoading() {
@@ -191,24 +197,26 @@ connectLink.addEventListener('click', (event) => {
         watchId = navigator.geolocation.watchPosition(
           (position) => {
             // locationData includes latest information. in contrast, latitude and longitude contain the latest version updated
-            locationData = position.coords;
-            if(myLocation) myLocation.position = {lat: locationData.latitude, lng: locationData.longitude}
+            lat = position.coords.latitude;
+            lng = position.coords.longitude;
 
-            if(myLocation && isInYokohama(myLocation.position)) {
+            if(isInYokohama(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
+              isInArea = true
               // it's not until you walk about 50m that your location is updated 
-              if(Math.abs(latitude - locationData.latitude) > 0.0005 ||
-                  Math.abs(longitude - locationData.longitude) > 0.0005 || 
+              if(Math.abs(latitude - lat) > 0.0005 ||
+                  Math.abs(longitude - lng) > 0.0005 || 
                   !latitude) {
-                latitude = locationData.latitude
-                longitude = locationData.longitude
+                latitude = lat
+                longitude = lng
                 locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
                 console.log('updated location')
               }
             } else {
               ackYokohama.innerText = 'マッチ範囲外'
               ackYokohama.style.backgroundColor = 'red'
+              isInArea = false
               console.log('out of yokohama')
             }
             resolve();
@@ -273,7 +281,7 @@ connectLink.addEventListener('click', (event) => {
 
       // get back to current location
       document.getElementById('current-location').addEventListener('click', () => {
-        map.setCenter({lat: locationData.latitude, lng: locationData.longitude})
+        map.setCenter({lat: lat, lng: lng})
         map.setZoom(14)
       })
 
@@ -312,7 +320,7 @@ connectLink.addEventListener('click', (event) => {
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+          body: JSON.stringify({id: currentUserId, latitude: lat, longitude: lng})
         })
       })
     }
@@ -333,7 +341,7 @@ connectLink.addEventListener('click', (event) => {
         const { AdvancedMarkerElement } = await google.maps.importLibrary('marker')
         MarkerClass = AdvancedMarkerElement
 
-        let pos = { lat: locationData.latitude, lng: locationData.longitude};
+        let pos = { lat: lat, lng: lng};
         map = new Map(document.getElementById('map'), {
           mapId: "3c6f58db644be140",
           center: pos,
