@@ -18,6 +18,10 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @height_options = [["身長を追加", ""]]
+    (130..210).each do |i|
+      @height_options.push(["#{i}cm", i])
+    end
   end
 
   def update
@@ -43,7 +47,7 @@ class UsersController < ApplicationController
     end
 
     def update_params
-      params.require(:user).permit(:name, :email)
+      params.require(:user).permit(:name, :email, :height)
     end
 
     def logged_in_user

@@ -48,8 +48,8 @@ class PublicChannel < ApplicationCable::Channel
       girl_lng = girl_lng.to_f
       boy_lat = boy_lat.to_f
       boy_lng = boy_lng.to_f
-      center_lat = (girl_lat + boy_lat)/2
-      center_lng = (girl_lng + boy_lng)/2
+      center_lat = (girl_lat + boy_lat)/2.to_f
+      center_lng = (girl_lng + boy_lng)/2.to_f
 
       p center_lat
       p center_lng

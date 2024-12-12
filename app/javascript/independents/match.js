@@ -383,15 +383,16 @@ connectLink.addEventListener('click', (event) => {
         received(data) {
           // a lot of offers come repeatedly
           console.log(data)
-          if(data['user']) {
+          if(data['image']) {
             // a loop attribute is contained of the audio tag in the html
             if(isAllowed) audioElement.play()
 
             // insert a set of data
-            document.getElementById('name').textContent = data.user.name
+            document.getElementById('name').textContent = data.name
             document.getElementById('age').textContent = data.age
             document.getElementById('distance').textContent = `${data.distance}km`
-            document.getElementById('comment').textContent = data.user.comment
+            document.getElementById('comment').textContent = data.comment
+            document.getElementById('height').textContent = `${data.height}cm`
             matchInfoElement.style.backgroundImage = `url(${data.image})`
 
             // display a set of data
@@ -400,7 +401,7 @@ connectLink.addEventListener('click', (event) => {
 
             // apply for the match
             agreementElement.addEventListener('click', () => {
-              subscription.send({like_id: currentUserId, liked_id: data.user.id})
+              subscription.send({like_id: currentUserId, liked_id: data.id})
               document.getElementById('loading-screen2').style.display = 'block'
             })
 

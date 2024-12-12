@@ -1,14 +1,21 @@
 <div class="main__container">
 <%= form_with(model: @user) do |f| %>
 <%= render 'shared/error_messages' %>
+
+<div class="general_field">
+  <%= f.label :email, "メールアドレス" %>
+  <%= f.email_field :email %>
+</div>
+
 <div class="general_field">
   <%= f.label :name, "ニックネーム" %>
   <%= f.text_field :name %>
 </div>
 
 <div class="general_field">
-  <%= f.label :email, "メールアドレス" %>
-  <%= f.email_field :email %>
+  <%= f.label :height, "身長" %>
+  <%= f.select :height, @height_options, placeholder: "身長を追加" %>
+
 </div>
 
 <div class="general_field submit__field">

@@ -31,7 +31,7 @@ girls = [];
   user = User.create!({name: name, email: email,
     password: password, password_confirmation: password,
     date_of_birth: date_of_birth, girl: 0, activated: 1,
-    comment: comment})
+    comment: comment, height: rand(165..180)})
   user.image.attach(io: File.open(Rails.root.join("app/assets/images/man-#{(n%4) + 1}.png")), filename: "man-#{n + 1}.png")
   boys[n] = user
   variations = Array.new(2) { Random.rand(-0.1..0.1) }
@@ -47,7 +47,7 @@ end
   user = User.create!({name: name, email: email,
     password: password, password_confirmation: password,
     date_of_birth: date_of_birth, girl: 1, activated: 1,
-    comment: comment})
+    comment: comment, height: rand(150..170)})
   user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{n + 11}.png")
   girls[n] = user
   variations = Array.new(2) { Random.rand(-0.1..0.1) }

@@ -60,10 +60,10 @@ class AutoMatchJob < ApplicationJob
           girl_url = Rails.application.routes.url_helpers.rails_blob_path(girl_instance.image.variant(:display), only_path: true)
           boy_url = Rails.application.routes.url_helpers.rails_blob_path(boy_instance.image.variant(:display), only_path: true)
           PublicChannel.broadcast_to(girl_instance, {
-            user: boy_instance, age: boy_instance.age, distance: distance_to_km(pair[2]), image: boy_url
+            id: boy_instance.id, name: boy_instance.name, comment: boy_instance.comment ,age: boy_instance.age, height: boy_instance.height, distance: distance_to_km(pair[2]), image: boy_url
           })
           PublicChannel.broadcast_to(boy_instance, {
-            user: girl_instance, age: girl_instance.age, distance: distance_to_km(pair[2]), image: girl_url
+            id: girl_instance.id, name: girl_instance.name, comment: girl_instance.comment , age: girl_instance.age, height: girl_instance.height, distance: distance_to_km(pair[2]), image: girl_url
           })
           paired_girls.push(pair[0])
           paired_boys.push(pair[1])

@@ -76,7 +76,7 @@ header p, ul, div{
 }
 
 
-input[type=text], input[type=date], input[type=email], input[type=password], textarea {
+input[type=text], input[type=date], input[type=email], input[type=password], select, textarea {
   font-size: 16px;
   display: block;
   width: 100%;
@@ -305,6 +305,20 @@ audio {
   bottom: 5%;
   z-index: 50;
   max-width: 40%;
+}
+
+.important-info {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#height {
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+#height, #distance {
+  font-weight: bold;
 }
 
 #comment {
