@@ -1,7 +1,7 @@
 import consumer from "consumer";
 import Cropper from "cropperjs";
 
-console.log("This is the match.js")
+console.log("This is match.js")
 
 // global variables
 
@@ -145,7 +145,17 @@ connectLink.addEventListener('click', (event) => {
   } else if( commentElement.value.length > 63 ) {
     alert("ひとことは63文字以内です")
   } else {
-    subscribeLocation();
+    document.getElementById('loading__wrapper').style.display = 'block'
+    document.getElementById('permission').style.display = 'block'
+    document.getElementById('permit-btn').addEventListener('click', () => {
+      document.getElementById('permission').style.display = 'none'
+      document.getElementById('loading-screen3').style.display = 'block'
+      subscribeLocation();
+    })
+    document.getElementById('deny-btn').addEventListener('click', () => {
+      document.getElementById('loading__wrapper').style.display = 'none'
+      document.getElementById('permission').style.display = 'none'
+    })
     
   }
 
@@ -169,10 +179,8 @@ connectLink.addEventListener('click', (event) => {
       }
     })
 
-
     // being asynchronous is so important
     async function executeInTurn() {
-      wrapLoading();
       await updateDatabase();
       // if you don't uplaod an image before subscribe the public channel, you will be rejected. it is for reconnection of public
       subscribePublic();
@@ -186,15 +194,6 @@ connectLink.addEventListener('click', (event) => {
       }
     }
 
-    function wrapLoading() {
-      const body = document.querySelector('body')
-      body.classList.add('loading__wrapper')
-      const loadingScreen3 = document.createElement('div')
-      loadingScreen3.setAttribute("id", "loading-screen3")
-      loadingScreen3.innerHTML = '<div class="spinner"></div>'
-      document.querySelector('html').appendChild(loadingScreen3)
-    }
-
     async function watchCurrent() {
       return new Promise(function(resolve, reject) {
         watchId = navigator.geolocation.watchPosition(
@@ -205,7 +204,7 @@ connectLink.addEventListener('click', (event) => {
 
             if(myLocation) myLocation.position = {lat: lat, lng: lng}
 
-            //if(isInYokohama(lat, lng)) {
+            if(isInYokohama(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
               isInArea = true
@@ -218,12 +217,12 @@ connectLink.addEventListener('click', (event) => {
                 locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
                 console.log('updated location')
               }
-            //} else {
+            } else {
               ackYokohama.innerText = 'マッチ範囲外'
               ackYokohama.style.backgroundColor = 'red'
               isInArea = false
               console.log('out of yokohama')
-            //}
+            }
             resolve();
           },
           (error) => {
@@ -317,6 +316,7 @@ connectLink.addEventListener('click', (event) => {
       window.addEventListener('beforeunload', alertBeforeUnload)
 
       //this is for create a nearby bot
+      /*
       document.getElementById('bot-creater').addEventListener('click', () => {
         console.log(currentUserId)
         fetch(`/matches/bot`, { 
@@ -328,6 +328,7 @@ connectLink.addEventListener('click', (event) => {
           body: JSON.stringify({id: currentUserId, latitude: lat, longitude: lng})
         })
       })
+      */
     }
 
     // https://developers.google.cn/maps/documentation/android-sdk/advanced-markers/add-marker?hl=ja

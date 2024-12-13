@@ -3,6 +3,18 @@
 
 <%= hidden_field_tag "current_user_id", @current_user.id %>
 
+<div id="loading__wrapper" style="display: none;"></div>
+<div id="permission", style="display: none;">
+  <p>マッチング成立後、相手にあなたの位置情報が共有されます。</p>
+  <div class="permission-btn">
+    <div class="btn" id="deny-btn">戻る</div>
+    <div class="btn" id="permit-btn">許可する</div>
+  </div>
+</div>
+<div id="loading-screen3" style="display: none;">
+  <div class="spinner"></div>
+</div>
+
 <%= form_with model: @current_user, id: "whole-form" do |f| %>
 <div class="matchesNew__image">
   <img id="image-preview">

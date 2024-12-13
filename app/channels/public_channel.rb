@@ -42,28 +42,30 @@ class PublicChannel < ApplicationCable::Channel
       station_name = info["ResultSet"]["Point"]["Station"]["Name"]
       gate_groups = info["ResultSet"]["Point"]["Station"]["GateGroup"]
 
-      point = []
       gate = {}
-      gate_candidates = []
-      main_gates = ["中央口", "東口", "西口", "南口", "北口"]
-      if gate_groups.class != Array
-        gate_groups = [gate_groups]
-      end
-      gate_groups.each do |gates|
-        if gates["Gate"].class != Array
-          gates["Gate"] = [gates["Gate"]]
+      if station_name == "横浜"
+        gate = gate_groups[3]["Gate"][0]
+      else
+        gate_candidates = []
+        main_gates = ["中央口", "東口", "西口", "南口", "北口"]
+        if gate_groups.class != Array
+          gate_groups = [gate_groups]
         end
-        gates["Gate"].each do |gate|
-          if main_gates.include?(gate["Name"])
-            gate_candidates.push(gate)
+        gate_groups.each do |gates|
+          if gates["Gate"].class != Array
+            gates["Gate"] = [gates["Gate"]]
+          end
+          gates["Gate"].each do |gate|
+            if main_gates.include?(gate["Name"])
+              gate_candidates.push(gate)
+            end
           end
         end
-      end
-
-      if gate_candidates.any?
-        gate = gate_candidates.sample
-      else
-        gate = gate_groups.sample["Gate"].sample
+        if gate_candidates.any?
+          gate = gate_candidates.sample
+        else
+          gate = gate_groups.sample["Gate"].sample
+        end
       end
       point = [gate["Name"], gate["GeoPoint"]["lati_d"].to_f, gate["GeoPoint"]["longi_d"].to_f]
 

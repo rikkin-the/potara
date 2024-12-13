@@ -9,15 +9,17 @@
 
   <div id="match-info" style="display: none;">
     <div class="match-info__container">
-      <div class="main-info">
-        <div>
-          <span id="name" class="important-info"></span>
-          <span id="age" class="important-info"></span>
-          <p id="height"></p>
-        </div> 
+      <div class="blend-area">
+        <div class="main-info">
+          <div>
+            <span id="name" class="important-info"></span>
+            <span id="age" class="important-info"></span>
+            <p id="height"></p>
+          </div> 
         <p id="distance"></p>
+        </div>
+        <p id="comment"></p>
       </div>
-      <p id="comment"></p>
       <button id="map__closeButton">✕</button>
       <button id="agreement" class="btn">今すぐ会う</button>
       <div id="loading-screen2" style="display: none;">
@@ -38,5 +40,7 @@
   <div id="current-location"></div>
   <%= audio_tag 'muber_notification_1.m4a', loop: "true" %>
 
-  <div id="bot-creater">近くにbotを作成</div>
+  <!--
+    <div id="bot-creater">近くにbotを作成</div>
+  -->
 </div>

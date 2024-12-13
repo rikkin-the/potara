@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  post 'matches/bot', to: "matches#create_bot"
+  #post 'matches/bot', to: "matches#create_bot"
   get 'account_activations/success'
   get 'password_resets/new'
   get 'password_resets/edit'
