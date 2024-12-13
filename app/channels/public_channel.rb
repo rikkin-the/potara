@@ -61,14 +61,17 @@ class PublicChannel < ApplicationCable::Channel
         station = JSON.parse(response)
         name = station["response"]["station"][0]["name"]
 
+        p station
         response = HTTP.get('https://api.ekispert.jp/v1/json/station/light',
           :params => {:key => ENV['EKISPERT_KEY'], :name => name})
         light_info = JSON.parse(response)
         code = light_info["ResultSet"]["Point"]["Station"]["code"].to_i
+        p code
 
         response = HTTP.get('https://api.ekispert.jp/v1/json/station/info',
           :params => {:key => ENV['EKISPERT_KEY'], :code => code, :type => "exit"})
         exit_info = JSON.parse(response)
+        p exit_info
       rescue => e
         retries -= 1
         if retries > 0
@@ -115,16 +118,16 @@ class PublicChannel < ApplicationCable::Channel
         girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:icon), only_path: true)
         boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:icon), only_path: true)
 
-        variations = Array.new(2) { Random.rand(-0.005..0.005) }
-        boy_location = { lat: boy_lat.to_f + variations[0], lng: boy_lng.to_f + variations[1] }
-        girl_location = {lat: girl_lat.to_f + variations[0], lng: girl_lng.to_f + variations[1] }
+        #variations = Array.new(2) { Random.rand(-0.005..0.005) }
+        boy_location = { lat: boy_lat.to_f, lng: boy_lng.to_f}
+        girl_location = {lat: girl_lat.to_f, lng: girl_lng.to_f}
 
 
-        PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: girl_location,
-          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road.floor(1),
+        PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: boy_location,
+          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road.floor(1),
           meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: boy_location,
-          partnerComment: boy.comment, appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road.floor(1),
+        PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: girl_location,
+          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road.floor(1),
           meeting_time: time_params}})
 
         $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])

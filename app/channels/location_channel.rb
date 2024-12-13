@@ -16,7 +16,7 @@ class LocationChannel < ApplicationCable::Channel
       $redis_matched.hset(user.id, array_for_save)
       partner_id = $redis_matched.hget(user.id, "partner")
       partner = User.find(partner_id)
-      LocationChannel.broadcast_to(partner, 1)
+      LocationChannel.broadcast_to(partner, {lat: lat, lng: lng})
     else
       if user.girl
         $redis.hmset("girl_#{user.id}", array_for_save)

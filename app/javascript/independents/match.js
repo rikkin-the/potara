@@ -157,11 +157,14 @@ connectLink.addEventListener('click', (event) => {
       received(data) {
         // receive information of a partner after matched
         console.log(data)
-        notificationElement.textContent = '相手が移動しています!'
-        removeNotification()
-        async function removeNotification() {
-          await delay(5000)
-          notificationElement.textContent = ''
+        if(partnerLocation) {
+          partnerLocation.position = {lat: data['lat'], lng: data['lng']}
+          notificationElement.textContent = '相手が移動しています!'
+          removeNotification()
+          async function removeNotification() {
+            await delay(5000)
+            notificationElement.textContent = ''
+          }
         }
       }
     })
@@ -200,7 +203,9 @@ connectLink.addEventListener('click', (event) => {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
 
-            if(isInYokohama(lat, lng)) {
+            if(myLocation) myLocation.position = {lat: lat, lng: lng}
+
+            //if(isInYokohama(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
               isInArea = true
@@ -213,12 +218,12 @@ connectLink.addEventListener('click', (event) => {
                 locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
                 console.log('updated location')
               }
-            } else {
+            //} else {
               ackYokohama.innerText = 'マッチ範囲外'
               ackYokohama.style.backgroundColor = 'red'
               isInArea = false
               console.log('out of yokohama')
-            }
+            //}
             resolve();
           },
           (error) => {
@@ -392,17 +397,21 @@ connectLink.addEventListener('click', (event) => {
             document.getElementById('age').textContent = data.age
             document.getElementById('distance').textContent = `${data.distance}km`
             document.getElementById('comment').textContent = data.comment
-            document.getElementById('height').textContent = `${data.height}cm`
             matchInfoElement.style.backgroundImage = `url(${data.image})`
+            if(typeof(data.height) === 'number') {
+              document.getElementById('height').textContent = `${data.height}cm`
+            }
 
             // display a set of data
             matchInfoElement.style.display = 'block'
+            agreementElement.style.display = 'block'
             connectLink.style.display = 'none'
 
             // apply for the match
             agreementElement.addEventListener('click', () => {
               subscription.send({like_id: currentUserId, liked_id: data.id})
               document.getElementById('loading-screen2').style.display = 'block'
+              agreementElement.style.display = 'none'
             })
 
             document.getElementById('map__closeButton').addEventListener('click', () => {
@@ -500,9 +509,11 @@ connectLink.addEventListener('click', (event) => {
         },
         received(partnerData) {
           if(partnerData === 0) {
+            removeInfo()
             backToThePublic('相手がマッチを解除しました')
           }
           if(partnerData === 1) {
+            removeInfo()
             backToThePublic('相手の接続が切れました')
           }
 

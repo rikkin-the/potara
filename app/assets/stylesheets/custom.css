@@ -86,6 +86,10 @@ input[type=text], input[type=date], input[type=email], input[type=password], sel
   color: white;
 }
 
+select {
+  width: auto;
+}
+
 textarea {
   text-align: left;
   background-color: black;
@@ -165,19 +169,24 @@ footer {
   opacity: 0.7;
   color: black;
   border-radius: 12px;
-  width: 80%;
   margin: 0 auto;
+  padding: 4px 0;
+  max-width: 70%;
+}
+
+#warning p, h4 {
+  margin: 8px
 }
 
 
 /* input fields */
 
 .general_field {
-  margin-top: 64px;
+  margin-top: 32px;
 }
 
 .submit__field {
-  margin-top: 128px;
+  margin-top: 64px;
 }
 
 /* map */
@@ -208,7 +217,7 @@ footer {
 .sound {
   position: absolute;
   right: 16px;
-  top: 72%;
+  top: 52%;
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -245,7 +254,7 @@ audio {
 /* loading */
 #loading-screen {
   position: absolute;
-  top: 10%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -255,8 +264,9 @@ audio {
 #ack-yokohama {
   opacity: 0.5;
   border-radius: 12px;
-  padding: 16px 24px;
-  font-size: 24px
+  padding: 16px;
+  font-size: 16px;
+  width: auto;
 }
 
 .spinner {
@@ -373,7 +383,7 @@ audio {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -35%;
+  bottom: -25%;
   pointer-events: none;
 }
 

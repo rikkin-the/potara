@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @height_options = [["身長を追加", ""]]
+    @height_options = [["選択なし", ""]]
     (130..210).each do |i|
       @height_options.push(["#{i}cm", i])
     end
