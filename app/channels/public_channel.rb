@@ -16,128 +16,82 @@ class PublicChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    like_id = data["like_id"]
-    liked_id = data["liked_id"]
-    like_user = User.find_by(id: like_id)
-    liked_user = User.find_by(id: liked_id)
     const = (3..22).to_a
-
-    if ($redis_agreement.get(liked_id) == like_id.to_s || const.include?(liked_id))
+    like_user = User.find_by(id: data["like_id"])
+    liked_user = User.find_by(id: data["liked_id"])
+    if ($redis_agreement.get(liked_user.id) == like_user.id.to_s || const.include?(liked_user.id))
       if like_user.girl
         girl = like_user
         boy = liked_user
-        girl_key = "girl_#{like_id}"
-        boy_key = "boy_#{liked_id}"
-        girl_id = like_id
-        boy_id = liked_id
       else
         girl = liked_user
         boy = like_user
-        girl_key = "girl_#{liked_id}"
-        boy_key = "boy_#{like_id}"
-        girl_id = liked_id
-        boy_id = like_id
       end
 
-      girl_lat = $redis.hget(girl_key, "lat")
-      boy_lat = $redis.hget(boy_key, "lat")
-      girl_lng = $redis.hget(girl_key, "lng")
-      boy_lng = $redis.hget(boy_key, "lng")
+      girl_loc = $redis.hmget("girl_#{girl.id}", ["lat", "lng"])
+      girl_loc.map! { |l| l.to_f }
+      boy_loc = $redis.hmget("boy_#{boy.id}", ["lat", "lng"])
+      boy_loc.map! { |l| l.to_f }
+      locations = {girl: girl_loc, boy: boy_loc}
+      locations[:center] = [(locations[:girl][0]+locations[:boy][0])/2.to_f, (locations[:girl][1]+locations[:boy][1])/2.to_f]
 
-      girl_lat = girl_lat.to_f
-      girl_lng = girl_lng.to_f
-      boy_lat = boy_lat.to_f
-      boy_lng = boy_lng.to_f
-      center_lat = (girl_lat + boy_lat)/2.to_f
-      center_lng = (girl_lng + boy_lng)/2.to_f
+      response = HTTP.get('https://api.ekispert.jp/v1/json/geo/station',
+        params: {key: ENV['EKISPERT_KEY'], geoPoint: "#{locations[:center][0]},#{locations[:center][1]},wgs84", type: "train",
+                addGateGroup: "true", excludeSameLineStation: "true", stationCount: 1, gcs: 'wgs84'})
+      info = JSON.parse(response)
+      station_name = info["ResultSet"]["Point"]["Station"]["Name"]
+      gate_groups = info["ResultSet"]["Point"]["Station"]["GateGroup"]
 
-      p center_lat
-      p center_lng
-
-      retries = 2
-      begin
-        response = HTTP.get('https://express.heartrails.com/api/json',
-          :params => {:method => "getStations", :x => center_lng, :y => center_lat})
-        station = JSON.parse(response)
-        name = station["response"]["station"][0]["name"]
-
-        p station
-        response = HTTP.get('https://api.ekispert.jp/v1/json/station/light',
-          :params => {:key => ENV['EKISPERT_KEY'], :name => name})
-        light_info = JSON.parse(response)
-        code = light_info["ResultSet"]["Point"]["Station"]["code"].to_i
-        p code
-
-        response = HTTP.get('https://api.ekispert.jp/v1/json/station/info',
-          :params => {:key => ENV['EKISPERT_KEY'], :code => code, :type => "exit"})
-        exit_info = JSON.parse(response)
-        p exit_info
-      rescue => e
-        retries -= 1
-        if retries > 0
-          sleep(5)
-          retry
-        else
-          Rails.logger.error("HTTPリクエストが失敗しました")
-          PublicChannel.broadcast_to(girl, 0)
-          PublicChannel.broadcast_to(boy, 0)
+      point = []
+      gate = {}
+      gate_candidates = []
+      main_gates = ["中央口", "東口", "西口", "南口", "北口"]
+      if gate_groups.class != Array
+        gate_groups = [gate_groups]
+      end
+      gate_groups.each do |gates|
+        if gates["Gate"].class != Array
+          gates["Gate"] = [gates["Gate"]]
         end
+        gates["Gate"].each do |gate|
+          if main_gates.include?(gate["Name"])
+            gate_candidates.push(gate)
+          end
+        end
+      end
+
+      if gate_candidates.any?
+        gate = gate_candidates.sample
       else
-        station_lat = station["response"]["station"][0]["y"].to_f
-        station_lng = station["response"]["station"][0]["x"].to_f
-        point = "改札前"
-        p exit_info
-        exit_arr = exit_info["ResultSet"]["Information"]["Exit"]
-        if exit_arr
-          if exit_arr.class != Array
-            exit_arr = [exit_arr]
-          end
-          exit_center = exit_arr.filter { |exit| exit["Name"].include?("中央") }
-          if exit_center.any?
-            point = exit_center.sample["Name"]
-          else
-            exit_direction = exit_arr.filter do |exit|
-              exit["Name"].include?("西口") || exit["Name"].include?("東口") ||
-              exit["Name"].include?("南口") || exit["Name"].include?("北口")
-            end
-            if exit_direction.any?
-              point = exit_direction.sample["Name"]
-            else
-              point = exit_arr.sample["Name"]
-            end
-          end
-        end
-        girl_distance_on_road = 1.3*distance_to_km(distance(girl_lat, girl_lng, station_lat, station_lng))
-        boy_distance_on_road = 1.3*distance_to_km(distance(boy_lat, boy_lng, station_lat, station_lng))
-        max_distance_on_road = boy_distance_on_road > girl_distance_on_road ?
-                              boy_distance_on_road : girl_distance_on_road
-        required_time = max_distance_on_road / 0.08
-        meeting_time = Time.current.since(required_time.minute) + 15.minute
-        time_params = meeting_time.strftime("%H:%M")
-
-        girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:icon), only_path: true)
-        boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:icon), only_path: true)
-
-        #variations = Array.new(2) { Random.rand(-0.005..0.005) }
-        boy_location = { lat: boy_lat.to_f, lng: boy_lng.to_f}
-        girl_location = {lat: girl_lat.to_f, lng: girl_lng.to_f}
-
-
-        PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: boy_location,
-          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: girl_distance_on_road.floor(1),
-          meeting_time: time_params}})
-        PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: girl_location,
-          appointment: {station_name: name, stationLocation: {lat: station_lat, lng: station_lng}, point: point, distance: boy_distance_on_road.floor(1),
-          meeting_time: time_params}})
-
-        $redis_matched.hmset(girl_id, ["lat", girl_lat, "lng", girl_lng, "partner", boy_id])
-        $redis_matched.hmset(boy_id, ["lat", boy_lat, "lng", boy_lng, "partner", girl_id])
-
-        $redis_agreement.del(liked_id)
+        gate = gate_groups.sample["Gate"].sample
       end
+      point = [gate["Name"], gate["GeoPoint"]["lati_d"].to_f, gate["GeoPoint"]["longi_d"].to_f]
 
+      p gate_groups
+      p point
+      distances = {}
+      distances[:girl] = 1.3*distance_to_km(distance(locations[:girl][0], locations[:girl][1], point[1], point[2]))
+      distances[:boy] = 1.3*distance_to_km(distance(locations[:boy][0], locations[:boy][1], point[1], point[2]))
+      distances[:max] = distances[:boy] > distances[:girl] ? distances[:boy] : distances[:girl]
+      required_time = distances[:max] / 0.08
+      meeting_time = Time.current.since(required_time.minute) + 15.minute
+      time_params = meeting_time.strftime("%H:%M")
+      girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:icon), only_path: true)
+      boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:icon), only_path: true)
+      #variations = Array.new(2) { Random.rand(-0.005..0.005) }
+
+      PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: {lat: locations[:boy][0], lng: locations[:boy][1]},
+        appointment: {station_name: station_name, stationLocation: {lat: point[1], lng: point[2]}, point: point[0], distance: distances[:girl].floor(1),
+        meeting_time: time_params}})
+      PublicChannel.broadcast_to(boy, {partnerIcon: girl_icon, partnerLocation: {lat: locations[:girl][0], lng: locations[:girl][1]},
+        appointment: {station_name: station_name, stationLocation: {lat: point[1], lng: point[2]}, point: point[0], distance: distances[:boy].floor(1),
+        meeting_time: time_params}})
+
+      $redis_matched.hmset(girl.id, ["lat", locations[:girl][0], "lng", locations[:girl][1], "partner", boy.id])
+      $redis_matched.hmset(boy.id, ["lat", locations[:boy][0], "lng", locations[:boy][1], "partner", girl.id])
+      $redis_agreement.del(liked_user.id)
     else
-      $redis_agreement.set(like_id, liked_id)
+      $redis_agreement.set(like_user.id, liked_user.id)
     end
   end
 end
