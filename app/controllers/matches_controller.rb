@@ -8,7 +8,7 @@ class MatchesController < ApplicationController
     if user.image.attach(user_params[:image])
       render 'map'
     else
-      flash[:danger] = "ユーザー情報の更新に失敗しました"
+      flash.now[:danger] = "ユーザー情報の更新に失敗しました"
       render 'new', status: :unprocessable_entity
     end
 
