@@ -19,16 +19,17 @@
 
 </div>
 
-<div class="general_field submit__field">
+<div class="general_field submit__field usersShow__btn__container">
   <%= f.submit "更新", class: "btn" %>
+  <p>
+    <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete }, class: "usersShow__logout" %>
+  </p>
+  <p>
+    <%= link_to "アカウントを削除する", @user, data: { "turbo-method": :delete,
+                                                   turbo_confirm: "本当に削除しますか？" } %>
+  </p>
 </div>
 <% end %>
 
-<div class="general_field">
-  <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete }, class: "usersShow__logout" %>
-</div>
-<div class="general_field usersShow__delete">
-  <%= link_to "アカウントを削除する", @user, data: { "turbo-method": :delete,
-                                                   turbo_confirm: "本当に削除しますか？" } %>
-</div>
+
 </div>

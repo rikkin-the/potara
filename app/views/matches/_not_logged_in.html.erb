@@ -1,24 +1,26 @@
 <% provide(:title, "あまりにリアルな出会い") %>
-<div class="main__container">
-  <h2>あまりにリアルな出会い。</h2>
+<div class="initial__viewport">
+  <div class="main__container">
+    <h2>指先の恋から、さようなら</h2>
 
-  <div class="matchesNew__information">
-    
-    <div>
-      <h5>リアルタイムマッチング</h5>
-    </div>
-    <div>
-      <h5>プロフィールもチャットもなし</h5>
-    </div>
-    <div>
-      <h5>横浜駅限定</h5>
-    </div>
-    <div>
-      <h5>完全無料</h5>
+    <div class="matchesNew__information">
+      
+      <div>
+        <h5>横浜駅限定</h5>
+      </div>
+      <div>
+        <h5>リアルタイムで即会い</h5>
+      </div>
+      <div>
+        <h5>プロフィールもチャットもなし</h5>
+      </div>
+      <div>
+        <h5>完全無料</h5>
+      </div>
     </div>
   </div>
-
-  <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup" %></p>
-  <p><%= link_to "ログインはこちら" ,login_path, class: "login_link" %></p>
- 
+  <div class="btn__container">
+    <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup" %></p>
+    <p><%= link_to "ログインはこちら" ,login_path, class: "login_link" %></p>
+  </div>
 </div>

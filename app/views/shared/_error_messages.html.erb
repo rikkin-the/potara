@@ -1,8 +1,5 @@
 <% if @user.errors.any? %>
   <div>
-    <div>
-      <%= @user.errors.count %>個のエラーがあります。
-    </div>
     <ul>
       <% @user.errors.full_messages.each do |message| %>
         <li><%= message %></li>

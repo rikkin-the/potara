@@ -33,16 +33,16 @@
     <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation, placeholder: "もう一度入力してください" %>
   </div>
-  <div class="usersNew__field">
-    <%= f.label :agreement, "私は18歳未満ではありません" %>
-    <%= f.check_box :agreement %>
-  </div>
   
-  <div class="usersNew__field">
+  <div class="usersNew__fiel btn__container">
+    <p>
+      <%= f.label :agreement, "私は18歳未満ではありません" %>
+      <%= f.check_box :agreement %>
+    </p>
     <%= f.submit "登録", class: "btn" %>
+    <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
   </div>
 
   <% end %>
-  <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
 
 </div>

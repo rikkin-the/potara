@@ -16,10 +16,10 @@ class PublicChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    const = (3..22).to_a
+    #const = (3..22).to_a
     like_user = User.find_by(id: data["like_id"])
     liked_user = User.find_by(id: data["liked_id"])
-    if ($redis_agreement.get(liked_user.id) == like_user.id.to_s || const.include?(liked_user.id))
+    if $redis_agreement.get(liked_user.id) == like_user.id.to_s
       if like_user.girl
         girl = like_user
         boy = liked_user

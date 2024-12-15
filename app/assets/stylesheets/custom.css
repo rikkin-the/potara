@@ -21,6 +21,7 @@ header {
   font-size: 16px;
   padding: 0;
   max-height: 40svh;
+  max-width: 512px;
   background-color: var(--first-color);
   border-radius: 16px;
   z-index: 10000;
@@ -34,6 +35,7 @@ header p, ul, div{
 }
 
 .body__container {
+  position: relative;
   background-color: var(--background-color);
   width: 100%;
   max-width: 512px;
@@ -60,7 +62,7 @@ header p, ul, div{
 }
 
 .main__container {
-  padding: 16px 32px;
+  padding: 32px 32px;
 }
 
 .btn {
@@ -74,7 +76,25 @@ header p, ul, div{
   text-decoration: none;
   padding: 10px;
   box-shadow: 0 0 6px gray;
+  
 }
+
+.btn__container, .usersShow__btn__container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+}
+
+.btn__container {
+  bottom: 5%;
+}
+
+.usersShow__btn__container {
+  bottom: 15%;
+}
+
+
 
 
 input[type=text], input[type=date], input[type=email], input[type=password], select, textarea {
@@ -150,12 +170,12 @@ footer {
   aspect-ratio: 1;
   margin: 16px auto;
   pointer-events: auto;
-  background-color: var(--first-color);
+  background-color: rgb(0, 0, 100);
   background-image: none;
 }
 
-#connect-text {
-  margin-top: 8px;
+.potara-btn {
+  width: 40%;
 }
 
 .profile__icon {
@@ -182,7 +202,7 @@ footer {
 /* input fields */
 
 .general_field {
-  margin-top: 32px;
+  margin-top: 20%;;
 }
 
 .submit__field {
@@ -190,6 +210,13 @@ footer {
 }
 
 /* not logged in  */
+
+.initial__viewport {
+  height: 100%;
+  width: 100%;
+  background-image: url('map.png');
+  background-size: cover;
+}
 
 .matchesNew__information {
   text-align: left;
@@ -242,12 +269,6 @@ footer {
 
 .gender input[type=radio]:checked + label[for=user_girl_0] {
   background-color: rgb(0, 45, 191);  
-}
-
-
-/* profile */
-.usersShow__delete {
-  margin-top: 24px;
 }
 
 

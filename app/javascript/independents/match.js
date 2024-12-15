@@ -24,7 +24,6 @@ let isInArea = false;
 let cropper;
 let audioElement;
 let connectLink = document.getElementById('connect-link')
-let connectText;
 let notificationElement = document.getElementById('popup__javascript')
 const currentUserId = document.getElementById('current_user_id').value
 
@@ -36,6 +35,7 @@ let soundElement;
 let loadingScreen;
 let loadingScreen2;
 let ackYokohama;
+
 
 // clock direction from a south-west point
 const nishiyokohama = {lat: 35.45336890218082, lng: 139.60865604253013}
@@ -303,9 +303,8 @@ connectLink.addEventListener('click', (event) => {
       })
 
       // it is important to point another connect-link(they are different elements)
-      connectText = document.getElementById('connect-text')
       connectLink = document.getElementById('connect-link')
-      connectText.textContent = 'オフ'  
+      connectLink.style.backgroundColor = 'rgb(100, 0 ,0)'
       connectLink.addEventListener('click', (event) => {
         event.preventDefault();
         window.location.href = '/'
@@ -455,7 +454,6 @@ connectLink.addEventListener('click', (event) => {
           map.setZoom(12)
 
           // insert a set of data
-          connectText.textContent = '解除'
           document.getElementById('station').textContent = `${appointmentData['station_name']}駅 ${appointmentData['point']}`
           document.getElementById('distance-to-station').textContent = `${appointmentData['distance']}km`
 
@@ -528,7 +526,6 @@ connectLink.addEventListener('click', (event) => {
 
             appointmentElement.style.display = 'none'
             warningElement.style.display = 'none'
-            connectText.textContent = 'オフ'
             loadingScreen.style.display = 'block'
             agreementElement.style.display = 'block'
             soundElement.style.display = 'block'
