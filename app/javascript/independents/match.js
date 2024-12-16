@@ -251,7 +251,7 @@ connectLink.addEventListener('click', (event) => {
         return new Promise((resolve) => {
           c.getCroppedCanvas({maxWidth: 1080, maxHeight: 1350}).toBlob((blob) => {
             resolve(blob);
-          })
+          }, 'image/jpeg')
         })
       }
   
@@ -515,7 +515,9 @@ connectLink.addEventListener('click', (event) => {
             backToThePublic('相手がマッチを解除しました')
           } else if(partnerData === 1) {
             notificationElement.textContent = '相手の通信が不安定です。相手が集合場所に向かっていない可能性があります。'
-          } 
+          } else if(partnerData === 2) {
+            notificationElement.textContent = ''
+          }
 
           function backToThePublic(content = '') {
             zeroNotification()

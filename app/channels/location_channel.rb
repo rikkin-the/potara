@@ -8,9 +8,9 @@ class LocationChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    user = User.find(data["id"])
-    partner_id = $redis_matched.get(user.id)
+    partner_id = $redis_matched.get(data["id"])
     if partner_id.nil?
+      user = User.find(data["id"])
       if user.girl
         $redis.hmset("girl_#{user.id}", ["lat", data["latitude"], "lng", data["longitude"]])
       else
