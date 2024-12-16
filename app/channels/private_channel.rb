@@ -13,7 +13,9 @@ class PrivateChannel < ApplicationCable::Channel
 
   def unsubscribed
     partner_id = $redis_matched.get(current_user.id)
-    send_to_partner(partner_id, 1)
+    if partner_id
+      send_to_partner(partner_id, 1)
+    end
   end
 
   def receive(data)
