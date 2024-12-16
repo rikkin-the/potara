@@ -18,9 +18,9 @@ class PrivateChannel < ApplicationCable::Channel
 
   def receive(data)
     partner_id = $redis_matched.get(current_user.id)
-    send_to_partner(partner_id, 0)
     $redis_matched.del(current_user.id)
     $redis_matched.del(partner_id)
+    send_to_partner(partner_id, 0)
 =begin
     type = data["type"].to_i
     if type == 0
