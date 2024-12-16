@@ -1,6 +1,11 @@
+:concurrency: 5
+
+:queues:
+  - ['default', 1]
+  - ['match', 4]
+
 :scheduler:
   :schedule:
     auto_match:
       cron: '0 0/1 * * * *'
       class: AutoMatchJob
-    

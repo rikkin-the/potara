@@ -1,5 +1,5 @@
 class AutoMatchJob < ApplicationJob
-  queue_as :default
+  queue_as :match
 
   def filter(id, keys_array)
     invalid_ids = $redis_past.lrange(id, 0, -1)
