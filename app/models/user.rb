@@ -15,10 +15,14 @@ class User < ApplicationRecord
                                     message: "この写真タイプは受け付けられません"}
   validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
   validates_acceptance_of :agreement
-  has_one_attached :image do |attachable|
+
+  has_one_attached :image
+=begin
+  do |attachable|
     attachable.variant :display, resize_to_limit: [400, 500]
     attachable.variant :icon, resize_to_limit: [100, 100]
   end
+=end
 
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :

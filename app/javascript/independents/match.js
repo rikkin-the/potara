@@ -169,12 +169,13 @@ connectLink.addEventListener('click', (event) => {
         console.log(data)
         if(partnerLocation) {
           partnerLocation.position = {lat: data['lat'], lng: data['lng']}
+          /*
           notificationElement.textContent = '相手が移動しています!'
           removeNotification()
           async function removeNotification() {
             await delay(5000)
             notificationElement.textContent = ''
-          }
+          } */
         }
       }
     })
@@ -204,7 +205,8 @@ connectLink.addEventListener('click', (event) => {
 
             if(myLocation) myLocation.position = {lat: lat, lng: lng}
 
-            if(isInYokohama(lat, lng)) {
+            //コメント外す！
+            //if(isInYokohama(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
               isInArea = true
@@ -217,12 +219,12 @@ connectLink.addEventListener('click', (event) => {
                 locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
                 console.log('updated location')
               }
-            } else {
-              ackYokohama.innerText = 'マッチ範囲外'
-              ackYokohama.style.backgroundColor = 'red'
-              isInArea = false
-              console.log('out of yokohama')
-            }
+            //} else { 
+              //ackYokohama.innerText = 'マッチ範囲外'
+              //ackYokohama.style.backgroundColor = 'red'
+              //isInArea = false
+              //console.log('out of yokohama') 
+            //}
             resolve();
           },
           (error) => {
@@ -247,7 +249,7 @@ connectLink.addEventListener('click', (event) => {
       const blob = await getBlobFromCanvas(cropper)
       function getBlobFromCanvas(c) {
         return new Promise((resolve) => {
-          c.getCroppedCanvas({maxWidth: 400, maxHeight: 500}).toBlob((blob) => {
+          c.getCroppedCanvas({maxWidth: 1080, maxHeight: 1350}).toBlob((blob) => {
             resolve(blob);
           })
         })
@@ -304,7 +306,7 @@ connectLink.addEventListener('click', (event) => {
 
       // it is important to point another connect-link(they are different elements)
       connectLink = document.getElementById('connect-link')
-      connectLink.style.backgroundColor = 'rgb(100, 0 ,0)'
+      connectLink.style.backgroundColor = 'rgb(255, 100, 100)'
       connectLink.addEventListener('click', (event) => {
         event.preventDefault();
         window.location.href = '/'
@@ -380,11 +382,11 @@ connectLink.addEventListener('click', (event) => {
         initialized() {
           console.log("パブリック通信開始")
         },
-        rejected(){
+        /* rejected(){
           console.log('public rejected')
           window.removeEventListener('beforeunload', alertBeforeUnload)
           window.location.href = '/exit'
-        },
+        }, */
         received(data) {
           // a lot of offers come repeatedly
           console.log(data)
@@ -507,14 +509,13 @@ connectLink.addEventListener('click', (event) => {
           window.location.href = '/exit'
         },
         received(partnerData) {
+          console.log(partnerData)
           if(partnerData === 0) {
             removeInfo()
             backToThePublic('相手がマッチを解除しました')
-          }
-          if(partnerData === 1) {
-            removeInfo()
-            backToThePublic('相手の接続が切れました')
-          }
+          } else if(partnerData === 1) {
+            notificationElement.textContent = '相手の通信が不安定です。相手が集合場所に向かっていない可能性があります。'
+          } 
 
           function backToThePublic(content = '') {
             zeroNotification()
@@ -533,7 +534,7 @@ connectLink.addEventListener('click', (event) => {
             stationLocation.setMap(null);
             privateSubscription.unsubscribe()
             privateSubscription = null
-            locationSubscription.send({id: currentUserId, latitude: locationData.latitude, longitude: locationData.longitude})
+            locationSubscription.send({id: currentUserId, latitude: lat, longitude: lng})
             subscribePublic();
           }
         } 

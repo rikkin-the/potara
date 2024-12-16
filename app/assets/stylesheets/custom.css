@@ -166,16 +166,21 @@ footer {
 }
 
 #connect-link {
+  position: relative;
   width: 40%;
   aspect-ratio: 1;
   margin: 16px auto;
   pointer-events: auto;
-  background-color: rgb(0, 0, 100);
+  background-color: rgb(100, 100, 255);
   background-image: none;
 }
 
-.potara-btn {
-  width: 40%;
+.power-btn {
+  position: absolute;
+  width: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .profile__icon {
@@ -220,7 +225,7 @@ footer {
 
 .matchesNew__information {
   text-align: left;
-  padding-bottom: 24px;
+  margin-top: 10%;
 }
 
 #partner-detail {

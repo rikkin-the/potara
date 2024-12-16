@@ -21,8 +21,8 @@ m_lat = 35.467485733008154
 m_lng = 139.61998382341233
 boys = [];
 girls = [];
-comment = "これはAIボットです。マッチすることはできません。"
-user_number = 100
+comment = "これは例示用のAIボットです。マッチすることはできません。"
+user_number = 5
 
 user_number.times do |n|
   name = Faker::Name.male_first_name
@@ -57,7 +57,7 @@ end
 
 boys.each do |boy|
   girls.each do |girl|
-    #$redis_past.rpush(boy.id, girl.id)
-    #$redis_past.rpush(girl.id, boy.id)
+    $redis_past.rpush(boy.id, girl.id)
+    $redis_past.rpush(girl.id, boy.id)
   end
 end

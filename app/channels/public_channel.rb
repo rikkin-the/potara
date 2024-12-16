@@ -1,8 +1,8 @@
 class PublicChannel < ApplicationCable::Channel
   def subscribed
     stream_for current_user
-    $redis_matched.del(current_user.id) if $redis_matched.exists?(current_user.id)
-    reject unless current_user.image.attached?
+    $redis_matched.del(current_user.id) if $redis_matched.get(current_user.id)
+    #reject unless current_user.image.attached?
   end
 
   def unsubscribed
@@ -12,14 +12,15 @@ class PublicChannel < ApplicationCable::Channel
     else
       $redis.del("boy_#{current_user.id}")
     end
-    puts "Public channel finished"
   end
 
   def receive(data)
     #const = (3..22).to_a
-    like_user = User.find_by(id: data["like_id"])
-    liked_user = User.find_by(id: data["liked_id"])
-    if $redis_agreement.get(liked_user.id) == like_user.id.to_s
+    if $redis_agreement.get(data["liked_id"]) == data["like_id"].to_s
+      like_user = User.find_by(id: data["like_id"])
+      liked_user = User.find_by(id: data["liked_id"])
+      $redis_matched.set(like_user.id, liked_user.id)
+      $redis_matched.set(liked_user.id, like_user.id)
       if like_user.girl
         girl = like_user
         boy = liked_user
@@ -78,8 +79,8 @@ class PublicChannel < ApplicationCable::Channel
       required_time = distances[:max] / 0.08
       meeting_time = Time.current.since(required_time.minute) + 15.minute
       time_params = meeting_time.strftime("%H:%M")
-      girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image.variant(:icon), only_path: true)
-      boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image.variant(:icon), only_path: true)
+      girl_icon =  Rails.application.routes.url_helpers.rails_blob_path(girl.image, only_path: true)
+      boy_icon =  Rails.application.routes.url_helpers.rails_blob_path(boy.image, only_path: true)
       #variations = Array.new(2) { Random.rand(-0.005..0.005) }
 
       PublicChannel.broadcast_to(girl, {partnerIcon: boy_icon, partnerLocation: {lat: locations[:boy][0], lng: locations[:boy][1]},
@@ -89,11 +90,11 @@ class PublicChannel < ApplicationCable::Channel
         appointment: {station_name: station_name, stationLocation: {lat: point[1], lng: point[2]}, point: point[0], distance: distances[:boy].floor(1),
         meeting_time: time_params}})
 
-      $redis_matched.hmset(girl.id, ["lat", locations[:girl][0], "lng", locations[:girl][1], "partner", boy.id])
-      $redis_matched.hmset(boy.id, ["lat", locations[:boy][0], "lng", locations[:boy][1], "partner", girl.id])
-      $redis_agreement.del(liked_user.id)
+      #$redis_matched.hmset(girl.id, ["lat", locations[:girl][0], "lng", locations[:girl][1], "partner", boy.id])
+      #$redis_matched.hmset(boy.id, ["lat", locations[:boy][0], "lng", locations[:boy][1], "partner", girl.id])
+      #$redis_agreement.del(liked_user.id)
     else
-      $redis_agreement.set(like_user.id, liked_user.id)
+      $redis_agreement.set(data["like_id"], data["liked_id"])
     end
   end
 end

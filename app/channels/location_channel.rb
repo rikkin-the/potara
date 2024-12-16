@@ -9,20 +9,16 @@ class LocationChannel < ApplicationCable::Channel
 
   def receive(data)
     user = User.find(data["id"])
-    lat = data["latitude"]
-    lng = data["longitude"]
-    array_for_save = ["lat", lat, "lng", lng]
-    if $redis_matched.exists?(user.id)
-      $redis_matched.hset(user.id, array_for_save)
-      partner_id = $redis_matched.hget(user.id, "partner")
-      partner = User.find(partner_id)
-      LocationChannel.broadcast_to(partner, {lat: lat, lng: lng})
-    else
+    partner_id = $redis_matched.get(user.id)
+    if partner_id.nil?
       if user.girl
-        $redis.hmset("girl_#{user.id}", array_for_save)
+        $redis.hmset("girl_#{user.id}", ["lat", data["latitude"], "lng", data["longitude"]])
       else
-        $redis.hmset("boy_#{user.id}", array_for_save)
+        $redis.hmset("boy_#{user.id}", ["lat", data["latitude"], "lng", data["longitude"]])
       end
+    else
+      partner = User.find(partner_id)
+      LocationChannel.broadcast_to(partner, {lat: data["latitude"], lng: data["longitude"]})
     end
   end
 end
