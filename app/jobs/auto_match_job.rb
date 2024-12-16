@@ -51,6 +51,7 @@ class AutoMatchJob < ApplicationJob
       pairs.sort_by! { |pair| pair[2] }
       paired_girls = []
       paired_boys = []
+      puts "-------------マッチされたユーザ一覧-------------"
       pairs.each do |pair|
         if !paired_girls.include?(pair[0]) && !paired_boys.include?(pair[1]) && (!past_pairs[pair[0]] || !past_pairs[pair[0]].include?(pair[1])) && (!past_pairs[pair[1]] || !past_pairs[pair[1]].include?(pair[0]))
           p pair

@@ -22,8 +22,9 @@ m_lng = 139.61998382341233
 boys = [];
 girls = [];
 comment = "これはAIボットです。マッチすることはできません。"
+user_number = 100
 
-10.times do |n|
+user_number.times do |n|
   name = Faker::Name.male_first_name
   email = "email-#{n + 1}@example.com"
   password = "password"
@@ -38,16 +39,16 @@ comment = "これはAIボットです。マッチすることはできません�
   $redis.hset("boy_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1] )
 end
 
-10.times do |n|
+user_number.times do |n|
   name = Faker::Name.female_first_name
-  email = "email-#{n + 11}@example.com"
+  email = "email-#{n + 1 + user_number}@example.com"
   password = "password"
   date_of_birth = Random.rand(date_from..date_to)
   user = User.create!({name: name, email: email,
     password: password, password_confirmation: password,
     date_of_birth: date_of_birth, girl: 1, activated: 1,
     comment: comment, height: rand(150..170)})
-  user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{n + 11}.png")
+  user.image.attach(io: File.open(Rails.root.join("app/assets/images/woman-#{(n%4) + 1}.png")), filename: "woman-#{n + 1 + user_number}.png")
   girls[n] = user
   variations = Array.new(2) { Random.rand(-0.01..0.01) }
   $redis.hset("girl_#{user.id}", "lat", m_lat + variations[0], "lng", m_lng + variations[1])

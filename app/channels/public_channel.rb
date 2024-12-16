@@ -69,7 +69,7 @@ class PublicChannel < ApplicationCable::Channel
       end
       point = [gate["Name"], gate["GeoPoint"]["lati_d"].to_f, gate["GeoPoint"]["longi_d"].to_f]
 
-      p gate_groups
+      puts "指定された駅"
       p point
       distances = {}
       distances[:girl] = 1.3*distance_to_km(distance(locations[:girl][0], locations[:girl][1], point[1], point[2]))
