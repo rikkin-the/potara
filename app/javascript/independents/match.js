@@ -247,7 +247,7 @@ connectLink.addEventListener('click', (event) => {
       const blob = await getBlobFromCanvas(cropper)
       function getBlobFromCanvas(c) {
         return new Promise((resolve) => {
-          c.getCroppedCanvas().toBlob((blob) => {
+          c.getCroppedCanvas({maxWidth: 400, maxHeight: 500}).toBlob((blob) => {
             resolve(blob);
           })
         })
