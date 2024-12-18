@@ -18,7 +18,7 @@ class MatchesController < ApplicationController
     flash.now[:danger] = "接続が失われました"
     render 'new'
   end
-
+  
 =begin
   def create_bot
     user = User.find(params[:id])
