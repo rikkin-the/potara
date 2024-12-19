@@ -205,8 +205,7 @@ connectLink.addEventListener('click', (event) => {
 
             if(myLocation) myLocation.position = {lat: lat, lng: lng}
 
-            //コメント外す！
-            //if(isInYokohama(lat, lng)) {
+            if(isInYokohama(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
               isInArea = true
@@ -219,12 +218,12 @@ connectLink.addEventListener('click', (event) => {
                 locationSubscription.send({id: currentUserId, latitude: latitude, longitude: longitude})
                 console.log('updated location')
               }
-            //} else { 
-              //ackYokohama.innerText = 'マッチ範囲外'
-              //ackYokohama.style.backgroundColor = 'red'
-              //isInArea = false
-              //console.log('out of yokohama') 
-            //}
+            } else { 
+              ackYokohama.innerText = 'マッチ範囲外'
+              ackYokohama.style.backgroundColor = 'red'
+              isInArea = false
+              console.log('out of yokohama') 
+            }
             resolve();
           },
           (error) => {
