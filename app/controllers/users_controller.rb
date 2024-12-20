@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       UserMailer.account_activation(@user).deliver_now
-      flash[:success] = "認証用のリンクを送りました。メールを確認してください。"
+      flash[:success] = "認証用のリンクを送りました。メールを確認してください(迷惑メールに入っている可能性があります)。"
       redirect_to root_url
     else
       render 'new', status: :unprocessable_entity
