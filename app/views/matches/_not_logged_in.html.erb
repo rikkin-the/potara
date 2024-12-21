@@ -1,4 +1,5 @@
 <% provide(:title, "超リアル派マッチングアプリ") %>
+<% content_for(:not_logged_in, 1) %>
 <div class="initial__viewport">
   <div class="main__container">
     <h2>指先の恋からさようなら</h2>
@@ -23,4 +24,40 @@
     <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup" %></p>
     <p><%= link_to "ログインはこちら" ,login_path, class: "login_link" %></p>
   </div>
+</div>
+
+<div class="app__discription">
+  <h2 class="title__discription" style="margin-top: 0;">Potaraの使い方</h2>
+
+  <h3>1. ユーザー登録をする</h3>
+  <p>「アカウントをつくる」ボタンをタップし、必要な個人情報を入力します。</p>
+  <p>※18歳未満の方はご利用できません</p>
+  <p>※ご提供いただいた個人情報は、マッチング機能の提供にのみ使用します。法令に基づく場合を除き、第三者に提供することはありません。</p>
+  <%= image_tag 'application.png', class: "discription__image application__image" %>
+  <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
+  <p>ご登録のメールアドレスに送られたメールから、ユーザー認証をします。（迷惑メールに送られている可能性があります。）</p>
+
+  <h3>2. 自撮り写真を撮る</h3>
+  <p>ブラウザアプリ(Google ChromeやSafari)からログインします。</p>
+  <p>自撮り写真を1枚だけ撮り、オンライン状態にします。</p>
+  <%= image_tag 'selfie.jpg', class: "discription__image canva__dream" %>
+  <h3>3. マッチングオファーが来るのを待ちます</h3>
+  <p>1分ごとに近くのユーザーが自動でマッチングされます。</p>
+  <p>マッチングされると、画面に相手の簡単なプロフィールカードが現れます。</p>
+  <div class="smartphones">
+    <%= image_tag 'matched-boy.png', class: "discription__image actual__display" %>
+    <%= image_tag 'matched-girl.png', class: "discription__image actual__display" %>
+    ※実際のプレイ画面です
+  </div>
+  <h3>4. 「すぐに合う」ボタンをタップ</h3>
+  <p>オファーは45秒で消えてしまいます。「すぐに合う」を押せば「いいね」をしたことになります。</p>
+  <h3>5. 集合場所に行く</h3>
+  <p>相手からも「いいね」が返ってくれば、アプリが自動で近くの駅の出口と、集合時間を決定します。すぐに向かいましょう。</p>
+    <%= image_tag 'meeting.jpg', class: "meeting__moment", class: "discription__image canva__dream" %>
+  <p>マッチング成立後は、お互いの位置情報が共有されます。</p>
+  <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
+
+  <h4 style="margin-top: 96px;">お問い合わせ</h4>
+  <p>メールアドレス<br>lin.tech74@gmail.com</p>
+  <p>インスタグラム<br>@potara_official_account</p>
 </div>

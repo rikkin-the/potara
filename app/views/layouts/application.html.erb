@@ -16,19 +16,22 @@
   </head>
 
   <body>
-    <div class="body__container">
-      
-      <header>
-        <%= render 'shared/popup' %>
-      </header>
-      
-      <%= yield %>
+    <% if content_for?(:not_logged_in) %>
+        <%= yield %>
+    <% else %>
+      <div class="body__container">
+        
+        <header>
+          <%= render 'shared/popup' %>
+        </header>
+        
+        <%= yield %>
 
-      <footer>  
-        <%= render 'shared/footer' %>  
-      </footer>
-
-    </div>
+        <footer>  
+          <%= render 'shared/footer' %>  
+        </footer>
+      </div>
+    <% end %>
   </body>
 
 
