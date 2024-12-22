@@ -247,12 +247,16 @@ footer {
 .app__discription {
   background-color: var(--beige-color);
   color: var(--background-color);
-  padding: 32px;
+}
+
+.app__discription h3 {
+  margin-top: 48px;
 }
 
 .app__discription p {
   margin: 24px auto;
 }
+
 
 .actual__display {
   width: 30%;

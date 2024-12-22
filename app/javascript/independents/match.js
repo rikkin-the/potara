@@ -36,11 +36,10 @@ let loadingScreen;
 let loadingScreen2;
 let ackYokohama;
 
-
 // clock direction from a south-west point
-const nishiyokohama = {lat: 35.45336890218082, lng: 139.60865604253013}
-const mitsuzawa = {lat: 35.47654461293579, lng: 139.61502719928353}
-const shijou = {lat: 35.46767597074172, lng: 139.6350742306143}
+const sasazuka = {lat: 35.67362477991765, lng: 139.66699183821765}
+const shinanocho = {lat: 35.67982641649694, lng: 139.7205692846332}
+const meguro = {lat: 35.634256369318024, lng: 139.71544706326253}
 
 
 function deriveLineParameters(pt1, pt2) {
@@ -49,11 +48,11 @@ function deriveLineParameters(pt1, pt2) {
   return {a: a, b: b}
 }
 
-const leftLine = deriveLineParameters(nishiyokohama, mitsuzawa)
-const rightLine = deriveLineParameters(mitsuzawa, shijou)
-const bottomLine = deriveLineParameters(shijou, nishiyokohama)
+const leftLine = deriveLineParameters(sasazuka, shinanocho)
+const rightLine = deriveLineParameters(shinanocho, meguro)
+const bottomLine = deriveLineParameters(meguro, sasazuka)
 
-function isInYokohama(lat, lng) {
+function isInShibuya(lat, lng) {
   function isUnderLine(line) {
     if(lat < line['a']*lng+line['b']) {
       return true
@@ -84,13 +83,14 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+/*
 const alertBeforeUnload= (e) => {
   e.preventDefault
   const message = 'マッチは解除されます。よろしいですか？'
   e.returnValue = message
   return 
 }
-
+*/
 
 // main function
 
@@ -205,7 +205,7 @@ connectLink.addEventListener('click', (event) => {
 
             if(myLocation) myLocation.position = {lat: lat, lng: lng}
 
-            if(isInYokohama(lat, lng)) {
+            if(isInShibuya(lat, lng)) {
               ackYokohama.innerText = 'マッチ範囲内'
               ackYokohama.style.backgroundColor = '#0acffe'
               isInArea = true
@@ -313,7 +313,7 @@ connectLink.addEventListener('click', (event) => {
 
       // confirmation before reload or browser-back
       // but message don't make sence
-      window.addEventListener('beforeunload', alertBeforeUnload)
+      //window.addEventListener('beforeunload', alertBeforeUnload)
 
       //this is for create a nearby bot
       /*
@@ -363,8 +363,8 @@ connectLink.addEventListener('click', (event) => {
           content: document.querySelector(".icon")
         })
 
-        const yokohamaStationTriangle = new google.maps.Polygon({
-          paths: [nishiyokohama, mitsuzawa, shijou],
+        const shibuyaStationTriangle = new google.maps.Polygon({
+          paths: [sasazuka, shinanocho, meguro],
           strokeColor: "#0acffe",
           strokeOpacity: 0.8,
           strokeWeight: 2,
@@ -372,7 +372,7 @@ connectLink.addEventListener('click', (event) => {
           fillOpacity: 0.35,
         })
 
-        yokohamaStationTriangle.setMap(map);
+        shibuyaStationTriangle.setMap(map);
       }
     }
       
@@ -439,7 +439,9 @@ connectLink.addEventListener('click', (event) => {
             // failed..
             removeInfo();
             alert('相手からもいいねが来ましたが、エラーによりマッチングできませんでした。ごめんなさい。。')
-          }
+          } else if(data === 1) {
+            window.location.href = '/?flash=timeout'
+          } 
         }
       })
     }
@@ -497,15 +499,16 @@ connectLink.addEventListener('click', (event) => {
           // send a standard type of unmatch signals
           // but shoudn't use an unload event. i should find another way 
           let type = 0
-          window.addEventListener('unload', () => {
+          ////
+          window.addEventListener('pagehide', () => {
             privateSubscription.send({type: type})
           })
         },
         rejected() {
           // if you leave from a browser app, you will be rejected when reconnecting
           console.log('private rejected')
-          window.removeEventListener('beforeunload', alertBeforeUnload)
-          window.location.href = '/exit'
+          //window.removeEventListener('beforeunload', alertBeforeUnload)
+          window.location.href = '/?flash=rejected'
         },
         received(partnerData) {
           console.log(partnerData)

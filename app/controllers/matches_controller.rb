@@ -1,24 +1,27 @@
 class MatchesController < ApplicationController
   def new
+    if logged_in?
+      case params[:flash]
+      when 'timeout' then
+        flash.now[:danger] = "マッチング時間は終了しました"
+      when 'rejected' then
+        flash.now[:danger] = "通信が切断されました"
+      end
+      current_time = Time.now
+      @next_hour = current_time.hour + 1
+      current_time.min >= 10 ? render('logged_in') : render('out_of_time')
+    else
+      render 'not_logged_in'
+    end
   end
 
   def await
     user = User.find(params[:id])
     user.update_attribute(:comment, user_params[:comment])
-    if user.image.attach(user_params[:image])
-      render 'map'
-    else
-      flash.now[:danger] = "ユーザー情報の更新に失敗しました"
-      render 'new', status: :unprocessable_entity
-    end
-
+    user.image.attach(user_params[:image])
+    render 'map'
   end
 
-  def rejected
-    flash.now[:danger] = "接続が失われました"
-    render 'new'
-  end
-  
 =begin
   def create_bot
     user = User.find(params[:id])

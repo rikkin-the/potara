@@ -2,10 +2,14 @@
 
 :queues:
   - ['default', 1]
-  - ['match', 4]
+  - ['match', 5]
+  - ['disconnect', 5]
 
 :scheduler:
   :schedule:
     auto_match:
-      cron: '0 0/1 * * * *'
+      cron: '0 0-10 * * * *'
       class: AutoMatchJob
+    disconnect:
+      cron: '0 11 * * * *'
+      class: DisconnectJob

@@ -1,8 +1,9 @@
 class PublicChannel < ApplicationCable::Channel
   def subscribed
     stream_for current_user
+    stream_from "global_notification"
     $redis_matched.del(current_user.id) if $redis_matched.get(current_user.id)
-    #reject unless current_user.image.attached?
+    PublicChannel.broadcast_to(current_user, 1) if Time.now.min > 10
   end
 
   def unsubscribed
@@ -47,26 +48,10 @@ class PublicChannel < ApplicationCable::Channel
       if station_name == "横浜"
         gate = gate_groups[3]["Gate"][0]
       else
-        gate_candidates = []
-        main_gates = ["中央口", "東口", "西口", "南口", "北口"]
-        if gate_groups.class != Array
-          gate_groups = [gate_groups]
-        end
-        gate_groups.each do |gates|
-          if gates["Gate"].class != Array
-            gates["Gate"] = [gates["Gate"]]
-          end
-          gates["Gate"].each do |gate|
-            if main_gates.include?(gate["Name"])
-              gate_candidates.push(gate)
-            end
-          end
-        end
-        if gate_candidates.any?
-          gate = gate_candidates.sample
-        else
-          gate = gate_groups.sample["Gate"].sample
-        end
+        gate_groups = [gate_groups] if gate_groups.class != Array
+        gates = gate_groups.sample["Gate"]
+        gates = [gates] if gates.class != Array
+        gate = gates.sample
       end
       point = [gate["Name"], gate["GeoPoint"]["lati_d"].to_f, gate["GeoPoint"]["longi_d"].to_f]
 

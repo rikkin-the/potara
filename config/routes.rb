@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   get 'account_activations/success'
   get 'password_resets/new'
   get 'password_resets/edit'
-  get '/exit', to: "matches#rejected"
   get '/online', to: "matches#be_waiting"
   patch '/entry/:id', to: "matches#await"
   get '/entry', to: "matches#new"

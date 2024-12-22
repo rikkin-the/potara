@@ -1,22 +1,23 @@
 <% provide(:title, "超リアル派マッチングアプリ") %>
 <% content_for(:not_logged_in, 1) %>
+
 <div class="initial__viewport">
   <div class="main__container">
     <h2>指先の恋からさようなら</h2>
-    <h4>超リアル派マッチングアプリ 「Potara」</h4>
+    <h4>位置情報マッチングサイト Potara</h4>
 
     <div class="matchesNew__information">
       <div>
-        <h5>横浜駅限定</h5>
+        <h5>渋谷限定</h5>
       </div>
       <div>
         <h5>リアルタイムで即会い</h5>
       </div>
       <div>
-        <h5>プロフィールもチャットもなし</h5>
+        <h5>チャットなし</h5>
       </div>
       <div>
-        <h5>完全無料</h5>
+        <h5>男女ともに完全無料</h5>
       </div>
     </div>
   </div>
@@ -26,7 +27,7 @@
   </div>
 </div>
 
-<div class="app__discription">
+<div class="main__container app__discription">
   <h2 class="title__discription" style="margin-top: 0;">Potaraの使い方</h2>
 
   <h3>1. ユーザー登録をする</h3>
@@ -37,11 +38,17 @@
   <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
   <p>ご登録のメールアドレスに送られたメールから、ユーザー認証をします。認証メールは、迷惑メールに振り分けられていることがあります。</p>
 
-  <h3>2. 自撮り写真を撮る</h3>
-  <p>ブラウザアプリ(Google ChromeやSafari)からログインします。</p>
-  <p>自撮り写真を1枚だけ撮り、オンライン状態にします。</p>
+  <h3>2. マッチング時間まで待機する</h3>
+  <p>マッチング時間は<b>各時刻の0分から10分まで</b>の10分間に限定されています。</p>
+  <p>マッチング時間内にリロードすると、オンラインにするための画面に移ります。</p>
+  <%= image_tag 'clock-reversed.png', class: 'discription__image' %>
+
+  <h3>3. 自撮り写真を撮る</h3>
+  <p>ブラウザアプリ（Google ChromeやSafari）からログインします。</p>
+  <p>渋谷で<b>自撮り写真を1枚だけ</b>撮り、オンライン状態にします。</p>
   <%= image_tag 'selfie.jpg', class: "discription__image canva__dream" %>
-  <h3>3. マッチングオファーが来るのを待ちます</h3>
+
+  <h3>4. マッチングオファーが届く</h3>
   <p>1分ごとに近くのユーザーが自動でマッチングされます。</p>
   <p>マッチングオファーが届くと、画面に相手の簡単なプロフィールカードが現れます。</p>
   <div class="smartphones">
@@ -49,10 +56,10 @@
     <%= image_tag 'matched-girl.png', class: "discription__image actual__display" %>
     <br>※実際のプレイ画面です
   </div>
-  <h3>4. 「今すぐ合う」ボタンをタップ</h3>
-  <p>オファーは45秒で消えてしまいます。「今すぐ合う」ボタンを押せば「いいね」をしたことになります。</p>
-  <h3>5. 集合場所に行く</h3>
-  <p>相手からも「いいね」が返ってくれば、マッチング成立です。アプリが自動で集合場所と集合時間を決定します。集合場所は近くの駅の出口になります。すぐに向かいましょう。</p>
+  <h3>5. 「今すぐ合う」ボタンをタップ</h3>
+  <p>オファーは45秒で消えてしまいます。<b>「今すぐ合う」</b>ボタンを押せば「いいね」をしたことになります。</p>
+  <h3>6. 集合場所に行く</h3>
+  <p>相手からも「いいね」が返ってくれば、マッチング成立です。<b>アプリが自動で集合場所と集合時間を決定します。</b>集合場所は近くにある駅の出口になります。すぐに向かいましょう。</p>
   <%= image_tag 'meeting.jpg', class: "meeting__moment", class: "discription__image canva__dream" %>
   <p>マッチング成立後は、一方が解除するまでお互いの位置情報が共有されます。</p>
   <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
