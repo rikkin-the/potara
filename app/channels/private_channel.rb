@@ -3,7 +3,6 @@ class PrivateChannel < ApplicationCable::Channel
   def subscribed
     stream_for current_user
     partner_id = $redis_matched.get(current_user.id)
-    p partner_id
     if partner_id
       send_to_partner(partner_id, 2)
     else

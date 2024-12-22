@@ -3,7 +3,7 @@ class PublicChannel < ApplicationCable::Channel
     stream_for current_user
     stream_from "global_notification"
     $redis_matched.del(current_user.id) if $redis_matched.get(current_user.id)
-    PublicChannel.broadcast_to(current_user, 1) if Time.now.min > 10
+    #PublicChannel.broadcast_to(current_user, 1) if Time.now.min > 10
   end
 
   def unsubscribed
