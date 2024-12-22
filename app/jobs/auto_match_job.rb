@@ -46,6 +46,7 @@ class AutoMatchJob < ApplicationJob
       pairs.each do |pair|
         if !paired_girls.include?(pair[0]) && !paired_boys.include?(pair[1]) && (!past_pairs[pair[0]] || !past_pairs[pair[0]].include?(pair[1])) && (!past_pairs[pair[1]] || !past_pairs[pair[1]].include?(pair[0]))
           p pair
+          p "マッチされました"
           girl_instance = User.find(pair[0])
           boy_instance = User.find(pair[1])
           girl_instance.get_age
