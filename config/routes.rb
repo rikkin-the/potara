@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   #post 'matches/bot', to: "matches#create_bot"
   #get 'matches/before_release'
-  get 'account_activations/success'
+  get 'success', to: "users#success"
   get 'password_resets/new'
   get 'password_resets/edit'
   get '/online', to: "matches#be_waiting"
@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
   root "matches#new"
   get "/base", to: "home#base"
+  get "/activation", to: "account_activations#new"
+  post "/activation", to: "account_activations#create"
   get "/signup", to: "users#new"
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"

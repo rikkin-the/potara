@@ -14,7 +14,7 @@ class User < ApplicationRecord
   validates :image, content_type: { in: %w[image/jpeg image/png image/heic image/heif],
                                     message: "この写真タイプは受け付けられません"}
   validates_with AgeValidator, unless: -> {self.date_of_birth.nil?}
-  validates_acceptance_of :agreement
+  #validates_acceptance_of :agreement
 
   has_one_attached :image
 =begin

@@ -7,7 +7,9 @@ class UserMailer < ApplicationMailer
   #
   def account_activation(user)
     @user = user
-    mail to: user.email, subject: "アカウントの認証"
+    mail to: user.email, subject: "認証コードの送信"
+    p edit_account_activation_url(@user.activation_token,
+    email: @user.email)
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml

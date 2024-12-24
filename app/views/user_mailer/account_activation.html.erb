@@ -1,10 +1,8 @@
 <h1>Potara</h1>
 
-<p><%= @user.name %>さん<p>
-
 <p>
-  ご登録ありがとうございます！　下記のURLをタップしてアカウントを認証しましょう。
+  Potaraへのご登録ありがとうございます！　下記のURLをタップしてアカウントを認証しましょう。
 </p>
 
-<%= link_to "認証してアカウントを有効にする", edit_account_activation_url(@user.activation_token,
+<%= link_to "認証してアカウントを作成する", edit_account_activation_url(@user.activation_token,
                                                     email: @user.email) %>

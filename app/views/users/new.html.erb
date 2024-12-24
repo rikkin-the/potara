@@ -1,6 +1,7 @@
 <% provide(:title, "新規登録") %>
 
 <div class="main__container usersNew__form">
+  <h3>プロフィールを入力</h3>
   <%= form_with(model: @user) do |f| %>
 
   <label>あなたの性別</label>
@@ -21,10 +22,12 @@
     <%= f.date_field :date_of_birth %>
   </div>
    
+  <!--
   <div class="usersNew__field">
     <%= f.label :email %>
     <%= f.email_field :email, placeholder: "例: porco92@example.com" %>
   </div>
+  -->
   <div class="usersNew__field">
     <%= f.label :password %>
     <%= f.password_field :password, placeholder: "6文字以上" %>
@@ -33,16 +36,8 @@
     <%= f.label :password_confirmation %>
     <%= f.password_field :password_confirmation, placeholder: "もう一度入力してください" %>
   </div>
-  
-  <div class="usersNew__fiel btn__container">
-    <p>
-      <%= f.label :agreement, "私は18歳未満ではありません" %>
-      <%= f.check_box :agreement %>
-    </p>
+  <div class="usersNew__field btn__container">
     <%= f.submit "登録", class: "btn" %>
-    <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
   </div>
-
   <% end %>
-
 </div>

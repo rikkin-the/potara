@@ -3,7 +3,6 @@
 <h3>新しいパスワードを作成</h3>
 
   <%= form_with(model: @user, url: password_reset_path(params[:id])) do |f| %>
-    <%= render 'shared/error_messages' %>
 
     <%= hidden_field_tag :email, @user.email %>
     <div class="general_field">  

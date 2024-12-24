@@ -8,12 +8,13 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      UserMailer.account_activation(@user).deliver_now
-      flash[:success] = "認証用のリンクを送りました。メールを確認してください(迷惑メールに入っている可能性があります)。"
-      redirect_to root_url
+      redirect_to success_path
     else
       render 'new', status: :unprocessable_entity
     end
+  end
+
+  def success
   end
 
   def show
@@ -42,12 +43,12 @@ class UsersController < ApplicationController
 
   private
     def user_params
-      params.require(:user).permit(:name, :girl, :date_of_birth, :email, :password,
+      params.require(:user).permit(:name, :girl, :date_of_birth, :password,
                                    :password_confirmation, :agreement)
     end
 
     def update_params
-      params.require(:user).permit(:name, :email, :height)
+      params.require(:user).permit(:name, :height)
     end
 
     def logged_in_user

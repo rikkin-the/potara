@@ -1,0 +1,21 @@
+<% provide(:title, "アカウントを作成") %>
+
+<div class="main__container">
+  <h3>アカウントを作成</h3>
+  <%= form_with(model: @user, url: activation_path, method: :post) do |f| %>
+    <div style="margin-top: 30%;">
+      <%= f.label :email %>
+      <%= f.email_field :email, placeholder: "例: porco92@example.com" %>
+    </div>
+
+    <div class="btn__container">
+      <p class="over-18">
+      <%= f.check_box :agreement, required: true %>
+      <%= f.label :agreement, "私は18歳未満ではありません" %>
+       
+      </p>
+      <%= f.submit "認証メールを送る", class: "btn" %>
+      <p>アカウントを持っている: <%= link_to "ログイン", login_path %></p>
+    </div>
+  <% end %>
+</div>
