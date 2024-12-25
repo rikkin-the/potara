@@ -17,8 +17,13 @@ class SessionsController < ApplicationController
         redirect_to root_url
       end
     else
-      flash.now[:danger] = 'メールアドレスまたはパスワードが間違っています'
-      render 'new', status: :unprocessable_entity
+      if user.girl == nil
+        flash[:success] = "プロフィールが未記入です。登録を完了させましょう。"
+        redirect_to "/signup/#{user.id}"
+      else
+        flash.now[:danger] = 'メールアドレスまたはパスワードが間違っています'
+        render 'new', status: :unprocessable_entity
+      end
     end
   end
 

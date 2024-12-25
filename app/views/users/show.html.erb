@@ -1,30 +1,28 @@
 <% provide(:title, "プロフィール") %>
 <div class="main__container">
-<%= form_with(model: @user) do |f| %>
-<%= render 'shared/error_messages' %>
+  <h2>プロフィール</h2>
+  <%= form_with(model: @user) do |f| %>
 
-<div class="general_field">
-  <%= f.label :name, "ニックネーム" %>
-  <%= f.text_field :name %>
-</div>
+  <div class="general_field">
+    <%= f.label :name, "ニックネーム" %>
+    <%= f.text_field :name, required: true %>
+  </div>
 
-<div class="general_field">
-  <%= f.label :height, "身長" %>
-  <%= f.select :height, @height_options, placeholder: "身長を追加" %>
+  <div class="general_field">
+    <%= f.label :height, "身長" %>
+    <%= f.select :height, @height_options, placeholder: "身長を追加" %>
 
-</div>
+  </div>
 
-<div class="general_field submit__field usersShow__btn__container">
-  <%= f.submit "更新", class: "btn" %>
-  <p>
-    <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete }, class: "usersShow__logout" %>
-  </p>
-  <p>
-    <%= link_to "アカウントを削除する", @user, data: { "turbo-method": :delete,
-                                                   turbo_confirm: "本当に削除しますか？" } %>
-  </p>
-</div>
-<% end %>
-
-
+  <div class="general_field submit__field usersShow__btn__container">
+    <%= f.submit "更新", class: "btn" %>
+    <p>
+      <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete }, class: "usersShow__logout" %>
+    </p>
+    <p>
+      <%= link_to "アカウントを削除する", @user, data: { "turbo-method": :delete,
+                                                    turbo_confirm: "本当に削除しますか？" } %>
+    </p>
+  </div>
+  <% end %>
 </div>

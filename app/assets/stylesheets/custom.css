@@ -2,6 +2,7 @@
   --beige-color: #DCCBB4;
   --first-color: #495aff;
   --second-color: #0acffe;
+  --third-color: rgb(255, 75, 75);
   --background-color: rgb(50, 50, 50);
 }
 
@@ -27,6 +28,11 @@ header {
   z-index: 10000;
   width: 100%;
   text-align: center;
+}
+
+.popup-danger {
+  background-color: var(--third-color);
+  border-radius: 16px;
 }
 
 header p, ul, div{
@@ -87,7 +93,7 @@ header p, ul, div{
 }
 
 .btn__container {
-  bottom: 5%;
+  bottom: 8%;
 }
 
 .usersShow__btn__container {
@@ -100,11 +106,22 @@ header p, ul, div{
 input[type=text], input[type=date], input[type=email], input[type=password], select, textarea {
   font-size: 16px;
   display: block;
-  width: 100%;
   margin: 0 auto;
   text-align: center;
   background-color: var(--background-color);
   color: white;
+}
+
+input[type=text] {
+  width: 50%;
+}
+
+input[type=email] {
+  width: 90%;
+}
+
+input[type=password] {
+  width: 90%;
 }
 
 select {
@@ -207,7 +224,7 @@ footer {
 /* input fields */
 
 .general_field {
-  margin-top: 20%;;
+  margin-top: 15%;;
 }
 
 .submit__field {
@@ -306,7 +323,8 @@ footer {
 
 .gender label {
   display: inline-block;
-  padding: 8px 30px;
+  width: 20%;
+  padding: 16px 24px;
   margin: 0 8px;
   border: 1px solid white;
   border-radius: 12px;
@@ -315,12 +333,16 @@ footer {
   opacity: 1.0;
 }
 
+.gender .gender-icon {
+  width: 30%;
+}
+
 .gender input[type=radio]:checked + label[for=user_girl_1] {
-  background-color: rgb(186, 1, 97);  
+  background-color: var(--third-color);  
 }
 
 .gender input[type=radio]:checked + label[for=user_girl_0] {
-  background-color: rgb(0, 45, 191);  
+  background-color: var(--first-color);  
 }
 
 

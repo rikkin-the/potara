@@ -1,10 +1,11 @@
 <% provide(:title, "ログイン") %>
 <div class="main__container">
   
+  <h2>ログイン</h2>
   <%= form_with(url: login_path, scope: :session, data: { turbo: false }) do |f| %>
     <div class="general_field">
       <%= f.label :email, "メールアドレス" %>
-      <%= f.email_field :email, placeholder: "例: porco92@example.com" %>
+      <%= f.email_field :email, placeholder: "例: porco92@example.com", required: true %>
     </div>
 
     <div class="general_field">
@@ -15,7 +16,7 @@
     <div class="general_field submit__field btn__container">
       <%= f.submit "ログイン", class: "btn" %>
       <p>パスワードを忘れた: <%= link_to "再登録", new_password_reset_path %></p>
-      <p>アカウントを持っていない: <%= link_to "新規登録", signup_path %></p>
+      <p>アカウントを持っていない: <%= link_to "新規登録", activation_path %></p>
     </div>
   <% end %>
 </div>

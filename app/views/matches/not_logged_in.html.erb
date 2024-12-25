@@ -1,4 +1,3 @@
-<% provide(:title, "超リアル派マッチングアプリ") %>
 <% content_for(:not_logged_in, 1) %>
 <header>
   <%= render 'shared/popup' %>
@@ -37,7 +36,7 @@
   <%= image_tag 'application.png', class: "discription__image application__image" %>
   <p>※18歳未満の方はご利用できません</p>
   <p>※ご提供いただいた個人情報は、マッチング機能の提供にのみ使用します。法令に基づく場合を除き、第三者に提供することはありません。</p>
-  <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
+  <p><%= link_to "アカウントをつくる", activation_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
   <p>ご登録のメールアドレスに送られたメールから、ユーザー認証をします。認証メールは、迷惑メールに振り分けられていることがあります。</p>
 
   <h3>2. マッチング時間まで待機する</h3>
@@ -64,7 +63,7 @@
   <p>相手からも「いいね」が返ってくれば、マッチング成立です。<b>アプリが自動で集合場所と集合時間を決定します。</b>集合場所は近くにある駅の出口になります。すぐに向かいましょう。</p>
   <%= image_tag 'meeting.jpg', class: "meeting__moment", class: "discription__image canva__dream" %>
   <p>マッチング成立後は、一方が解除するまでお互いの位置情報が共有されます。</p>
-  <p><%= link_to "アカウントをつくる", signup_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
+  <p><%= link_to "アカウントをつくる", activation_path, class: "btn btn-signup", style: "margin: 0 auto;" %></p>
 
   <h4 style="margin-top: 96px;">お問い合わせ</h4>
   <p>メールアドレス<br>lin.tech74@gmail.com</p>

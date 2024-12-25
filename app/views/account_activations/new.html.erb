@@ -1,11 +1,11 @@
 <% provide(:title, "アカウントを作成") %>
 
 <div class="main__container">
-  <h3>アカウントを作成</h3>
+  <h2>アカウントを作成</h2>
   <%= form_with(model: @user, url: activation_path, method: :post) do |f| %>
-    <div style="margin-top: 30%;">
+    <div style="margin-top: 20%;">
       <%= f.label :email %>
-      <%= f.email_field :email, placeholder: "例: porco92@example.com" %>
+      <%= f.email_field :email, placeholder: "例: porco92@example.com", required: true %>
     </div>
 
     <div class="btn__container">

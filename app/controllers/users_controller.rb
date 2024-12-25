@@ -2,13 +2,28 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: [:show, :update, :destroy]
   before_action :correct_user, only: [:show, :update, :destroy]
   def new
-    @user = User.new
+    @user = User.find(params[:id])
+    if @user.activated?
+      if @user.girl == nil
+        render 'new'
+      else
+        flash[:danger] = "一度登録されたプロフィールは変更できません"
+        redirect_to root_url
+      end
+    else
+      flash[:danger] = "アカウントが認証されていません。メールをご確認ください。"
+      redirect_to root_url
+    end
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      redirect_to success_path
+    @user = User.find(params[:id])
+    if  @user.update(user_params)
+      flash[:success] = "アカウントが作成されました！！"
+      reset_session
+      remember @user
+      log_in @user
+      redirect_to root_url
     else
       render 'new', status: :unprocessable_entity
     end
@@ -27,6 +42,10 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
+    @height_options = [["選択なし", ""]]
+    (130..210).each do |i|
+      @height_options.push(["#{i}cm", i])
+    end
     if @user.update(update_params)
       flash[:success] = "プロフィールが更新されました"
       redirect_to @user
@@ -43,8 +62,7 @@ class UsersController < ApplicationController
 
   private
     def user_params
-      params.require(:user).permit(:name, :girl, :date_of_birth, :password,
-                                   :password_confirmation, :agreement)
+      params.require(:user).permit(:girl, :name, :date_of_birth, :password, :password_confirmation)
     end
 
     def update_params

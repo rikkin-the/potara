@@ -23,7 +23,8 @@ class AccountActivationsController < ApplicationController
     if user && !user.activated? && user.authenticated?(:activation, params[:id])
       user.update_attribute(:activated, true)
       user.update_attribute(:activated_at, Time.zone.now)
-      redirect_to signup_path
+      flash[:success] = "認証に成功しました！"
+      redirect_to "/signup/#{user.id}"
     else
       flash[:danger] = "このリンクは無効です"
       redirect_to activation_path

@@ -11,7 +11,7 @@
     <%= link_to image_tag("profile-user.png", alt: "プロフィール", class: "image__icon profile__icon"), current_user %>
   </div>
   <div class="menu-center">
-    <%= link_to entry_path, id: "connect-link", class: "btn", data: { turbo: false } do %>
+    <%= link_to root_url, id: "connect-link", class: "btn", data: { turbo: false } do %>
       <%= image_tag 'power.png', class: "power-btn" %>
     <% end %>
   </div>

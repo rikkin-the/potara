@@ -1,5 +1,5 @@
 <% if (@user && @user.errors.any?) %>
-  <div>
+  <div class="popup-danger">
     <ul>
       <% @user.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -8,7 +8,7 @@
   </div>
 <% elsif flash.any? %>
   <% flash.each do |message_type, message| %>
-    <p><%= message %></p>
+    <p class="popup-<%= message_type %>"><%= message %></p>
   <% end %>
 <% end %>
 
