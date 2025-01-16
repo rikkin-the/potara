@@ -2,6 +2,7 @@
 <header>
   <%= render 'shared/popup' %>
 </header>
+<div class="not_logged_in">
 <div class="initial__viewport">
   <div class="main__container">
     <h2>指先の恋からさようなら</h2>
@@ -24,7 +25,7 @@
   </div>
   <div class="btn__container">
     <p><%= link_to "アカウントをつくる", activation_path, class: "btn btn-signup" %></p>
-    <p><%= link_to "ログインはこちら" ,login_path, class: "login_link" %></p>
+    <p><%= link_to "ログインはこちら" , login_path, class: "login_link" %></p>
   </div>
 </div>
 

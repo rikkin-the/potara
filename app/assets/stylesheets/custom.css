@@ -12,6 +12,7 @@ body {
   background-color: black;
   color: white;
   height: 100svh;
+
   font-size: 16px;
   text-align: center;
   margin: 0;
@@ -232,8 +233,13 @@ footer {
 }
 
 /* not logged in  */
+.not_logged_in {
+  max-width: 512px;
+  margin: 0 auto;
+}
 
 .initial__viewport {
+  position: relative;
   height: 100svh;
   width: 100%;
   background-image: url('map.png');
