@@ -42,7 +42,10 @@ header p, ul, div{
 }
 
 .body__container {
-  position: relative;
+  position: fixed;
+  left: 0;
+  right: 0;
+  overflow: hidden;
   background-color: var(--background-color);
   width: 100%;
   max-width: 512px;
