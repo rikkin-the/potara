@@ -17,10 +17,6 @@ development:
     password: <%= ENV['POSTGRES_PASS'] %>
     host: localhost
     database: potara_development
-  queue:
-    <<: *primary_development
-    database: potara_development_queue
-    migrations_paths: db/queue_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -31,7 +27,3 @@ production:
     <<: *default
     url: <%= ENV['DATABASE_URL'] %>
     database: potara_production
-  queue:
-    <<: *primary_production
-    database: potara_production_queue
-    migrations_paths: db/queue_migrate
