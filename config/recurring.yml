@@ -2,11 +2,11 @@ default: &default
   match:
     class: AutoMatchJob
     queue: match
-    schedule: every minute
+    schedule: every 2 minutes
   cleanup_past:
     class: DisconnectJob
     queue: disconnect
-    schedule: every 10 minutes
+    schedule: every 15 minutes
 
 production:
   <<: *default
