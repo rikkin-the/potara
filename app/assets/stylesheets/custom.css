@@ -314,7 +314,24 @@ footer {
   border-radius: 24px;
 }
 
+.appeal {
+  color: red;
+  background-color: white;
+  opacity: 0.7;
+  border-radius: 20px;
+  padding: 8px;
+}
 
+.button_to {
+  display: inline-block;
+}
+.guest-login {
+  color: black;
+  background-color: var(--beige-color);
+  padding: 8px;
+  margin: 8px;
+  font-weight: bold;
+}
 
 
 /* signup */
@@ -582,6 +599,7 @@ audio {
 
 #match-info {
   z-index: 11;
+  width: 100%;
 }
 
 .match-info__container {

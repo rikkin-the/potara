@@ -13,7 +13,6 @@ module Muber
     Rails.application.routes.default_url_options[:host] = ENV['APP_URL']
     config.active_storage_variant_processor = :mini_magick
     config.active_storage.analyzers = false
-    config.active_job.queue_adapter = :sidekiq
     config.i18n.default_locale = :ja
 
     config.action_view.field_error_proc = Proc.new do |html_tag, instance|

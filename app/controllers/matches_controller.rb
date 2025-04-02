@@ -1,15 +1,20 @@
 class MatchesController < ApplicationController
   def new
     if logged_in?
+#beta用コメントアウト
+=begin
       case params[:flash]
       when 'timeout' then
         flash.now[:danger] = "マッチング時間は終了しました"
       when 'rejected' then
         flash.now[:danger] = "通信が切断されました"
       end
+
       current_time = Time.current
       @next_hour = current_time.hour + 1
       current_time.min <= 10 ? render('logged_in') : render('out_of_time')
+=end
+      render 'logged_in'
     else
       render 'not_logged_in'
     end

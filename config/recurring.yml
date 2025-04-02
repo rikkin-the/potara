@@ -1,0 +1,15 @@
+default: &default
+  match:
+    class: AutoMatchJob
+    queue: match
+    schedule: every minute
+  cleanup_past:
+    class: DisconnectJob
+    queue: disconnect
+    schedule: every 10 minutes
+
+production:
+  <<: *default
+
+development:
+  <<: *default

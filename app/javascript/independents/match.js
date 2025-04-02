@@ -372,7 +372,8 @@ connectLink.addEventListener('click', (event) => {
           fillOpacity: 0.35,
         })
 
-        shibuyaStationTriangle.setMap(map);
+        //beta用コメントアウト
+        //shibuyaStationTriangle.setMap(map);
       }
     }
       

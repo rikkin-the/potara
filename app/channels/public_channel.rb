@@ -1,4 +1,5 @@
 class PublicChannel < ApplicationCable::Channel
+
   def subscribed
     stream_for current_user
     stream_from "global_notification"
@@ -16,8 +17,8 @@ class PublicChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    #const = (3..22).to_a
-    if $redis_agreement.get(data["liked_id"]) == data["like_id"].to_s
+    bots = (3..12).to_a
+    if $redis_agreement.get(data["liked_id"]) == data["like_id"].to_s || bots.include?(data["liked_id"])
       like_user = User.find_by(id: data["like_id"])
       liked_user = User.find_by(id: data["liked_id"])
       $redis_matched.set(like_user.id, liked_user.id)

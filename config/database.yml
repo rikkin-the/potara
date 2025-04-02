@@ -7,22 +7,31 @@
 default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-
-development:
-  <<: *default
   adapter: postgresql
   encoding: unicode
-  username: rikkin-the
-  password: <%= ENV['POSTGRES_PASS'] %>
-  host: localhost
-  database: muber_development
+
+development:
+  primary: &primary_development
+    <<: *default
+    username: rikkin-the
+    password: <%= ENV['POSTGRES_PASS'] %>
+    host: localhost
+    database: potara_development
+  queue:
+    <<: *primary_development
+    database: potara_development_queue
+    migrations_paths: db/queue_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 
 production:
-  <<: *default
-  adapter: postgresql
-  encoding: unicode
-  url: <%= ENV['DATABASE_URL'] %>
+  primary: &primary_production
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+    database: potara_production
+  queue:
+    <<: *primary_production
+    database: potara_production_queue
+    migrations_paths: db/queue_migrate

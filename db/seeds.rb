@@ -17,8 +17,9 @@ User.create!(name: "花子", email: "girl@girl.com",
 
 date_from = Date.new(1995, 01, 01)
 date_to = Date.new(2006, 11, 03)
-m_lat = 35.467485733008154
-m_lng = 139.61998382341233
+#beta用コメントアウト
+m_lat = 35.65843105374949
+m_lng = 139.7004629171449
 boys = [];
 girls = [];
 comment = "これは例示用のAIボットです。マッチすることはできません。"

@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   #post 'matches/bot', to: "matches#create_bot"
   #get 'matches/before_release'
+  get '/guest/:id', to: "sessions#guest"
   get 'success', to: "users#success"
   get 'password_resets/new'
   get 'password_resets/edit'

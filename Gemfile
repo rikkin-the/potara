@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.4", ">= 7.0.4.3"
+gem "rails", "~> 7.2"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -13,7 +13,7 @@ gem "sprockets-rails"
 gem "sqlite3", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -47,14 +47,15 @@ gem "sidekiq"
 gem "sidekiq-scheduler"
 gem "active_storage_validations", "0.9.8"
 gem "image_processing", "1.12.2"
-gem "redis", '~> 4.0'
-gem "redis-rails"
+gem "redis", "~> 4.0"
+gem "redis-rails", ">= 3.2.1"
 gem "dotenv-rails"
 gem "http"
 gem "pg", "1.3.5"
 gem "rails-i18n"
 gem "faker"
 gem 'meta-tags'
+gem 'concurrent-ruby', '1.3.4'
 # Use Sass to process CSS
 # gem "sassc-rails"
 
@@ -87,3 +88,5 @@ end
 group :production do
   gem "aws-sdk-s3", "1.114.0", require: false
 end
+
+gem "solid_queue", "1.1.4"

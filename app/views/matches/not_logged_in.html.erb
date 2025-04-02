@@ -13,7 +13,7 @@
         <h5>渋谷限定</h5>
       </div>
       <div>
-        <h5>リアルタイムで即会い</h5>
+        <h5>リアルタイムですぐに会える</h5>
       </div>
       <div>
         <h5>チャットなし</h5>
@@ -21,6 +21,12 @@
       <div>
         <h5>男女ともに完全無料</h5>
       </div>
+    </div>
+
+    <div class="appeal">
+      <h3>試験運用中</h3>
+      <%= button_to("男性ゲストログイン", login_path(params: {session: {email: "boy@boy.com", password: "password"}}), data: { turbo: false }, method: :post, class: "guest-login" ) %>
+      <%= button_to("女性ゲストログイン", login_path(params: {session: {email: "girl@girl.com", password: "password"}}), data: { turbo: false }, method: :post, class: "guest-login") %>
     </div>
   </div>
   <div class="btn__container">
