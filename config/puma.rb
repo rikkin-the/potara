@@ -30,7 +30,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-# workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+workers ENV.fetch("WEB_CONCURRENCY") { 0 }
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
@@ -41,4 +41,21 @@ preload_app!
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
-plugin :solid_queue
+
+on_booted do |launcher|
+  Thread.new do
+    loop do
+      AutoMatchJob.perform_later
+      sleep 60
+    end
+  end
+
+  Thread.new do
+    loop do
+       DisconnectJob.perform_later
+       sleep 600
+    end
+  end
+
+  puts "バックグラウンドプロセス起動"
+end

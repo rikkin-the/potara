@@ -1,5 +1,5 @@
 class AutoMatchJob < ApplicationJob
-  queue_as :match
+  queue_as :default
 
   def perform
     $redis_agreement.flushdb

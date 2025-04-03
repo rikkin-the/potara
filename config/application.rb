@@ -28,7 +28,7 @@ module Muber
     config.active_record.default_timezone = :local
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.active_job.queue_adapter = :solid_queue
-    config.solid_queue.connects_to = { database: { writing: :primary, reading: :primary } }
+    #config.active_job.queue_adapter = :solid_queue
+    #config.solid_queue.connects_to = { database: { writing: :primary, reading: :primary } }
   end
 end

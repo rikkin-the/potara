@@ -56,6 +56,7 @@ gem "rails-i18n"
 gem "faker"
 gem 'meta-tags'
 gem 'concurrent-ruby', '1.3.4'
+gem 'whenever'
 # Use Sass to process CSS
 # gem "sassc-rails"
 

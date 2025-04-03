@@ -1,5 +1,5 @@
 class DisconnectJob < ApplicationJob
-  queue_as :disconnect
+  queue_as :default
 
   def perform(*args)
     #beta用コメント
